@@ -1,13 +1,100 @@
 {
-    "Kafi/Bheempalasi": ["Sa","Re","G_K","Ma","Pa","Dha","N_K"],
-    "Yaman": ["Sa","Re","Ga","M_T","Pa","Dha","Ni"],
-    "Khamaj/Bilawal": ["Sa","Re","Ga","Ma","Pa","Dha","N_K","Ni"],
-    "Bhairav": ["Sa","R_K","Ga","Ma","Pa","D_K","Ni"],
-    "Bihag": ["Sa","Re","Ga","Ma","M_T","Pa","Dha","Ni"],
-    "Bhairavi": ["Sa","R_K","G_K","Ma","Pa","D_K","N_K"],
-    "Aasavari/Jaunpuri": ["Sa","Re","G_K","Ma","Pa","D_K","N_K"],
-    "Desh": ["Sa","R_K","G_K","Ma","Pa","D_K","N_K"],
-    "Bhopali/Deshkar": ["Sa","Re","Ga","Pa","Dha"],
-    "Durga": ["Sa","Re","Ma","Pa","Dha"],
-    "Tilang/Vrindavani Sarang": ["Sa","Ga","Ma","Pa","N_K","Ni"]
+    "kafi": {
+        "vikrit": ["G", "N"],
+        "vikrit_shuddha": [],
+        "varjya": [],
+        "vadi": "P",
+        "samvadi": "S"
+    },
+    "yaman": {
+        "vikrit": ["M"],
+        "vikrit_shuddha": [],
+        "varjya": [],
+        "vadi": "G",
+        "samvadi": "N"
+    },
+    "bilawal": {
+        "vikrit": [],
+        "vikrit_shuddha": [],
+        "varjya": [],
+        "vadi": "G",
+        "samvadi": "N"
+    },
+    "khamaj": {
+        "vikrit": ["N"],
+        "vikrit_shuddha": ["N"],
+        "varjya": [],
+        "vadi": "G",
+        "samvadi": "N"
+    },
+    "bhairav": {
+        "vikrit": ["R", "D"],
+        "vikrit_shuddha": [],
+        "varjya": [],
+        "vadi": "D",
+        "samvadi": "R"
+    },
+    "bhairavi": {
+        "vikrit": ["R", "G", "D", "N"],
+        "vikrit_shuddha": [],
+        "varjya": [],
+        "vadi": "M",
+        "samvadi": "S"
+    },
+    "asavari": {
+        "vikrit": ["G", "D", "N"],
+        "vikrit_shuddha": [],
+        "varjya": [],
+        "vadi": "D",
+        "samvadi": "G"
+    },
+    "marwa": {
+        "vikrit": ["R", "M"],
+        "vikrit_shuddha": [],
+        "varjya": ["P"],
+        "vadi": "R",
+        "samvadi": "D"
+    },
+    "todi": {
+        "vikrit": ["R", "G", "D", "M"],
+        "vikrit_shuddha": [],
+        "varjya": [],
+        "vadi": "D",
+        "samvadi": "G"
+    },
+    "purvi": {
+        "vikrit": ["R", "D", "M"],
+        "vikrit_shuddha": ["M"],
+        "varjya": [],
+        "vadi": "G",
+        "samvadi": "N"
+    },
+    "bhopali": {
+        "vikrit": [],
+        "vikrit_shuddha": [],
+        "varjya": ["M", "N"],
+        "vadi": "G",
+        "samvadi": "D"
+    },
+    "bihag": {
+        "vikrit": ["M"],
+        "vikrit_shuddha": ["M"],
+        "varjya": [],
+        "vadi": "G",
+        "samvadi": "N"
+    },
+    "durga": {
+        "vikrit": [],
+        "vikrit_shuddha": [],
+        "varjya": ["G", "N"],
+        "vadi": "M",
+        "samvadi": "S"
+    },
+    "tilang": {
+        "vikrit": ["N"],
+        "vikrit_shuddha": ["N"],
+        "varjya": ["R", "D"],
+        "vadi": "G",
+        "samvadi": "N"
+    }
 }
