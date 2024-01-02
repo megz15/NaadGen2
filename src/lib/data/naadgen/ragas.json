@@ -1,0 +1,13 @@
+{
+    "Kafi/Bheempalasi": ["Sa","Re","G_K","Ma","Pa","Dha","N_K"],
+    "Yaman": ["Sa","Re","Ga","M_T","Pa","Dha","Ni"],
+    "Khamaj/Bilawal": ["Sa","Re","Ga","Ma","Pa","Dha","N_K","Ni"],
+    "Bhairav": ["Sa","R_K","Ga","Ma","Pa","D_K","Ni"],
+    "Bihag": ["Sa","Re","Ga","Ma","M_T","Pa","Dha","Ni"],
+    "Bhairavi": ["Sa","R_K","G_K","Ma","Pa","D_K","N_K"],
+    "Aasavari/Jaunpuri": ["Sa","Re","G_K","Ma","Pa","D_K","N_K"],
+    "Desh": ["Sa","R_K","G_K","Ma","Pa","D_K","N_K"],
+    "Bhopali/Deshkar": ["Sa","Re","Ga","Pa","Dha"],
+    "Durga": ["Sa","Re","Ma","Pa","Dha"],
+    "Tilang/Vrindavani Sarang": ["Sa","Ga","Ma","Pa","N_K","Ni"]
+}
