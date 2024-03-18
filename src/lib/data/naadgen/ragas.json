@@ -96,5 +96,12 @@
         "varjya": ["R", "D"],
         "vadi": "G",
         "samvadi": "N"
+    },
+    "jayjavanti": {
+        "vikrit": ["G", "N"],
+        "vikrit_shuddha": ["G", "N"],
+        "varjya": [],
+        "vadi": "R",
+        "samvadi": "P"
     }
 }
