@@ -1,9 +1,37 @@
 {
-    "deepchandi": [3,7,10,14],
-    "teentaal": [4,8,12,16],
-    "jhaptaal": [2,5,7,10],
-    "dadra": [3,6],
-    "rupak": [3,5,7],
-    "keherva": [4,8],
-    "ektaal": [2,4,6,8,10,12]
+    "deepchandi": {
+        "matra": 14,
+        "tali": [1, 3, 10],
+        "khali": [7]
+    },
+    "teentaal": {
+        "matra": 16,
+        "tali": [0, 4, 12],
+        "khali": [8]
+    },
+    "jhaptaal": {
+        "matra": 10,
+        "tali": [0, 2, 7],
+        "khali": [5]
+    },
+    "dadra": {
+        "matra": 6,
+        "tali": [0],
+        "khali": [3]
+    },
+    "rupak": {
+        "matra": 7,
+        "tali": [3, 5],
+        "khali": [0]
+    },
+    "keherva": {
+        "matra": 8,
+        "tali": [0],
+        "khali": [4]
+    },
+    "ektaal": {
+        "matra": 12,
+        "tali": [0, 4, 8, 10],
+        "khali": [2, 6]
+    }
 }

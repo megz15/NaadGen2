@@ -4,6 +4,10 @@
     import taalsData from "$lib/data/naadgen/taals.json"
     import { Button, Select } from "flowbite-svelte"
 
+    function genSelectData(data: Record<string, Raga | Taal>) {
+        return Object.keys(data).map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
+    }
+
     type Raga = {
         vikrit: string[]
         vikrit_shuddha: string[]
@@ -12,17 +16,17 @@
         samvadi: string
     }
 
-    type Taal = number[]
+    type Taal = {
+        matra: number,
+        tali: number[],
+        khali: number[],
+    }
 
     let ragas: Record<string, Raga> = ragasData
     let taals: Record<string, Taal> = taalsData
 
-    let selectedRaga = 'kafi'
-    const raga = Object.keys(ragas).map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
-    
+    let selectedRaga = 'kafi'    
     let selectedTaal = 'deepchandi'
-    const taal = Object.keys(taals).map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
-
     let svaras: string[]
 
     function resetSvaras() {
@@ -51,11 +55,11 @@
     </center>
     
     <div class="flex">
-        <Select items={raga} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
-        <Select items={taal} bind:value={selectedTaal} on:change={resetSvaras} placeholder="Taal" />
+        <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
+        <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={resetSvaras} placeholder="Taal" />
     </div>
 
     <div style="background-color: white;">
-        {JSON.stringify(svaras)}
+        {JSON.stringify(svaras)} {JSON.stringify(taals[selectedTaal])}
     </div>
 </main>
