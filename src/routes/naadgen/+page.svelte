@@ -37,13 +37,9 @@
             svaras.splice(svaras.indexOf(svara), 1)
         }
 
-        // // Replace vikrit svar with lowercase to indicate komal, and uppercase to indicate tivra M
-        // if (ragas[selectedRaga].vikrit.includes(svara.toUpperCase())) {
-        //     svaras[svaras.indexOf(svara)] = svara == "m" ? svara = "M" : svara = svara.toLowerCase()
-        // }
-
-        if (ragas[selectedRaga].vikrit_shuddha.includes(svara.toUpperCase())) {
-            svaras.splice(svaras.indexOf(svara), 1, svara == "m" ? "a" : ("a", svara.toLowerCase()))
+        // Switch vikrit svaras
+        if (ragas[selectedRaga].vikrit.includes(svara)) {
+            svaras.splice(svaras.indexOf(svara), 1, svara.toUpperCase() == svara ? svara.toLowerCase() : svara.toUpperCase())
         }
     })
 </script>

@@ -7,7 +7,7 @@
         "samvadi": "S"
     },
     "yaman": {
-        "vikrit": ["M"],
+        "vikrit": ["m"],
         "vikrit_shuddha": [],
         "varjya": [],
         "vadi": "G",
@@ -49,22 +49,22 @@
         "samvadi": "G"
     },
     "marwa": {
-        "vikrit": ["R", "M"],
+        "vikrit": ["R", "m"],
         "vikrit_shuddha": [],
         "varjya": ["P"],
         "vadi": "R",
         "samvadi": "D"
     },
     "todi": {
-        "vikrit": ["R", "G", "D", "M"],
+        "vikrit": ["R", "G", "D", "m"],
         "vikrit_shuddha": [],
         "varjya": [],
         "vadi": "D",
         "samvadi": "G"
     },
     "purvi": {
-        "vikrit": ["R", "D", "M"],
-        "vikrit_shuddha": ["M"],
+        "vikrit": ["R", "D", "m"],
+        "vikrit_shuddha": ["m"],
         "varjya": [],
         "vadi": "G",
         "samvadi": "N"
@@ -77,8 +77,8 @@
         "samvadi": "D"
     },
     "bihag": {
-        "vikrit": ["M"],
-        "vikrit_shuddha": ["M"],
+        "vikrit": ["m"],
+        "vikrit_shuddha": ["m"],
         "varjya": [],
         "vadi": "G",
         "samvadi": "N"
