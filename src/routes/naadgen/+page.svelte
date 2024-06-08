@@ -33,12 +33,12 @@
 
     $: svaras.forEach(svara => {
         // Remove varjya svaras
-        if (ragas[selectedRaga].varjya.includes(svara.toUpperCase())) {
-            svaras.splice(svaras.indexOf(svara), 1)
-        }
+        svaras = svaras.filter(svara => !ragas[selectedRaga].varjya.includes(svara.toUpperCase()))
 
-        // Switch vikrit svaras
-        if (ragas[selectedRaga].vikrit.includes(svara)) {
+        // Add vikrit shudhh svaras
+        if (ragas[selectedRaga].vikrit_shuddha.includes(svara)) {
+            svaras.splice(svaras.indexOf(svara), 1, svara.toLowerCase(), svara.toUpperCase())
+        } else if (ragas[selectedRaga].vikrit.includes(svara)) {
             svaras.splice(svaras.indexOf(svara), 1, svara.toUpperCase() == svara ? svara.toLowerCase() : svara.toUpperCase())
         }
     })
