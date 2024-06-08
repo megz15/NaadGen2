@@ -2,7 +2,7 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Select } from "flowbite-svelte"
+    import { Button, Select } from "flowbite-svelte"
 
     type Raga = {
         vikrit: string[]
@@ -49,7 +49,10 @@
 </script>
 
 <main>
-    <img src={logo} alt="NaadGen">
+    <center>
+        <a href="https://megz15.github.io/NaadGen/" target="_blank"><Button class="mt-20 text-lg" color="red">🚧 NaadGen is under construction 🚧<br><br>🚧 Use this site till then 🚧</Button></a>
+        <img src={logo} alt="NaadGen">
+    </center>
     
     <div class="flex">
         <Select items={raga} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
