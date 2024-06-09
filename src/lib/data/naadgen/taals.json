@@ -1,7 +1,7 @@
 {
     "deepchandi": {
         "matra": 14,
-        "tali": [1, 3, 10],
+        "tali": [0, 3, 10],
         "khali": [7]
     },
     "teentaal": {
