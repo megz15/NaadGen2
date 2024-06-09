@@ -2,7 +2,7 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Button, NumberInput, Select } from "flowbite-svelte"
+    import { Button, Label, NumberInput, Select } from "flowbite-svelte"
 
     function genSelectData(data: Record<string, Raga | Taal>) {
         return Object.keys(data).map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
@@ -13,11 +13,16 @@
     }
 
     function genFreq(baseFreq: number, n: number) {
-        return baseFreq*(2**(n/12))
+        return Math.round( baseFreq*(2**(n/12)) * 1000 ) / 1000
     }
 
     function genSaptakFreq(shrutis: string[]) {
         return Object.fromEntries(shrutis.map(x => [x, genFreq(baseFreq, shrutis.indexOf(x))]))
+    }
+
+    function svaraClick(svara: string) {
+        genSine(freqObject[svara])
+        bandishSvaras.push(freqObject[svara])
     }
 
     function genSine(freq: number) {
@@ -79,6 +84,8 @@
     let baseFreq = 220
     let freqObject = genSaptakFreq(shrutis)
 
+    let bandishSvaras: number[] = []
+
     resetSvaras()
 
     $: current_svaras.forEach(svara => {
@@ -107,7 +114,17 @@
 
     <div class="flex gap-1 flex-wrap justify-center m-10">
         {#each current_svaras as svara}
-            <Button color="dark" class="text-lg" on:click={() => genSine(freqObject[svara])}>{svara}</Button>
+            <Button color="dark" class="text-lg" on:click={() => svaraClick(svara)}>{svara}</Button>
+        {/each}
+    </div>
+
+    <div class="flex gap-1 mb-10">
+        {#each {length: taals[selectedTaal]["matra"]} as _, i}
+            <Button color="dark" class="text-lg w-12">{i + 1}</Button>
+        {/each}
+
+        {#each bandishSvaras as svara}
+            <Button color="dark" class="text-lg w-12">{svara}</Button>
         {/each}
     </div>
 </main>
