@@ -2,7 +2,7 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Button, Select } from "flowbite-svelte"
+    import { Button, NumberInput, Select } from "flowbite-svelte"
 
     function genSelectData(data: Record<string, Raga | Taal>) {
         return Object.keys(data).map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
@@ -12,8 +12,45 @@
         current_svaras = ['S', 'R', 'G', 'm', 'P', 'D', 'N']
     }
 
-    function genFreq(base_freq: number, n: number) {
-        return base_freq*(2**(n/12))
+    function genFreq(baseFreq: number, n: number) {
+        return baseFreq*(2**(n/12))
+    }
+
+    function genSaptakFreq(shrutis: string[]) {
+        return Object.fromEntries(shrutis.map(x => [x, genFreq(baseFreq, shrutis.indexOf(x))]))
+    }
+
+    function genSine(freq: number) {
+
+        let audioContext = new AudioContext()
+
+        let sampleRate = audioContext.sampleRate
+        let duration = 0.4 * sampleRate
+        let numChannels = 1
+        let buffer = audioContext.createBuffer(numChannels, duration, sampleRate)
+
+        let channelData = buffer.getChannelData(0)
+        for (let i = 0 ; i < sampleRate ; i++) {
+            channelData[i] = Math.sin(2 * Math.PI * freq * i / sampleRate)
+        }
+
+        let source = audioContext.createBufferSource()
+        source.buffer = buffer
+
+        let gainNode = audioContext.createGain()
+        source.connect(gainNode)
+        gainNode.connect(audioContext.destination)
+
+        let attackTime = 0.1
+        let releaseTime = 0.3
+        let currentTime = audioContext.currentTime
+
+        gainNode.gain.setValueAtTime(0, currentTime)
+        gainNode.gain.linearRampToValueAtTime(1, currentTime + attackTime)
+        gainNode.gain.setValueAtTime(1, currentTime + 0.4 - releaseTime)
+        gainNode.gain.linearRampToValueAtTime(0, currentTime + 0.4)
+
+        source.start(0)
     }
 
     type Raga = {
@@ -36,10 +73,12 @@
     let selectedRaga = 'kafi'    
     let selectedTaal = 'deepchandi'
 
-    const all_svaras = ['S', 'r', 'R', 'g', 'G', 'm', 'M', 'P', 'd', 'D', 'n', 'N']
+    const shrutis = ['S', 'r', 'R', 'g', 'G', 'm', 'M', 'P', 'd', 'D', 'n', 'N']
     let current_svaras: string[]
 
-    const base_freq = 440
+    let baseFreq = 220
+    let freqObject = genSaptakFreq(shrutis)
+
     resetSvaras()
 
     $: current_svaras.forEach(svara => {
@@ -63,11 +102,12 @@
     <div class="flex gap-5">
         <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
         <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={resetSvaras} placeholder="Taal" />
+        <NumberInput bind:value={baseFreq} on:change={() => freqObject = genSaptakFreq(shrutis)} />
     </div>
 
     <div class="flex gap-1 flex-wrap justify-center m-10">
         {#each current_svaras as svara}
-            <Button color="dark" class="text-lg">{svara}</Button>
+            <Button color="dark" class="text-lg" on:click={() => genSine(freqObject[svara])}>{svara}</Button>
         {/each}
     </div>
 </main>
