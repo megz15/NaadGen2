@@ -23,6 +23,7 @@
     function svaraClick(svara: string) {
         genSine(freqObject[svara])
         bandishSvaras.push(freqObject[svara])
+        bandishSvaras = bandishSvaras
     }
 
     function genSine(freq: number) {
@@ -118,13 +119,17 @@
         {/each}
     </div>
 
-    <div class="flex gap-1 mb-10">
-        {#each {length: taals[selectedTaal]["matra"]} as _, i}
-            <Button color="dark" class="text-lg w-12">{i + 1}</Button>
-        {/each}
+    <div class="mb-10">
+        <div class="flex gap-1">
+            {#each {length: taals[selectedTaal]["matra"]} as _, i}
+                <Button color="dark" class="text-lg w-12">{i + 1}</Button>
+            {/each}
+        </div>
 
-        {#each bandishSvaras as svara}
-            <Button color="dark" class="text-lg w-12">{svara}</Button>
-        {/each}
+        <div class="flex flex-wrap gap-1 mt-4">
+            {#each bandishSvaras as svara}
+                <Button color="dark" class="text-lg w-12 basis-[calc(100%/14)]">{svara}</Button>
+            {/each}
+        </div>
     </div>
 </main>
