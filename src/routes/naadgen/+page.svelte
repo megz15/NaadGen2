@@ -2,7 +2,22 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Button, Label, NumberInput, Select } from "flowbite-svelte"
+    import { Button, NumberInput, Select } from "flowbite-svelte"
+    import { onMount, tick } from "svelte"
+
+    let matrasDiv: HTMLDivElement
+    let compDiv: HTMLDivElement
+
+    onMount(() => {
+        matchDivWidth(compDiv, matrasDiv)
+    })
+
+    async function matchDivWidth(e1: HTMLDivElement, e2: HTMLDivElement) {
+        if (matrasDiv && compDiv) {
+            await tick()
+            e1.style.maxWidth = `${e2.clientWidth}px`
+        }
+    }
 
     function genSelectData(data: Record<string, Raga | Taal>) {
         return Object.keys(data).map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
@@ -109,27 +124,25 @@
     
     <div class="flex gap-5">
         <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
-        <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={resetSvaras} placeholder="Taal" />
+        <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
         <NumberInput bind:value={baseFreq} on:change={() => freqObject = genSaptakFreq(shrutis)} />
     </div>
 
-    <div class="flex gap-1 flex-wrap justify-center m-10">
+    <div class="flex gap-1 m-10">
         {#each current_svaras as svara}
             <Button color="dark" class="text-lg" on:click={() => svaraClick(svara)}>{svara}</Button>
         {/each}
     </div>
 
-    <div class="mb-10">
-        <div class="flex gap-1">
-            {#each {length: taals[selectedTaal]["matra"]} as _, i}
-                <Button color="dark" class="text-lg w-12">{i + 1}</Button>
-            {/each}
-        </div>
+    <div class="flex gap-1" bind:this={matrasDiv}>
+        {#each {length: taals[selectedTaal]["matra"]} as _, i}
+            <Button color="dark" class="text-lg w-12">{i + 1}</Button>
+        {/each}
+    </div>
 
-        <div class="flex flex-wrap gap-1 mt-4">
-            {#each bandishSvaras as svara}
-                <Button color="dark" class="text-lg w-12 basis-[calc(100%/14)]">{svara}</Button>
-            {/each}
-        </div>
+    <div class="flex flex-wrap gap-1 mt-4" bind:this={compDiv}>
+        {#each bandishSvaras as svara}
+            <Button color="dark" class="text-lg w-12">{svara}</Button>
+        {/each}
     </div>
 </main>
