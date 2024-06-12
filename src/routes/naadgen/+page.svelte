@@ -129,9 +129,19 @@
     </div>
 
     <div class="flex gap-1 m-10">
+        <Button color="green" class="text-lg" on:click={() => {
+            baseFreq/=2
+            freqObject = genSaptakFreq(shrutis)
+        }}>-</Button>
+
         {#each current_svaras as svara}
             <Button color="dark" class="text-lg" on:click={() => svaraClick(svara)}>{svara}</Button>
         {/each}
+
+        <Button color="green" class="text-lg" on:click={() => {
+            baseFreq*=2
+            freqObject = genSaptakFreq(shrutis)
+        }}>+</Button>
     </div>
 
     <div class="flex gap-1" bind:this={matrasDiv}>
