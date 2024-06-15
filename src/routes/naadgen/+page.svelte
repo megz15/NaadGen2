@@ -102,6 +102,7 @@
     let freqObject = genSaptakFreq(shrutis, currBaseFreq)
 
     let bandishSvaras: [string, number][] = []
+    let lastRemovedSvara: [string, number] = ["S", 0]
 
     resetSvaras()
 
@@ -132,22 +133,47 @@
 
     <div class="overflow-x-scroll p-10 max-w-full">
 
-        <div class="flex gap-1">
-            <Button color="green" class="text-lg" on:click={() => {
-                currBaseFreq/=2
-                octave--
-                freqObject = genSaptakFreq(shrutis, currBaseFreq)
-            }}>-</Button>
+        <div class="w-fit">
+            <div class="flex gap-1 mb-1">
+                {#each current_svaras as svara}
+                    <Button color="dark" class="text-lg w-12" on:click={() => svaraClick(svara)}>{svara}</Button>
+                {/each}
 
-            {#each current_svaras as svara}
-                <Button color="dark" class="text-lg" on:click={() => svaraClick(svara)}>{svara}</Button>
-            {/each}
+                <Button color="green" class="text-lg" on:click={() => {
+                    bandishSvaras.push(["-", 0])
+                    bandishSvaras = bandishSvaras
+                }}>Rest</Button>
+            </div>
+            
+            <div class="flex gap-1 justify-between">
+                <Button color="red" class="text-lg w-12" on:click={() => {
+                    currBaseFreq/=2
+                    octave--
+                    // freqObject = genSaptakFreq(shrutis, currBaseFreq)
+                }}>-</Button>
 
-            <Button color="green" class="text-lg" on:click={() => {
-                currBaseFreq*=2
-                octave++
-                freqObject = genSaptakFreq(shrutis, currBaseFreq)
-            }}>+</Button>
+                <Button color="green" class="text-lg w-12" on:click={() => {
+                    currBaseFreq*=2
+                    octave++
+                    // freqObject = genSaptakFreq(shrutis, currBaseFreq)
+                }}>+</Button>
+
+                <div class="flex-1"/>
+
+                <Button color="red" class="text-lg" on:click={() => {
+                    lastRemovedSvara = bandishSvaras.pop() ?? ["S", 0]
+                    bandishSvaras = bandishSvaras
+                }}>Del</Button>
+
+                <Button color="green" class="text-lg w-12" on:click={() => {
+                    bandishSvaras.push(lastRemovedSvara)
+                    bandishSvaras = bandishSvaras
+                }}>↺</Button>
+
+                <Button color="red" class="text-lg" on:click={() => {
+                    bandishSvaras = []
+                }}>Clear</Button>
+            </div>
         </div>
 
         <div class="flex gap-1 py-4" bind:this={matrasDiv}>
