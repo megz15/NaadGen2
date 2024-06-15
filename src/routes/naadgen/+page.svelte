@@ -74,7 +74,7 @@
         source.start(0)
     }
 
-    function playNotes(notes: [string, number][], freqObject: { [x: string]: number }) {
+    function playNotes(notes: [string, number][], freqObject: { [x: string]: number }, tempoMS: number) {
         let totalTime = 0
 
         notes.forEach(note => {
@@ -82,7 +82,7 @@
                 genSine(freqObject[note[0]] * 2**note[1], noteTime)
             }, totalTime)
 
-            totalTime += noteTime * 500
+            totalTime += tempoMS
         })
     }
 
@@ -110,6 +110,8 @@
     let current_svaras: string[]
 
     const noteTime = 0.5
+    let tempoMS = 500
+
     let octave = 0
     let currBaseFreq = 220
     let freqObject = genSaptakFreq(shrutis, currBaseFreq)
@@ -141,6 +143,7 @@
         <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
         <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
         <NumberInput bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
+        <NumberInput bind:value={tempoMS} />
         <Input bind:value={octave} readonly/>
     </div>
 
@@ -151,6 +154,8 @@
                 {#each current_svaras as svara}
                     <Button color="dark" class="text-lg w-12" on:click={() => svaraClick(svara, octave)}>{svara}</Button>
                 {/each}
+
+                <div class="flex-1"/>
 
                 <Button color="green" class="text-lg" on:click={() => {
                     bandishSvaras.push(["-", 0])
@@ -188,7 +193,7 @@
                 }}>Clear</Button>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
-                    playNotes(bandishSvaras, freqObject)
+                    playNotes(bandishSvaras, freqObject, tempoMS)
                 }}>▶</Button>
             </div>
         </div>
