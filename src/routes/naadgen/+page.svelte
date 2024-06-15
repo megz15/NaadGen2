@@ -35,18 +35,18 @@
         return Object.fromEntries(shrutis.map(x => [x, genFreq(baseFreq, shrutis.indexOf(x))]))
     }
 
-    function svaraClick(svara: string) {
-        genSine(freqObject[svara])
+    function svaraClick(svara: string, octave: number) {
+        genSine(freqObject[svara] * 2**octave, noteTime)
         bandishSvaras.push([svara, octave])
         bandishSvaras = bandishSvaras
     }
 
-    function genSine(freq: number) {
+    function genSine(freq: number, noteTime: number) {
 
         let audioContext = new AudioContext()
 
         let sampleRate = audioContext.sampleRate
-        let duration = 0.4 * sampleRate
+        let duration = noteTime * sampleRate
         let numChannels = 1
         let buffer = audioContext.createBuffer(numChannels, duration, sampleRate)
 
@@ -62,16 +62,28 @@
         source.connect(gainNode)
         gainNode.connect(audioContext.destination)
 
-        let attackTime = 0.1
-        let releaseTime = 0.3
+        let attackTime = noteTime / 4
+        let releaseTime = noteTime * 3 / 4
         let currentTime = audioContext.currentTime
 
         gainNode.gain.setValueAtTime(0, currentTime)
         gainNode.gain.linearRampToValueAtTime(1, currentTime + attackTime)
-        gainNode.gain.setValueAtTime(1, currentTime + 0.4 - releaseTime)
-        gainNode.gain.linearRampToValueAtTime(0, currentTime + 0.4)
+        gainNode.gain.setValueAtTime(1, currentTime + noteTime - releaseTime)
+        gainNode.gain.linearRampToValueAtTime(0, currentTime + noteTime)
 
         source.start(0)
+    }
+
+    function playNotes(notes: [string, number][], freqObject: { [x: string]: number }) {
+        let totalTime = 0
+
+        notes.forEach(note => {
+            setTimeout(() => {
+                genSine(freqObject[note[0]] * 2**note[1], noteTime)
+            }, totalTime)
+
+            totalTime += noteTime * 500
+        })
     }
 
     type Raga = {
@@ -97,6 +109,7 @@
     const shrutis = ['S', 'r', 'R', 'g', 'G', 'm', 'M', 'P', 'd', 'D', 'n', 'N']
     let current_svaras: string[]
 
+    const noteTime = 0.5
     let octave = 0
     let currBaseFreq = 220
     let freqObject = genSaptakFreq(shrutis, currBaseFreq)
@@ -136,7 +149,7 @@
         <div class="w-fit">
             <div class="flex gap-1 mb-1">
                 {#each current_svaras as svara}
-                    <Button color="dark" class="text-lg w-12" on:click={() => svaraClick(svara)}>{svara}</Button>
+                    <Button color="dark" class="text-lg w-12" on:click={() => svaraClick(svara, octave)}>{svara}</Button>
                 {/each}
 
                 <Button color="green" class="text-lg" on:click={() => {
@@ -173,6 +186,10 @@
                 <Button color="red" class="text-lg" on:click={() => {
                     bandishSvaras = []
                 }}>Clear</Button>
+
+                <Button color="green" class="text-lg w-12" on:click={() => {
+                    playNotes(bandishSvaras, freqObject)
+                }}>▶</Button>
             </div>
         </div>
 
