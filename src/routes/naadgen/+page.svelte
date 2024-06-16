@@ -109,7 +109,7 @@
     const shrutis = ['S', 'r', 'R', 'g', 'G', 'm', 'M', 'P', 'd', 'D', 'n', 'N']
     let current_svaras: string[]
 
-    const noteTime = 0.5
+    let noteTime = 0.5
     let tempoMS = 500
 
     let octave = 0
@@ -144,6 +144,7 @@
         <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
         <NumberInput bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
         <NumberInput bind:value={tempoMS} />
+        <NumberInput bind:value={noteTime} />
         <Input bind:value={octave} readonly/>
     </div>
 
