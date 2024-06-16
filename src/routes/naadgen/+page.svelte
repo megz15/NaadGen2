@@ -137,7 +137,12 @@
 <main class="flex flex-col items-center">
 
     <img src={logo} width="500px" alt="NaadGen" />
-    <a href="https://megz15.github.io/NaadGen/" target="_blank"><Button class="text-lg my-5 mx-10" color="red">🚧 NaadGen is under construction 🚧<br><br>🚧 Use this site till then 🚧</Button></a>
+    <a href="https://megz15.github.io/NaadGen/" target="_blank">
+        <Button class="flex flex-col gap-1 p-5 m-5 text-lg text-black" color="yellow">
+            <p>NaadGen is under construction</p>
+            <p>🚧 Use this site till then 🚧</p>
+        </Button>
+    </a>
     
     <div class="flex gap-2  mx-10">
         <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
