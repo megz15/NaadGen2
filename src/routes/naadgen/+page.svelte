@@ -15,7 +15,7 @@
     async function matchDivWidth(e1: HTMLDivElement, e2: HTMLDivElement) {
         if (matrasDiv && compDiv) {
             await tick()
-            e1.style.maxWidth = `${e2.clientWidth}px`
+            e1.style.width = `${e2.scrollWidth}px`
         }
     }
 
@@ -222,6 +222,7 @@
             {#each {length: taals[selectedTaal]["matra"]} as _, i}
                 <Button color="dark" class="text-lg w-12">{i + 1}</Button>
             {/each}
+            <div class="pr-10"></div>
         </div>
 
         <div class="flex flex-wrap gap-1" bind:this={compDiv}>
