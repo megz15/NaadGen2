@@ -2,7 +2,7 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Button, Input, NumberInput, Popover, Select } from "flowbite-svelte"
+    import { Button, Input, NumberInput, Popover, Select, Modal } from "flowbite-svelte"
     import { onMount, tick } from "svelte"
 
     let matrasDiv: HTMLDivElement
@@ -132,6 +132,14 @@
             current_svaras.splice(current_svaras.indexOf(svara), 1, svara.toUpperCase() == svara ? svara.toLowerCase() : svara.toUpperCase())
         }
     })
+
+    let noteEditModal = false
+    let noteModalNoteIndex = 0
+
+    function openNoteModal(i: number): void {
+        noteEditModal = true
+        noteModalNoteIndex = i
+    }
 </script>
 
 <main class="flex flex-col items-center">
@@ -144,13 +152,17 @@
         </Button>
     </a>
     
-    <div class="flex gap-2  mx-10">
-        <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
-        <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
-        <NumberInput bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
-        <NumberInput bind:value={tempoMS} />
-        <NumberInput bind:value={noteTime} />
-        <Input bind:value={octave} readonly/>
+    <div class="flex gap-1 mx-10 items-end p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black md:bottom-0 border-2 border-gray-400">
+        <div class="flex flex-col w-44 gap-0.5">
+            <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
+            <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
+        </div>
+
+        <div class="flex flex-col w-24 gap-0.5">
+            <NumberInput bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
+            <NumberInput bind:value={tempoMS} />
+            <NumberInput bind:value={noteTime} />
+        </div>
     </div>
 
     <div class="overflow-x-scroll p-10 max-w-full">
@@ -175,6 +187,8 @@
                     octave--
                     // freqObject = genSaptakFreq(shrutis, currBaseFreq)
                 }}>-</Button>
+
+                <Input bind:value={octave} size="lg" floatClass="w-12" defaultClass="w-12" readonly/>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
                     currBaseFreq*=2
@@ -211,9 +225,9 @@
         </div>
 
         <div class="flex flex-wrap gap-1" bind:this={compDiv}>
-            {#each bandishSvaras as svara}
+            {#each bandishSvaras as svara, i}
                 <Button color="dark" on:click={
-                    () => alert(svara)
+                    () => openNoteModal(i)
                 } class="text-lg w-12">{
                     svara[1]?svara[0]:svara[0]
                 }</Button>
@@ -224,3 +238,7 @@
 
     </div>
 </main>
+
+<Modal title="Note Control Panel" bind:open={noteEditModal} autoclose size="xs">
+    {bandishSvaras[noteModalNoteIndex]}
+</Modal>
