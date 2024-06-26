@@ -109,8 +109,8 @@
     const shrutis = ['S', 'r', 'R', 'g', 'G', 'm', 'M', 'P', 'd', 'D', 'n', 'N']
     let current_svaras: string[]
 
-    let noteTime = 0.5
-    let tempoMS = 500
+    let noteTime = 0.26
+    let tempoMS = 177
 
     let octave = 0
     let currBaseFreq = 220
@@ -242,4 +242,5 @@
 
 <Modal title="Note Control Panel" bind:open={noteEditModal} autoclose size="xs">
     {bandishSvaras[noteModalNoteIndex]}
+    <Button>Split</Button>
 </Modal>

@@ -97,6 +97,13 @@
         "vadi": "G",
         "samvadi": "N"
     },
+    "miya ki malhar": {
+        "vikrit": ["G", "N"],
+        "vikrit_shuddha": ["N"],
+        "varjya": [],
+        "vadi": "P",
+        "samvadi": "S"
+    },
     "jayjavanti": {
         "vikrit": ["G", "N"],
         "vikrit_shuddha": ["G", "N"],
