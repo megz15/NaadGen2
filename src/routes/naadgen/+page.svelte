@@ -37,7 +37,7 @@
 
     function svaraClick(svara: string, octave: number) {
         genSine(freqObject[svara] * 2**octave, noteTime)
-        bandishSvaras.push([svara, octave])
+        bandishSvaras.push([[svara, octave]])
         bandishSvaras = bandishSvaras
     }
 
@@ -116,8 +116,8 @@
     let currBaseFreq = 220
     let freqObject = genSaptakFreq(shrutis, currBaseFreq)
 
-    let bandishSvaras: [string, number][] = []
-    let lastRemovedSvara: [string, number] = ["S", 0]
+    let bandishSvaras: [[string, number]][] = []
+    let lastRemovedSvara: [[string, number]] = [["S", 0]]
 
     resetSvaras()
 
@@ -176,7 +176,7 @@
                 <div class="flex-1"/>
 
                 <Button color="green" class="text-lg" on:click={() => {
-                    bandishSvaras.push(["-", 0])
+                    bandishSvaras.push([["-", 0]])
                     bandishSvaras = bandishSvaras
                 }}>Rest</Button>
             </div>
@@ -199,7 +199,7 @@
                 <div class="flex-1"/>
 
                 <Button color="red" class="text-lg" on:click={() => {
-                    lastRemovedSvara = bandishSvaras.pop() ?? ["S", 0]
+                    lastRemovedSvara = bandishSvaras.pop() ?? [["S", 0]]
                     bandishSvaras = bandishSvaras
                 }}>Del</Button>
 
@@ -213,7 +213,9 @@
                 }}>Clear</Button>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
-                    playNotes(bandishSvaras, freqObject, tempoMS)
+                    bandishSvaras.forEach(bandishSvara => {
+                        playNotes(bandishSvara, freqObject, tempoMS)
+                    })
                 }}>▶</Button>
             </div>
         </div>
@@ -226,21 +228,26 @@
         </div>
 
         <div class="flex flex-wrap gap-1" bind:this={compDiv}>
-            {#each bandishSvaras as svara, i}
+            {#each bandishSvaras as svaras, i}
                 <Button color="dark" on:click={
                     () => openNoteModal(i)
                 } class="text-lg w-12">{
-                    svara[1]?svara[0]:svara[0]
+                    svaras.map(svara => svara[0])
                 }</Button>
 
-                <Popover>Note: {svara[0]}<br>Octave: {svara[1]}</Popover>
+                <Popover>Note: {svaras.map(svara => svara[0])}<br>Octave: {svaras.map(svara => svara[1])}</Popover>
             {/each}
         </div>
 
     </div>
 </main>
 
-<Modal title="Note Control Panel" bind:open={noteEditModal} autoclose size="xs">
-    {bandishSvaras[noteModalNoteIndex]}
-    <Button>Split</Button>
+<Modal title="Note Control Panel" bind:open={noteEditModal} size="xs">
+    {#each bandishSvaras[noteModalNoteIndex] as svaras}
+        <Input bind:value={svaras} size="lg"/>
+    {/each}
+    <Button on:click={() => {
+        bandishSvaras[noteModalNoteIndex].push(['S', 0])
+        bandishSvaras = bandishSvaras
+    }}>Split</Button>
 </Modal>
