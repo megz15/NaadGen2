@@ -243,11 +243,26 @@
 </main>
 
 <Modal title="Note Control Panel" bind:open={noteEditModal} size="xs">
-    {#each bandishSvaras[noteModalNoteIndex] as svaras}
-        <Input bind:value={svaras} size="lg"/>
-    {/each}
+    <div class="flex flex-col gap-1">
+        {#each bandishSvaras[noteModalNoteIndex] as svaras, i}
+            <div class="flex">
+                <Input bind:value={svaras[0]} floatClass="w-12" defaultClass="w-12"/>
+                <Input bind:value={svaras[1]} floatClass="w-12" defaultClass="w-12"/>
+                <span>&nbsp;</span>
+                <Button color="red" class="w-12" on:click={() => {
+                    bandishSvaras[noteModalNoteIndex].splice(i, 1)
+                    bandishSvaras = bandishSvaras
+                }}>🗑️</Button>
+            </div>
+        {/each}
+    </div>
+    
     <Button on:click={() => {
         bandishSvaras[noteModalNoteIndex].push(['S', 0])
         bandishSvaras = bandishSvaras
     }}>Split</Button>
+
+    <Button on:click={() => alert(JSON.stringify(bandishSvaras))}>
+        Show svaras
+    </Button>
 </Modal>
