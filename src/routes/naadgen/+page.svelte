@@ -74,15 +74,18 @@
         source.start(0)
     }
 
-    function playNotes(notes: [string, number][], freqObject: { [x: string]: number }, tempoMS: number) {
+    function playNotes(notes: [[string, number]][], freqObject: { [x: string]: number }, tempoMS: number) {
         let totalTime = 0
 
         notes.forEach(note => {
-            setTimeout(() => {
-                genSine(freqObject[note[0]] * 2**note[1], noteTime)
-            }, totalTime)
+            const noteDuration = tempoMS / note.length
+            note.forEach(split => {
+                setTimeout(() => {
+                    genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length)
+                }, totalTime)
 
-            totalTime += tempoMS
+                totalTime += noteDuration
+            })
         })
     }
 
@@ -213,9 +216,7 @@
                 }}>Clear</Button>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
-                    bandishSvaras.forEach(bandishSvara => {
-                        playNotes(bandishSvara, freqObject, tempoMS)
-                    })
+                    playNotes(bandishSvaras, freqObject, tempoMS)
                 }}>▶</Button>
             </div>
         </div>
@@ -232,7 +233,7 @@
                 <Button color="dark" on:click={
                     () => openNoteModal(i)
                 } class="text-lg w-12">{
-                    svaras.map(svara => svara[0])
+                    svaras.map(svara => svara[0]).join("")
                 }</Button>
 
                 <Popover>Note: {svaras.map(svara => svara[0])}<br>Octave: {svaras.map(svara => svara[1])}</Popover>
