@@ -232,10 +232,13 @@
 
         <div class="flex flex-wrap gap-1" bind:this={compDiv}>
             {#each bandishSvaras as svaras, i}
-                <Button color="dark" on:click={
+                {@const svaraLabel = svaras.map(svara => svara[0])}
+                <Button color={
+                    taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"]) ? "alternative" : taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"]) ? "primary" : "dark"
+                } on:click={
                     () => openNoteModal(i)
                 } class="text-lg w-12">{
-                    svaras.map(svara => svara[0]).join("")
+                    svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ".." : svaraLabel.join("")
                 }</Button>
 
                 <Popover>Note: {svaras.map(svara => svara[0])}<br>Octave: {svaras.map(svara => svara[1])}</Popover>
@@ -245,27 +248,34 @@
     </div>
 </main>
 
-<Modal title="Note Control Panel" bind:open={noteEditModal} size="xs">
-    <div class="flex flex-col gap-1">
-        {#each bandishSvaras[noteModalNoteIndex] as svaras, i}
-            <div class="flex">
-                <Input bind:value={svaras[0]} floatClass="w-12" defaultClass="w-12"/>
-                <Input bind:value={svaras[1]} floatClass="w-12" defaultClass="w-12"/>
-                <span>&nbsp;</span>
-                <Button color="red" class="w-12" on:click={() => {
-                    bandishSvaras[noteModalNoteIndex].splice(i, 1)
-                    bandishSvaras = bandishSvaras
-                }}>🗑️</Button>
-            </div>
-        {/each}
-    </div>
-    
-    <Button on:click={() => {
-        bandishSvaras[noteModalNoteIndex].push(['S', 0])
-        bandishSvaras = bandishSvaras
-    }}>Split</Button>
+<Modal title="Note Control Panel" bind:open={noteEditModal} size="xs" class="w-2/3">
+    <div class="flex justify-between">
+        <div class="flex flex-col gap-1">
+            {#each bandishSvaras[noteModalNoteIndex] as svaras, i}
+                <div class="flex">
+                    <Input bind:value={svaras[0]} floatClass="w-12" defaultClass="w-12"/>
+                    <Input bind:value={svaras[1]} floatClass="w-12" defaultClass="w-12"/>
+                    <span>&nbsp;</span>
+                    <Button color="red" class="w-12" on:click={() => {
+                        if (bandishSvaras[noteModalNoteIndex].length > 1) {
+                            bandishSvaras[noteModalNoteIndex].splice(i, 1)
+                            bandishSvaras = bandishSvaras
+                        } else alert("Can't delete base note!")
+                    }}>🗑️</Button>
+                </div>
+            {/each}
+        </div>
+        
+        <div class="flex flex-col gap-1">
+            <Button on:click={() => {
+                bandishSvaras[noteModalNoteIndex].push([...bandishSvaras[noteModalNoteIndex][bandishSvaras[noteModalNoteIndex].length - 1]])
+                bandishSvaras = bandishSvaras
+            }}>Split</Button>
 
-    <Button on:click={() => alert(JSON.stringify(bandishSvaras))}>
-        Show svaras
-    </Button>
+            <Button on:click={() => {
+                bandishSvaras[noteModalNoteIndex] = [bandishSvaras[noteModalNoteIndex][0]]
+                bandishSvaras = bandishSvaras
+            }}>Clear</Button>
+        </div>
+    </div>
 </Modal>
