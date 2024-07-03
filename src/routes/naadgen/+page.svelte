@@ -223,7 +223,9 @@
 
         <div class="flex gap-1 py-4" bind:this={matrasDiv}>
             {#each {length: taals[selectedTaal]["matra"]} as _, i}
-                <Button color="dark" class="text-lg w-12">{i + 1}</Button>
+                <Button color={
+                    taals[selectedTaal]["tali"].includes(i) ? "alternative" : taals[selectedTaal]["khali"].includes(i) ? "primary" : "dark"
+                } class="text-lg w-12">{i + 1}</Button>
             {/each}
             <div class="pr-10"></div>
         </div>
