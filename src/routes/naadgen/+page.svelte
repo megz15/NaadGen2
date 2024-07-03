@@ -41,7 +41,7 @@
         bandishSvaras = bandishSvaras
     }
 
-    function genSine(freq: number, noteTime: number) {
+    function genSine(freq: number, noteTime: number, volume = 1) {
 
         let audioContext = new AudioContext()
 
@@ -62,26 +62,34 @@
         source.connect(gainNode)
         gainNode.connect(audioContext.destination)
 
+        gainNode.gain.value = volume
+
         let attackTime = noteTime / 4
         let releaseTime = noteTime * 3 / 4
         let currentTime = audioContext.currentTime
 
         gainNode.gain.setValueAtTime(0, currentTime)
-        gainNode.gain.linearRampToValueAtTime(1, currentTime + attackTime)
-        gainNode.gain.setValueAtTime(1, currentTime + noteTime - releaseTime)
+        gainNode.gain.linearRampToValueAtTime(volume, currentTime + attackTime)
+        gainNode.gain.setValueAtTime(volume, currentTime + noteTime - releaseTime)
         gainNode.gain.linearRampToValueAtTime(0, currentTime + noteTime)
 
         source.start(0)
     }
 
-    function playNotes(notes: [[string, number]][], freqObject: { [x: string]: number }, tempoMS: number) {
+    function playNotes(notes: [[string, number]][], freqObject: { [x: string]: number }, tempoMS: number, volume = 1) {
         let totalTime = 0
 
-        notes.forEach(note => {
+        notes.forEach((note, i) => {
+            const volume = (
+                taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"])
+            || taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"])
+            ) ? 2 : 1
+            
             const noteDuration = tempoMS / note.length
+
             note.forEach(split => {
                 setTimeout(() => {
-                    genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length)
+                    genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
                 }, totalTime)
 
                 totalTime += noteDuration
