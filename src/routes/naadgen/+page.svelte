@@ -92,6 +92,8 @@
                 if (split[0] != "-") {
                     setTimeout(() => {
                         genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
+                        document.getElementById(`comp-${i}`)?.classList.add("bg-yellow-400")
+                        document.getElementById(`comp-${i-1}`)?.classList.remove("bg-yellow-400")
                     }, totalTime)
                 }
 
@@ -99,7 +101,7 @@
             })
         })
 
-        if (loopPlayback) {
+        if (isPlaybackLooped) {
             setTimeout(() => {
                 playNotes(notes)
             }, totalTime)
@@ -139,7 +141,8 @@
     let bandishSvaras: [[string, number]][] = []
     let lastRemovedSvara: [[string, number]] = [["S", 0]]
 
-    let loopPlayback = false
+    let isPlaybackLooped = false
+    let isPlaybackPaused = false
 
     resetSvaras()
 
@@ -178,7 +181,7 @@
         <div class="flex flex-col w-44 gap-0.5">
             <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
             <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
-            <Checkbox bind:checked={loopPlayback} class="text-white mt-2 text-lg">Loop Playback</Checkbox>
+            <Checkbox bind:checked={isPlaybackLooped} class="text-white mt-2 text-lg">Loop Playback</Checkbox>
         </div>
 
         <div class="flex flex-col w-24 gap-0.5">
@@ -238,6 +241,10 @@
                 <Button color="green" class="text-lg w-12" on:click={() => {
                     playNotes(bandishSvaras)
                 }}>▶</Button>
+
+                <Button color="red" class="text-lg w-12" on:click={() => {
+                    
+                }}>||</Button>
             </div>
         </div>
 
@@ -253,7 +260,7 @@
         <div class="flex flex-wrap gap-1" bind:this={compDiv}>
             {#each bandishSvaras as svaras, i}
                 {@const svaraLabel = svaras.map(svara => svara[0])}
-                <Button color={
+                <Button id={`comp-${i}`} color={
                     taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"]) ? "alternative" : taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"]) ? "primary" : "dark"
                 } on:click={
                     () => openNoteModal(i)
