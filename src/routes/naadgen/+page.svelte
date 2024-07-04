@@ -2,7 +2,7 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Button, Input, NumberInput, Popover, Select, Modal } from "flowbite-svelte"
+    import { Button, Input, NumberInput, Popover, Select, Modal, Checkbox } from "flowbite-svelte"
     import { onMount, tick } from "svelte"
 
     let matrasDiv: HTMLDivElement
@@ -76,7 +76,7 @@
         source.start(0)
     }
 
-    function playNotes(notes: [[string, number]][], freqObject: { [x: string]: number }, tempoMS: number, volume = 1) {
+    function playNotes(notes: [[string, number]][]) {
         let totalTime = 0
 
         notes.forEach((note, i) => {
@@ -88,13 +88,22 @@
             const noteDuration = tempoMS / note.length
 
             note.forEach(split => {
-                setTimeout(() => {
-                    genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
-                }, totalTime)
+
+                if (split[0] != "-") {
+                    setTimeout(() => {
+                        genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
+                    }, totalTime)
+                }
 
                 totalTime += noteDuration
             })
         })
+
+        if (loopPlayback) {
+            setTimeout(() => {
+                playNotes(notes)
+            }, totalTime)
+        }
     }
 
     type Raga = {
@@ -130,6 +139,8 @@
     let bandishSvaras: [[string, number]][] = []
     let lastRemovedSvara: [[string, number]] = [["S", 0]]
 
+    let loopPlayback = false
+
     resetSvaras()
 
     $: current_svaras.forEach(svara => {
@@ -163,10 +174,11 @@
         </Button>
     </a>
     
-    <div class="flex gap-1 mx-10 items-end p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black md:bottom-0 border-2 border-gray-400">
+    <div class="flex gap-1 mx-10 p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black md:bottom-0 border-2 border-gray-400">
         <div class="flex flex-col w-44 gap-0.5">
             <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
             <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
+            <Checkbox bind:checked={loopPlayback} class="text-white mt-2 text-lg">Loop Playback</Checkbox>
         </div>
 
         <div class="flex flex-col w-24 gap-0.5">
@@ -224,7 +236,7 @@
                 }}>Clear</Button>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
-                    playNotes(bandishSvaras, freqObject, tempoMS)
+                    playNotes(bandishSvaras)
                 }}>▶</Button>
             </div>
         </div>
