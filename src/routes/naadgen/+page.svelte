@@ -88,18 +88,19 @@
             const noteDuration = tempoMS / note.length
 
             note.forEach(split => {
-
-                if (split[0] != "-") {
-                    setTimeout(() => {
-                        genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
-                        document.getElementById(`comp-${i}`)?.classList.add("bg-yellow-400")
-                        document.getElementById(`comp-${i-1}`)?.classList.remove("bg-yellow-400")
-                    }, totalTime)
-                }
-
+                setTimeout(() => {
+                    if (split[0] != "-") genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
+                    document.getElementById(`comp-${i}`)?.classList.add("bg-yellow-400")
+                    document.getElementById(`comp-${i-1}`)?.classList.remove("bg-yellow-400")
+                }, totalTime)
+                
                 totalTime += noteDuration
             })
         })
+
+        setTimeout(() => {
+            document.getElementById(`comp-${notes.length - 1}`)?.classList.remove("bg-yellow-400")
+        }, totalTime)
 
         if (isPlaybackLooped) {
             setTimeout(() => {
@@ -241,10 +242,6 @@
                 <Button color="green" class="text-lg w-12" on:click={() => {
                     playNotes(bandishSvaras)
                 }}>▶</Button>
-
-                <Button color="red" class="text-lg w-12" on:click={() => {
-                    
-                }}>||</Button>
             </div>
         </div>
 
