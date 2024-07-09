@@ -2,11 +2,12 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Button, Input, NumberInput, Popover, Select, Modal, Checkbox } from "flowbite-svelte"
+    import { Button, Input, NumberInput, Popover, Select, Modal, Checkbox, Fileupload } from "flowbite-svelte"
     import { onMount, tick } from "svelte"
 
     let matrasDiv: HTMLDivElement
     let compDiv: HTMLDivElement
+    let importFileInput: HTMLInputElement
 
     onMount(() => {
         matchDivWidth(compDiv, matrasDiv)
@@ -168,6 +169,18 @@
         noteEditModal = true
         noteModalNoteIndex = i
     }
+
+    function handleFileInput(e: Event) {
+        let input = e.target as HTMLInputElement
+        
+        if (input.files && input.files[0]) {
+            let reader = new FileReader()
+            reader.onload = function(){
+                bandishSvaras = JSON.parse(reader.result as string)
+            }
+            reader.readAsText(input.files[0])
+        }
+    }
 </script>
 
 <main class="flex flex-col items-center">
@@ -175,8 +188,8 @@
     <img src={logo} width="500px" alt="NaadGen" />
     
     <a href="https://megz15.github.io/NaadGen/" target="_blank">
-        <Button class="flex flex-col gap-1 p-5 m-5 text-lg text-black" color="yellow">
-            <p>🚧 Visit the preceding site 🚧</p>
+        <Button class="m-5 text-black" color="yellow">
+            Visit predecessor site!
         </Button>
     </a>
     
@@ -209,7 +222,11 @@
                 window.URL.revokeObjectURL(url)
             
             }}>Export</Button>
-            <Button>Import</Button>
+            
+            <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
+            <Button on:click={
+                () => importFileInput.click()
+            }>Import</Button>
         </div>
 
     </div>
