@@ -209,7 +209,7 @@
         </Button>
     </a>
     
-    <div class="flex gap-2 flex-wrap justify-center items-stretch">
+    <div class="flex gap-1 justify-center items-stretch px-1">
 
         <div class={cardClasses + "flex-col justify-between"}>
             <div class="flex flex-col gap-1">
@@ -275,6 +275,10 @@
 
     </div>
 
+    <Button class="text-lg mt-5 bg-lime-500 text-gray-800 border-gray-800 border-2" on:click={() => {
+        playNotes(bandishSvaras, startIndex, endIndex)
+    }}>▶️ Play</Button>
+
     <div class="overflow-x-scroll p-5 max-w-full">
 
         <div class="w-fit">
@@ -328,10 +332,6 @@
                     noteTime = 0.25
                     tempoBPM = 60000 / tempoMS
                 }}>Clear</Button>
-
-                <Button color="green" class="text-lg w-12" on:click={() => {
-                    playNotes(bandishSvaras, startIndex, endIndex)
-                }}>▶</Button>
             </div>
         </div>
 
@@ -380,7 +380,7 @@
             {/each}
         </div>
         
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 pr-5">
             <Button on:click={() => {
                 bandishSvaras[noteModalNoteIndex].push([...bandishSvaras[noteModalNoteIndex][bandishSvaras[noteModalNoteIndex].length - 1]])
                 bandishSvaras = bandishSvaras
