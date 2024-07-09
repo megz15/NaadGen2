@@ -2,12 +2,14 @@
     import logo from "$lib/assets/naadgen/logo.png"
     import ragasData from "$lib/data/naadgen/ragas.json"
     import taalsData from "$lib/data/naadgen/taals.json"
-    import { Button, Input, NumberInput, Popover, Select, Modal, Checkbox, Fileupload } from "flowbite-svelte"
+    import { Button, Input, Range, Popover, Select, Modal, Checkbox, Label } from "flowbite-svelte"
     import { onMount, tick } from "svelte"
 
     let matrasDiv: HTMLDivElement
     let compDiv: HTMLDivElement
     let importFileInput: HTMLInputElement
+
+    let cardClasses = "flex gap-1 p-4 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 "
 
     onMount(() => {
         matchDivWidth(compDiv, matrasDiv)
@@ -37,12 +39,12 @@
     }
 
     function svaraClick(svara: string, octave: number) {
-        genSine(freqObject[svara] * 2**octave, noteTime)
+        genSine(freqObject[svara] * 2**octave, noteTime, noteVolume)
         bandishSvaras.push([[svara, octave]])
         bandishSvaras = bandishSvaras
     }
 
-    function genSine(freq: number, noteTime: number, volume = 1) {
+    function genSine(freq: number, noteTime: number, volume: number) {
 
         let audioContext = new AudioContext()
 
@@ -63,15 +65,15 @@
         source.connect(gainNode)
         gainNode.connect(audioContext.destination)
 
-        gainNode.gain.value = volume
+        gainNode.gain.value = volume / 100
 
         let attackTime = noteTime / 4
         let releaseTime = noteTime * 3 / 4
         let currentTime = audioContext.currentTime
 
         gainNode.gain.setValueAtTime(0, currentTime)
-        gainNode.gain.linearRampToValueAtTime(volume, currentTime + attackTime)
-        gainNode.gain.setValueAtTime(volume, currentTime + noteTime - releaseTime)
+        gainNode.gain.linearRampToValueAtTime(volume / 100, currentTime + attackTime)
+        gainNode.gain.setValueAtTime(volume / 100, currentTime + noteTime - releaseTime)
         gainNode.gain.linearRampToValueAtTime(0, currentTime + noteTime)
 
         source.start(0)
@@ -81,12 +83,12 @@
         let totalTime = 0
 
         notes.slice(startIndex, endIndex == -1 ? notes.length : endIndex + 1).forEach((note, i) => {
-            const volume = (
+            const volume = noteVolume * ((
                 taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"])
             || taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"])
-            ) ? 2 : 1
+            ) ? 2 : 1)
             
-            const noteDuration = tempoMS / note.length
+            const noteDuration = (60000/tempoBPM) / note.length
 
             note.forEach(split => {
                 setTimeout(() => {
@@ -134,7 +136,9 @@
     let current_svaras: string[]
 
     let noteTime = 0.25
-    let tempoMS = 200
+    const tempoMS = 200
+    let tempoBPM = 60000 / tempoMS
+    let noteVolume = 100
 
     let octave = 0
     let currBaseFreq = 220
@@ -193,40 +197,61 @@
         </Button>
     </a>
     
-    <div class="flex gap-2 flex-wrap justify-center">
+    <div class="flex gap-2 flex-wrap justify-center items-stretch">
 
-        <div class="flex gap-1 p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
-            <div class="flex flex-col w-44 gap-0.5">
+        <div class={cardClasses + "flex-col justify-between"}>
+            <div class="flex flex-col gap-1">
                 <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
                 <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
-                <Checkbox bind:checked={isPlaybackLooped} class="text-white mt-2 text-lg">Loop Playback</Checkbox>
+            </div>
+            
+            <div class="flex gap-1">
+                <Button on:click={() => {
+                
+                    const blob = new Blob([JSON.stringify(bandishSvaras)])
+                    const url = window.URL.createObjectURL(blob)
+                    const a = document.createElement("a")
+                    
+                    a.href = url
+                    a.download = `${selectedRaga}_${selectedTaal}_${new Date().toISOString().replaceAll(':','-')}.ng`
+                    a.click()
+                    window.URL.revokeObjectURL(url)
+                
+                }}>Export</Button>
+                
+                <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
+                <Button on:click={
+                    () => importFileInput.click()
+                }>Import</Button>
             </div>
 
-            <div class="flex flex-col w-24 gap-0.5">
-                <NumberInput bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
-                <NumberInput bind:value={tempoMS} />
-                <NumberInput bind:value={noteTime} />
-            </div>
+            <Checkbox bind:checked={isPlaybackLooped} class="text-white">Loop Playback</Checkbox>
         </div>
 
-        <div class="flex flex-col gap-1 justify-around p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
-            <Button on:click={() => {
-                
-                const blob = new Blob([JSON.stringify(bandishSvaras)])
-                const url = window.URL.createObjectURL(blob)
-                const a = document.createElement("a")
-                
-                a.href = url
-                a.download = `${selectedRaga}_${selectedTaal}_${new Date().toISOString().replaceAll(':','-')}.ng`
-                a.click()
-                window.URL.revokeObjectURL(url)
-            
-            }}>Export</Button>
-            
-            <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
-            <Button on:click={
-                () => importFileInput.click()
-            }>Import</Button>
+        <div class={cardClasses + "flex-col"}>
+            <div>
+                <Label class="text-white">Frequency (Hz)</Label>
+                <Range min=20 max=1000 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
+                <Popover>{currBaseFreq}</Popover>
+            </div>
+
+            <div>
+                <Label class="text-white">Tempo (BPM)</Label>
+                <Range min=20 max=1000 bind:value={tempoBPM} />
+                <Popover>{tempoBPM}</Popover>
+            </div>
+
+            <div>
+                <Label class="text-white">Note Duration (Sec)</Label>
+                <Range min=0.05 max=1 step=0.01 bind:value={noteTime} />
+                <Popover>{noteTime}</Popover>
+            </div>
+
+            <div>
+                <Label class="text-white">Volume (%)</Label>
+                <Range min=0 max=200 bind:value={noteVolume} />
+                <Popover>{noteVolume}</Popover>
+            </div>
         </div>
 
     </div>
@@ -282,7 +307,7 @@
                     octave = 0
 
                     noteTime = 0.25
-                    tempoMS = 200
+                    tempoBPM = 60000 / tempoMS
                 }}>Clear</Button>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
