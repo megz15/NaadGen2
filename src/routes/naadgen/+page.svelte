@@ -76,10 +76,10 @@
         source.start(0)
     }
 
-    function playNotes(notes: [[string, number]][]) {
+    function playNotes(notes: [[string, number]][], startIndex = 0) {
         let totalTime = 0
 
-        notes.forEach((note, i) => {
+        notes.slice(startIndex).forEach((note, i) => {
             const volume = (
                 taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"])
             || taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"])
@@ -90,8 +90,8 @@
             note.forEach(split => {
                 setTimeout(() => {
                     if (split[0] != "-") genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
-                    document.getElementById(`comp-${i}`)?.classList.add("bg-yellow-400")
-                    document.getElementById(`comp-${i-1}`)?.classList.remove("bg-yellow-400")
+                    document.getElementById(`comp-${startIndex + i}`)?.classList.add("bg-yellow-400")
+                    document.getElementById(`comp-${startIndex + i - 1}`)?.classList.remove("bg-yellow-400")
                 }, totalTime)
                 
                 totalTime += noteDuration
@@ -104,7 +104,7 @@
 
         if (isPlaybackLooped) {
             setTimeout(() => {
-                playNotes(notes)
+                playNotes(notes, startIndex)
             }, totalTime)
         }
     }
@@ -144,6 +144,7 @@
 
     let isPlaybackLooped = false
     let isPlaybackPaused = false
+    let startIndex = 0
 
     resetSvaras()
 
@@ -240,7 +241,7 @@
                 }}>Clear</Button>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
-                    playNotes(bandishSvaras)
+                    playNotes(bandishSvaras, startIndex)
                 }}>▶</Button>
             </div>
         </div>
@@ -273,7 +274,7 @@
 </main>
 
 <Modal title="Note Control Panel" bind:open={noteEditModal} size="xs" class="w-2/3">
-    <div class="flex justify-between">
+    <div class="flex justify-between gap-1">
         <div class="flex flex-col gap-1">
             {#each bandishSvaras[noteModalNoteIndex] as svaras, i}
                 <div class="flex">
@@ -300,6 +301,12 @@
                 bandishSvaras[noteModalNoteIndex] = [bandishSvaras[noteModalNoteIndex][0]]
                 bandishSvaras = bandishSvaras
             }}>Clear</Button>
+
+            <Button on:click={() => {
+                document.getElementById(`comp-${startIndex}`)?.classList.remove("bg-lime-500")
+                startIndex = noteModalNoteIndex
+                document.getElementById(`comp-${startIndex}`)?.classList.add("bg-lime-500")
+            }}>Mark Start</Button>
         </div>
     </div>
 </Modal>
