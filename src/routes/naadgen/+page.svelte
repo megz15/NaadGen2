@@ -13,7 +13,7 @@
     })
 
     async function matchDivWidth(e1: HTMLDivElement, e2: HTMLDivElement) {
-        if (matrasDiv && compDiv) {
+        if (e1 && e2) {
             await tick()
             e1.style.width = `${e2.scrollWidth}px`
         }
@@ -76,10 +76,10 @@
         source.start(0)
     }
 
-    function playNotes(notes: [[string, number]][], startIndex = 0) {
+    function playNotes(notes: [[string, number]][], startIndex = 0, endIndex = -1) {
         let totalTime = 0
 
-        notes.slice(startIndex).forEach((note, i) => {
+        notes.slice(startIndex, endIndex == -1 ? notes.length : endIndex + 1).forEach((note, i) => {
             const volume = (
                 taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"])
             || taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"])
@@ -104,7 +104,7 @@
 
         if (isPlaybackLooped) {
             setTimeout(() => {
-                playNotes(notes, startIndex)
+                playNotes(notes, startIndex, endIndex)
             }, totalTime)
         }
     }
@@ -132,8 +132,8 @@
     const shrutis = ['S', 'r', 'R', 'g', 'G', 'm', 'M', 'P', 'd', 'D', 'n', 'N']
     let current_svaras: string[]
 
-    let noteTime = 0.26
-    let tempoMS = 177
+    let noteTime = 0.25
+    let tempoMS = 200
 
     let octave = 0
     let currBaseFreq = 220
@@ -145,6 +145,7 @@
     let isPlaybackLooped = false
     let isPlaybackPaused = false
     let startIndex = 0
+    let endIndex = -1
 
     resetSvaras()
 
@@ -238,15 +239,22 @@
 
                 <Button color="red" class="text-lg" on:click={() => {
                     bandishSvaras = []
+                    lastRemovedSvara = [["S", 0]]
+                    
+                    currBaseFreq = 220
+                    octave = 0
+
+                    noteTime = 0.25
+                    tempoMS = 200
                 }}>Clear</Button>
 
                 <Button color="green" class="text-lg w-12" on:click={() => {
-                    playNotes(bandishSvaras, startIndex)
+                    playNotes(bandishSvaras, startIndex, endIndex)
                 }}>▶</Button>
             </div>
         </div>
 
-        <div class="flex gap-1 py-4" bind:this={matrasDiv}>
+        <div class="flex gap-1 py-4 w-fit" bind:this={matrasDiv}>
             {#each {length: taals[selectedTaal]["matra"]} as _, i}
                 <Button color={
                     taals[selectedTaal]["tali"].includes(i) ? "alternative" : taals[selectedTaal]["khali"].includes(i) ? "primary" : "dark"
@@ -307,6 +315,12 @@
                 startIndex = noteModalNoteIndex
                 document.getElementById(`comp-${startIndex}`)?.classList.add("bg-lime-500")
             }}>Mark Start</Button>
+            
+            <Button on:click={() => {
+                document.getElementById(`comp-${endIndex}`)?.classList.remove("bg-lime-800")
+                endIndex = noteModalNoteIndex
+                document.getElementById(`comp-${endIndex}`)?.classList.add("bg-lime-800")
+            }}>Mark End</Button>
         </div>
     </div>
 </Modal>
