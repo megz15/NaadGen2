@@ -92,7 +92,7 @@
 
             note.forEach(split => {
                 setTimeout(() => {
-                    if (split[0] != "-") genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
+                    if (split[0] != ".") genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
                     document.getElementById(`comp-${startIndex + i}`)?.classList.add("bg-yellow-400")
                     document.getElementById(`comp-${startIndex + i - 1}`)?.classList.remove("bg-yellow-400")
                 }, totalTime)
@@ -179,8 +179,20 @@
         
         if (input.files && input.files[0]) {
             let reader = new FileReader()
-            reader.onload = function(){
-                bandishSvaras = JSON.parse(reader.result as string)
+            reader.onload = function() {
+                const data = JSON.parse(reader.result as string)
+                
+                selectedRaga = data["raga"]
+                selectedTaal = data["taal"]
+                matchDivWidth(compDiv, matrasDiv)
+                
+                currBaseFreq = data["freq"]
+                freqObject = genSaptakFreq(shrutis, currBaseFreq)
+
+                tempoBPM = data["tempo"]
+                noteTime = data["noteTime"]
+                
+                bandishSvaras = data["bandish"]
             }
             reader.readAsText(input.files[0])
         }
@@ -208,7 +220,14 @@
             <div class="flex gap-1">
                 <Button on:click={() => {
                 
-                    const blob = new Blob([JSON.stringify(bandishSvaras)])
+                    const blob = new Blob([JSON.stringify({
+                        "raga": selectedRaga,
+                        "taal": selectedTaal,
+                        "freq": currBaseFreq,
+                        "tempo": tempoBPM,
+                        "noteTime": noteTime,
+                        "bandish": bandishSvaras
+                    })])
                     const url = window.URL.createObjectURL(blob)
                     const a = document.createElement("a")
                     
@@ -267,7 +286,7 @@
                 <div class="flex-1"/>
 
                 <Button color="green" class="text-lg" on:click={() => {
-                    bandishSvaras.push([["-", 0]])
+                    bandishSvaras.push([[".", 0]])
                     bandishSvaras = bandishSvaras
                 }}>Rest</Button>
             </div>
@@ -333,7 +352,7 @@
                 } on:click={
                     () => openNoteModal(i)
                 } class="text-lg w-12">{
-                    svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ".." : svaraLabel.join("")
+                    svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ">" : svaraLabel.join("")
                 }</Button>
 
                 <Popover>Note: {svaras.map(svara => svara[0])}<br>Octave: {svaras.map(svara => svara[1])}</Popover>
