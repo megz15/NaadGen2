@@ -173,28 +173,48 @@
 <main class="flex flex-col items-center">
 
     <img src={logo} width="500px" alt="NaadGen" />
+    
     <a href="https://megz15.github.io/NaadGen/" target="_blank">
         <Button class="flex flex-col gap-1 p-5 m-5 text-lg text-black" color="yellow">
-            <p>NaadGen is under construction</p>
-            <p>🚧 Use this site till then 🚧</p>
+            <p>🚧 Visit the preceding site 🚧</p>
         </Button>
     </a>
     
-    <div class="flex gap-1 mx-10 p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black md:bottom-0 border-2 border-gray-400">
-        <div class="flex flex-col w-44 gap-0.5">
-            <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
-            <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
-            <Checkbox bind:checked={isPlaybackLooped} class="text-white mt-2 text-lg">Loop Playback</Checkbox>
+    <div class="flex gap-2 flex-wrap justify-center">
+
+        <div class="flex gap-1 p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+            <div class="flex flex-col w-44 gap-0.5">
+                <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
+                <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
+                <Checkbox bind:checked={isPlaybackLooped} class="text-white mt-2 text-lg">Loop Playback</Checkbox>
+            </div>
+
+            <div class="flex flex-col w-24 gap-0.5">
+                <NumberInput bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
+                <NumberInput bind:value={tempoMS} />
+                <NumberInput bind:value={noteTime} />
+            </div>
         </div>
 
-        <div class="flex flex-col w-24 gap-0.5">
-            <NumberInput bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
-            <NumberInput bind:value={tempoMS} />
-            <NumberInput bind:value={noteTime} />
+        <div class="flex flex-col gap-1 justify-around p-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+            <Button on:click={() => {
+                
+                const blob = new Blob([JSON.stringify(bandishSvaras)])
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement("a")
+                
+                a.href = url
+                a.download = `${selectedRaga}_${selectedTaal}_${new Date().toISOString().replaceAll(':','-')}.ng`
+                a.click()
+                window.URL.revokeObjectURL(url)
+            
+            }}>Export</Button>
+            <Button>Import</Button>
         </div>
+
     </div>
 
-    <div class="overflow-x-scroll p-10 max-w-full">
+    <div class="overflow-x-scroll p-5 max-w-full">
 
         <div class="w-fit">
             <div class="flex gap-1 mb-1">
