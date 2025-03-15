@@ -1,9 +1,14 @@
+<svelte:head>
+    <title>NaadGen</title> 
+</svelte:head>
+
 <script lang="ts">
     import logo from "$lib/data/logo.png"
     import ragasData from "$lib/data/ragas.json"
     import taalsData from "$lib/data/taals.json"
-    import { Button, Input, Range, Popover, Select, Modal, Checkbox, Label } from "flowbite-svelte"
     import { onMount, tick } from "svelte"
+
+    // break down and move components after removing dependency on flowbite-svelte
 
     let matrasDiv: HTMLDivElement
     let compDiv: HTMLDivElement
@@ -204,21 +209,34 @@
     <img src={logo} width="500px" alt="NaadGen" />
     
     <a href="https://megz15.github.io/NaadGen/" target="_blank">
-        <Button class="m-5 text-black" color="yellow">
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5">
             Visit predecessor site!
-        </Button>
+        </button>
     </a>
     
     <div class="flex gap-1 justify-center items-stretch px-1">
 
         <div class={cardClasses + "flex-col justify-between"}>
             <div class="flex flex-col gap-1">
-                <Select items={genSelectData(ragas)} bind:value={selectedRaga} on:change={resetSvaras} placeholder="Raga" />
-                <Select items={genSelectData(taals)} bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)} placeholder="Taal" />
+                
+                    <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedRaga} on:change={resetSvaras}>
+                        <option selected disabled>Raga</option>
+                        {#each genSelectData(ragas) as raga}
+                        <option value={raga.value}>{raga.name}</option>
+                        {/each}
+                    </select>
+
+                    <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)}>
+                        <option selected disabled>Taal</option>
+                        {#each genSelectData(taals) as taal}
+                        <option value={taal.value}>{taal.name}</option>
+                        {/each}
+                    </select>
+
             </div>
             
             <div class="flex gap-1">
-                <Button on:click={() => {
+                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5" on:click={() => {
                 
                     const blob = new Blob([JSON.stringify({
                         "raga": selectedRaga,
@@ -236,93 +254,92 @@
                     a.click()
                     window.URL.revokeObjectURL(url)
                 
-                }}>Export</Button>
+                }}>Export</button>
                 
                 <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
-                <Button on:click={
+                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5" on:click={
                     () => importFileInput.click()
-                }>Import</Button>
+                }>Import</button>
             </div>
 
-            <Checkbox bind:checked={isPlaybackLooped} class="text-white">Loop Playback</Checkbox>
+            <div class="flex gap-2">
+                <div class="text-white">Loop Playback</div>
+                <input type="checkbox" bind:checked={isPlaybackLooped} class="text-white"/>
+            </div>
         </div>
 
         <div class={cardClasses + "flex-col"}>
             <div>
-                <Label class="text-white">Frequency (Hz)</Label>
-                <Range min=20 max=1000 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} />
-                <Popover>{currBaseFreq}</Popover>
+                <div class="text-white">Frequency: {currBaseFreq} Hz</div>
+                <input type="range" min=20 max=1000 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
             </div>
 
             <div>
-                <Label class="text-white">Tempo (BPM)</Label>
-                <Range min=20 max=1000 bind:value={tempoBPM} />
-                <Popover>{tempoBPM}</Popover>
+                <div class="text-white">Tempo: {tempoBPM} BPM</div>
+                <input type="range" min=20 max=1000 bind:value={tempoBPM} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
             </div>
 
             <div>
-                <Label class="text-white">Note Duration (Sec)</Label>
-                <Range min=0.05 max=1 step=0.01 bind:value={noteTime} />
-                <Popover>{noteTime}</Popover>
+                <div class="text-white">Note Duration: {noteTime} Sec</div>
+                <input type="range" min=0.05 max=1 step=0.01 bind:value={noteTime} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
             </div>
 
             <div>
-                <Label class="text-white">Volume (%)</Label>
-                <Range min=0 max=200 bind:value={noteVolume} />
-                <Popover>{noteVolume}</Popover>
+                <div class="text-white">Volume: {noteVolume}%</div>
+                <input type="range" min=0 max=200 bind:value={noteVolume} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
             </div>
         </div>
 
     </div>
 
-    <Button class="text-lg mt-5 bg-lime-500 text-gray-800 border-gray-800 border-2" on:click={() => {
+    <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mt-5 border-2" on:click={() => {
         playNotes(bandishSvaras, startIndex, endIndex)
-    }}>▶️ Play</Button>
+    }}>▶️ Play</button>
 
     <div class="overflow-x-scroll p-5 max-w-full">
 
         <div class="w-fit">
             <div class="flex gap-1 mb-1">
                 {#each current_svaras as svara}
-                    <Button color="dark" class="text-lg w-12" on:click={() => svaraClick(svara, octave)}>{svara}</Button>
+                    <button class="text-lg w-12 text-black bg-gray-200 font-medium rounded-lg px-5 py-2.5" on:click={() => svaraClick(svara, octave)}>{svara}</button>
                 {/each}
 
                 <div class="flex-1"/>
 
-                <Button color="green" class="text-lg" on:click={() => {
+                <button class="text-lg text-white bg-green-800 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     bandishSvaras.push([[".", 0]])
                     bandishSvaras = bandishSvaras
-                }}>Rest</Button>
+                }}>Rest</button>
             </div>
             
             <div class="flex gap-1 justify-between">
-                <Button color="red" class="text-lg w-12" on:click={() => {
+                <button class="text-lg w-12 text-white bg-red-700 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     currBaseFreq/=2
                     octave--
                     // freqObject = genSaptakFreq(shrutis, currBaseFreq)
-                }}>-</Button>
+                }}>-</button>
 
-                <Input bind:value={octave} size="lg" floatClass="w-12" defaultClass="w-12" readonly/>
+                <input bind:value={octave} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5" readonly/>
 
-                <Button color="green" class="text-lg w-12" on:click={() => {
+                <button class="text-lg w-12 text-white bg-green-600 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     currBaseFreq*=2
                     octave++
                     // freqObject = genSaptakFreq(shrutis, currBaseFreq)
-                }}>+</Button>
+                }}>+</button>
 
                 <div class="flex-1"/>
 
-                <Button color="red" class="text-lg" on:click={() => {
+                <button class="text-lg text-white bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     lastRemovedSvara = bandishSvaras.pop() ?? [["S", 0]]
                     bandishSvaras = bandishSvaras
-                }}>Del</Button>
+                }}>Del</button>
 
-                <Button color="green" class="text-lg w-12" on:click={() => {
+                <button class="text-lg w-12 text-black bg-green-400 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     bandishSvaras.push(lastRemovedSvara)
                     bandishSvaras = bandishSvaras
-                }}>↺</Button>
+                }}>↺</button>
 
-                <Button color="red" class="text-lg" on:click={() => {
+                <button class="text-lg text-black bg-red-400 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     bandishSvaras = []
                     lastRemovedSvara = [["S", 0]]
                     
@@ -331,15 +348,19 @@
 
                     noteTime = 0.25
                     tempoBPM = 60000 / tempoMS
-                }}>Clear</Button>
+                }}>Clear</button>
             </div>
         </div>
 
         <div class="flex gap-1 py-4 w-fit" bind:this={matrasDiv}>
             {#each {length: taals[selectedTaal]["matra"]} as _, i}
-                <Button color={
-                    taals[selectedTaal]["tali"].includes(i) ? "alternative" : taals[selectedTaal]["khali"].includes(i) ? "primary" : "dark"
-                } class="text-lg w-12">{i + 1}</Button>
+                <button 
+                    class="text-lg w-12 font-medium rounded-lg py-2.5 
+                        {taals[selectedTaal]['tali'].includes(i) ? 'bg-gray-200 text-black' : 
+                        taals[selectedTaal]['khali'].includes(i) ? 'bg-blue-500 text-white' : 
+                        'bg-gray-600 text-white'}">
+                    {i + 1}
+                </button>
             {/each}
             <div class="pr-10"></div>
         </div>
@@ -347,61 +368,68 @@
         <div class="flex flex-wrap gap-1" bind:this={compDiv}>
             {#each bandishSvaras as svaras, i}
                 {@const svaraLabel = svaras.map(svara => svara[0])}
-                <Button id={`comp-${i}`} color={
-                    taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"]) ? "alternative" : taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"]) ? "primary" : "dark"
-                } on:click={
-                    () => openNoteModal(i)
-                } class="text-lg w-12">{
-                    svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ">" : svaraLabel.join("")
-                }</Button>
+                <button 
+                    id={`comp-${i}`} 
+                    class="text-lg w-12 font-medium rounded-lg py-2.5 
+                        {taals[selectedTaal]['tali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-gray-400 text-black' : 
+                        taals[selectedTaal]['khali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-blue-500 text-white' : 
+                        'bg-gray-900 text-white'}"
+                    on:click={() => openNoteModal(i)}
+                >
+                    {svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ">" : svaraLabel.join("")}
+                </button>
 
-                <Popover>Note: {svaras.map(svara => svara[0])}<br>Octave: {svaras.map(svara => svara[1])}</Popover>
+                <!-- <Popover>Note: {svaras.map(svara => svara[0])}<br>Octave: {svaras.map(svara => svara[1])}</Popover> -->
             {/each}
         </div>
 
     </div>
 </main>
 
-<Modal title="Note Control Panel" bind:open={noteEditModal} size="xs" class="w-2/3">
+<div
+    class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white`} class:hidden={!noteEditModal}
+>
+    <h1 class="text-xl mb-8">🚧 Note Control Panel</h1>
+    <button class="absolute top-4 right-4 text-2xl text-white" on:click={() => noteEditModal = false}>❌</button>
+
     <div class="flex justify-between gap-1">
         <div class="flex flex-col gap-1">
             {#each bandishSvaras[noteModalNoteIndex] as svaras, i}
                 <div class="flex">
-                    <Input bind:value={svaras[0]} floatClass="w-12" defaultClass="w-12"/>
-                    <Input bind:value={svaras[1]} floatClass="w-12" defaultClass="w-12"/>
-                    <span>&nbsp;</span>
-                    <Button color="red" class="w-12" on:click={() => {
+                    <input bind:value={svaras[0]} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
+                    <input bind:value={svaras[1]} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
+                    <button class="text-lg text-white w-12 bg-red-700 font-medium rounded-lg py-2.5 ml-1 mr-2" on:click={() => {
                         if (bandishSvaras[noteModalNoteIndex].length > 1) {
                             bandishSvaras[noteModalNoteIndex].splice(i, 1)
                             bandishSvaras = bandishSvaras
                         } else alert("Can't delete base note!")
-                    }}>🗑️</Button>
+                    }}>🗑️</button>
                 </div>
             {/each}
         </div>
         
         <div class="flex flex-col gap-1 pr-5">
-            <Button on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 bandishSvaras[noteModalNoteIndex].push([...bandishSvaras[noteModalNoteIndex][bandishSvaras[noteModalNoteIndex].length - 1]])
                 bandishSvaras = bandishSvaras
-            }}>Split</Button>
+            }}>Split</button>
 
-            <Button on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 bandishSvaras[noteModalNoteIndex] = [bandishSvaras[noteModalNoteIndex][0]]
                 bandishSvaras = bandishSvaras
-            }}>Clear</Button>
+            }}>Clear</button>
 
-            <Button on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 document.getElementById(`comp-${startIndex}`)?.classList.remove("bg-lime-500")
                 startIndex = noteModalNoteIndex
                 document.getElementById(`comp-${startIndex}`)?.classList.add("bg-lime-500")
-            }}>Mark Start</Button>
+            }}>Mark Start</button>
             
-            <Button on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 document.getElementById(`comp-${endIndex}`)?.classList.remove("bg-lime-800")
                 endIndex = noteModalNoteIndex
                 document.getElementById(`comp-${endIndex}`)?.classList.add("bg-lime-800")
-            }}>Mark End</Button>
+            }}>Mark End</button>
         </div>
     </div>
-</Modal>
+</div>
