@@ -84,10 +84,10 @@
         source.start(0)
     }
 
-    function playNotes(notes: [[string, number]][], startIndex = 0, endIndex = -1) {
+    function playNotes(notes: [[string, number]][], startIndex: number) {
         let totalTime = 0
 
-        notes.slice(startIndex, endIndex == -1 ? notes.length : endIndex + 1).forEach((note, i) => {
+        notes.forEach((note, i) => {
             const volume = noteVolume * ((
                 taals[selectedTaal]["tali"].includes(i % taals[selectedTaal]["matra"])
             || taals[selectedTaal]["khali"].includes(i % taals[selectedTaal]["matra"])
@@ -107,12 +107,12 @@
         })
 
         setTimeout(() => {
-            document.getElementById(`comp-${notes.length - 1}`)?.classList.remove("bg-yellow-400")
+            document.getElementById(`comp-${notes.length + startIndex - 1}`)?.classList.remove("bg-yellow-400")
         }, totalTime)
 
         if (isPlaybackLooped) {
             setTimeout(() => {
-                playNotes(notes, startIndex, endIndex)
+                playNotes(notes, startIndex)
             }, totalTime)
         }
     }
@@ -276,24 +276,24 @@
 
             <div>
                 <div class="text-white">Tempo: {tempoBPM} BPM</div>
-                <input type="range" min=20 max=1000 bind:value={tempoBPM} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                <input type="range" min=20 max=1000 bind:value={tempoBPM} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
             </div>
 
             <div>
                 <div class="text-white">Note Duration: {noteTime} Sec</div>
-                <input type="range" min=0.05 max=1 step=0.01 bind:value={noteTime} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                <input type="range" min=0.05 max=1 step=0.01 bind:value={noteTime} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
             </div>
 
             <div>
                 <div class="text-white">Volume: {noteVolume}%</div>
-                <input type="range" min=0 max=200 bind:value={noteVolume} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                <input type="range" min=0 max=200 bind:value={noteVolume} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
             </div>
         </div>
 
     </div>
 
     <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mt-5 border-2" on:click={() => {
-        playNotes(bandishSvaras, startIndex, endIndex)
+        playNotes(endIndex == -1 ? bandishSvaras : bandishSvaras.slice(startIndex, endIndex + 1), startIndex)
     }}>▶️ Play</button>
 
     <div class="overflow-x-scroll p-5 max-w-full">
