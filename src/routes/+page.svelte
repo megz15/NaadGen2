@@ -86,6 +86,7 @@
 
     function playNotes(notes: [[string, number]][], startIndex: number) {
         let totalTime = 0
+        isPlaybackStopped = false
 
         notes.forEach((note, i) => {
             const volume = noteVolume * ((
@@ -96,12 +97,15 @@
             const noteDuration = (60000/tempoBPM) / note.length
 
             note.forEach(split => {
-                setTimeout(() => {
-                    if (split[0] != ".") genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
-                    document.getElementById(`comp-${startIndex + i}`)?.classList.add("bg-yellow-400")
-                    document.getElementById(`comp-${startIndex + i - 1}`)?.classList.remove("bg-yellow-400")
+                const noteTimeout = setTimeout(() => {
+                    if (!isPlaybackStopped) {
+                        if (split[0] != ".") genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
+                        document.getElementById(`comp-${startIndex + i}`)?.classList.add("bg-yellow-400")
+                        document.getElementById(`comp-${startIndex + i - 1}`)?.classList.remove("bg-yellow-400")
+                    }
                 }, totalTime)
                 
+                playbackTimeouts.push(noteTimeout)
                 totalTime += noteDuration
             })
         })
@@ -111,10 +115,18 @@
         }, totalTime)
 
         if (isPlaybackLooped) {
-            setTimeout(() => {
-                playNotes(notes, startIndex)
+            const loopedNoteTimeout = setTimeout(() => {
+                if (!isPlaybackStopped) playNotes(notes, startIndex)
             }, totalTime)
+
+            playbackTimeouts.push(loopedNoteTimeout)
         }
+    }
+
+    function stopPlayback() {
+        isPlaybackStopped = true
+        playbackTimeouts.forEach(timeout => clearTimeout(timeout))
+        playbackTimeouts = []
     }
 
     type Raga = {
@@ -152,8 +164,9 @@
     let bandishSvaras: [[string, number]][] = []
     let lastRemovedSvara: [[string, number]] = [["S", 0]]
 
+    let playbackTimeouts: number[] = []
     let isPlaybackLooped = false
-    let isPlaybackPaused = false
+    let isPlaybackStopped = false
     let startIndex = 0
     let endIndex = -1
 
@@ -292,9 +305,15 @@
 
     </div>
 
-    <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mt-5 border-2" on:click={() => {
-        playNotes(endIndex == -1 ? bandishSvaras : bandishSvaras.slice(startIndex, endIndex + 1), startIndex)
-    }}>▶️ Play</button>
+    <div>
+        <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mt-5 border-2" on:click={() => {
+            playNotes(endIndex == -1 ? bandishSvaras.slice(startIndex) : bandishSvaras.slice(startIndex, endIndex + 1), startIndex)
+        }}>▶️ Play</button>
+
+        <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mt-5 border-2" on:click={() => {
+            stopPlayback()
+        }}>⏸ Stop</button>
+    </div>
 
     <div class="overflow-x-scroll p-5 max-w-full">
 
@@ -306,14 +325,14 @@
 
                 <div class="flex-1"/>
 
-                <button class="text-lg text-white bg-green-800 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                <button class="text-lg text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     bandishSvaras.push([[".", 0]])
                     bandishSvaras = bandishSvaras
                 }}>Rest</button>
             </div>
             
             <div class="flex gap-1 justify-between">
-                <button class="text-lg w-12 text-white bg-red-700 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                <button class="text-lg w-12 text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     currBaseFreq/=2
                     octave--
                     // freqObject = genSaptakFreq(shrutis, currBaseFreq)
@@ -321,7 +340,7 @@
 
                 <input bind:value={octave} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5" readonly/>
 
-                <button class="text-lg w-12 text-white bg-green-600 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                <button class="text-lg w-12 text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     currBaseFreq*=2
                     octave++
                     // freqObject = genSaptakFreq(shrutis, currBaseFreq)
@@ -329,17 +348,17 @@
 
                 <div class="flex-1"/>
 
-                <button class="text-lg text-white bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     lastRemovedSvara = bandishSvaras.pop() ?? [["S", 0]]
                     bandishSvaras = bandishSvaras
                 }}>Del</button>
 
-                <button class="text-lg w-12 text-black bg-green-400 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                <button class="text-lg w-12 text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     bandishSvaras.push(lastRemovedSvara)
                     bandishSvaras = bandishSvaras
                 }}>↺</button>
 
-                <button class="text-lg text-black bg-red-400 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                     bandishSvaras = []
                     lastRemovedSvara = [["S", 0]]
                     
