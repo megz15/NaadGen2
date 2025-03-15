@@ -166,7 +166,7 @@
 
     let playbackTimeouts: number[] = []
     let isPlaybackLooped = false
-    let isPlaybackStopped = false
+    let isPlaybackStopped = true
     let startIndex = 0
     let endIndex = -1
 
@@ -227,7 +227,7 @@
         </button>
     </a>
     
-    <div class="flex gap-1 justify-center items-stretch px-1">
+    <div class="flex gap-4 justify-center items-stretch px-1">
 
         <div class={cardClasses + "flex-col justify-between"}>
             <div class="flex flex-col gap-1">
@@ -248,8 +248,8 @@
 
             </div>
             
-            <div class="flex gap-1">
-                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5" on:click={() => {
+            <div class="flex gap-2 my-2 justify-between">
+                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 
                     const blob = new Blob([JSON.stringify({
                         "raga": selectedRaga,
@@ -270,7 +270,7 @@
                 }}>Export</button>
                 
                 <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
-                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5" on:click={
+                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={
                     () => importFileInput.click()
                 }>Import</button>
             </div>
