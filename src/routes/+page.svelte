@@ -1,7 +1,7 @@
 <script lang="ts">
-    import logo from "$lib/assets/naadgen/logo.png"
-    import ragasData from "$lib/data/naadgen/ragas.json"
-    import taalsData from "$lib/data/naadgen/taals.json"
+    import logo from "$lib/data/logo.png"
+    import ragasData from "$lib/data/ragas.json"
+    import taalsData from "$lib/data/taals.json"
     import { Button, Input, Range, Popover, Select, Modal, Checkbox, Label } from "flowbite-svelte"
     import { onMount, tick } from "svelte"
 
