@@ -3,10 +3,13 @@
 </svelte:head>
 
 <script lang="ts">
+    import { genSine, genSaptakFreq } from "$lib/utils/audioUtils"
+    import type { Raga, Taal } from "$lib/types/types"
+    import { onMount, tick } from "svelte"
+    
     import logo from "$lib/data/logo.png"
     import ragasData from "$lib/data/ragas.json"
     import taalsData from "$lib/data/taals.json"
-    import { onMount, tick } from "svelte"
 
     // break down and move components after removing dependency on flowbite-svelte
 
@@ -35,53 +38,10 @@
         current_svaras = ['S', 'R', 'G', 'm', 'P', 'D', 'N']
     }
 
-    function genFreq(baseFreq: number, n: number) {
-        return Math.round( baseFreq*(2**(n/12)) * 1000 ) / 1000
-    }
-
-    function genSaptakFreq(shrutis: string[], baseFreq: number) {
-        return Object.fromEntries(shrutis.map(x => [x, genFreq(baseFreq, shrutis.indexOf(x))]))
-    }
-
     function svaraClick(svara: string, octave: number) {
         genSine(freqObject[svara] * 2**octave, noteTime, noteVolume)
         bandishSvaras.push([[svara, octave]])
         bandishSvaras = bandishSvaras
-    }
-
-    function genSine(freq: number, noteTime: number, volume: number) {
-
-        let audioContext = new AudioContext()
-
-        let sampleRate = audioContext.sampleRate
-        let duration = noteTime * sampleRate
-        let numChannels = 1
-        let buffer = audioContext.createBuffer(numChannels, duration, sampleRate)
-
-        let channelData = buffer.getChannelData(0)
-        for (let i = 0 ; i < sampleRate ; i++) {
-            channelData[i] = Math.sin(2 * Math.PI * freq * i / sampleRate)
-        }
-
-        let source = audioContext.createBufferSource()
-        source.buffer = buffer
-
-        let gainNode = audioContext.createGain()
-        source.connect(gainNode)
-        gainNode.connect(audioContext.destination)
-
-        gainNode.gain.value = volume / 100
-
-        let attackTime = noteTime / 4
-        let releaseTime = noteTime * 3 / 4
-        let currentTime = audioContext.currentTime
-
-        gainNode.gain.setValueAtTime(0, currentTime)
-        gainNode.gain.linearRampToValueAtTime(volume / 100, currentTime + attackTime)
-        gainNode.gain.setValueAtTime(volume / 100, currentTime + noteTime - releaseTime)
-        gainNode.gain.linearRampToValueAtTime(0, currentTime + noteTime)
-
-        source.start(0)
     }
 
     function playNotes(notes: [[string, number]][], startIndex: number) {
@@ -127,20 +87,6 @@
         isPlaybackStopped = true
         playbackTimeouts.forEach(timeout => clearTimeout(timeout))
         playbackTimeouts = []
-    }
-
-    type Raga = {
-        vikrit: string[]
-        vikrit_shuddha: string[]
-        varjya: string[]
-        vadi: string
-        samvadi: string
-    }
-
-    type Taal = {
-        matra: number,
-        tali: number[],
-        khali: number[],
     }
 
     const ragas: Record<string, Raga> = ragasData
