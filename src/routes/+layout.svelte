@@ -13,7 +13,7 @@
 >
 	{@render children()}
 
-    <div class="z-40 relative bg-[#1d2230b9] text-white backdrop-blur py-5 text-center">
+    <div class="bg-[#1d2230b9] text-white py-5 text-center">
         Made with 👣 and 💙 by <a href="https://github.com/megz15/" target="_blank" class="text-yellow-300 font-semibold transition duration-200 hover:text-orange-400">Meghraj Goswami</a>
     </div>
 </div>
