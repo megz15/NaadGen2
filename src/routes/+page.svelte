@@ -6,7 +6,7 @@
     import { genSine, genSaptakFreq } from "$lib/utils/audioUtils"
     import type { Raga, Taal } from "$lib/types/types"
     import { onMount, tick } from "svelte"
-    
+
     import logo from "$lib/data/logo.png"
     import ragasData from "$lib/data/ragas.json"
     import taalsData from "$lib/data/taals.json"
@@ -40,8 +40,8 @@
 
     function svaraClick(svara: string, octave: number) {
         genSine(freqObject[svara] * 2**octave, noteTime, noteVolume)
-        bandishSvaras.push([[svara, octave]])
-        bandishSvaras = bandishSvaras
+        currentBandishSectionSvaras.push([[svara, octave]])
+        currentBandishSectionSvaras = currentBandishSectionSvaras
     }
 
     function playNotes(notes: [[string, number]][], startIndex: number) {
@@ -89,6 +89,32 @@
         playbackTimeouts = []
     }
 
+    function addSection() {
+        const sectionName = prompt("Enter new section name", "New Section")
+        if (!sectionName) return
+        bandishSections.push({sectionName: sectionName, svaras: []})
+        bandishSections = bandishSections
+        currentSection = sectionName
+    }
+
+    function deleteSection(sectionName: string) {
+        if (bandishSections.length > 1) {
+            if (confirm(`Are you sure you want to delete section "${sectionName}"?`)) {
+                bandishSections = bandishSections.filter(section => section.sectionName != sectionName)
+                currentSection = bandishSections[0].sectionName
+            } else alert(`Section "${sectionName}" hath been spared from the sword of deletion!`)
+        } else alert("Can't delete all sections!")
+    }
+
+    function renameSection(sectionName: string) {
+        const renameToName = prompt("Enter new section name", sectionName)
+        if (renameToName) {
+            bandishSections.find(section => section.sectionName === sectionName).sectionName = renameToName
+            bandishSections = bandishSections
+            currentSection = renameToName
+        }
+    }
+
     const ragas: Record<string, Raga> = ragasData
     const taals: Record<string, Taal> = taalsData
 
@@ -107,7 +133,11 @@
     let currBaseFreq = 220
     let freqObject = genSaptakFreq(shrutis, currBaseFreq)
 
-    let bandishSvaras: [[string, number]][] = []
+    let bandishSections = [{sectionName: "Default", svaras: []}]
+    let currentSection = "Default"
+
+    // let bandishSvaras: [[string, number]][] = bandishSections[0].svaras
+    $: currentBandishSectionSvaras = bandishSections.find(section => section.sectionName === currentSection).svaras
     let lastRemovedSvara: [[string, number]] = [["S", 0]]
 
     let playbackTimeouts: number[] = []
@@ -139,10 +169,10 @@
     }
 
     function handleFileInput(e: Event) {
-        let input = e.target as HTMLInputElement
+        const input = e.target as HTMLInputElement
         
         if (input.files && input.files[0]) {
-            let reader = new FileReader()
+            const reader = new FileReader()
             reader.onload = function() {
                 const data = JSON.parse(reader.result as string)
                 
@@ -156,7 +186,7 @@
                 tempoBPM = data["tempo"]
                 noteTime = data["noteTime"]
                 
-                bandishSvaras = data["bandish"]
+                bandishSections = data["totalBandish"]
             }
             reader.readAsText(input.files[0])
         }
@@ -165,7 +195,7 @@
 
 <main class="flex flex-col items-center">
 
-    <img src={logo} width="500px" alt="NaadGen" />
+    <img src={logo} width="300px" alt="NaadGen" class="drop-shadow-[0_0_5em_#A71B28] mt-5" />
     
     <a href="https://megz15.github.io/NaadGen/" target="_blank">
         <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5">
@@ -173,9 +203,9 @@
         </button>
     </a>
     
-    <div class="flex gap-4 justify-center items-stretch px-1">
+    <div class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
 
-        <div class={cardClasses + "flex-col justify-between"}>
+        <div class={cardClasses + "flex-col justify-between max-sm:w-full max-sm:mx-5"}>
             <div class="flex flex-col gap-1">
                 
                     <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedRaga} on:change={resetSvaras}>
@@ -194,7 +224,7 @@
 
             </div>
             
-            <div class="flex gap-2 my-2 justify-between">
+            <div class="flex gap-2 my-2">
                 <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 
                     const blob = new Blob([JSON.stringify({
@@ -203,7 +233,7 @@
                         "freq": currBaseFreq,
                         "tempo": tempoBPM,
                         "noteTime": noteTime,
-                        "bandish": bandishSvaras
+                        "totalBandish": bandishSections,
                     })])
                     const url = window.URL.createObjectURL(blob)
                     const a = document.createElement("a")
@@ -227,7 +257,7 @@
             </div>
         </div>
 
-        <div class={cardClasses + "flex-col"}>
+        <div class={cardClasses + "flex-col max-sm:w-full max-sm:mx-5"}>
             <div>
                 <div class="text-white">Frequency: {currBaseFreq} Hz</div>
                 <input type="range" min=20 max=1000 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
@@ -251,14 +281,44 @@
 
     </div>
 
-    <div>
-        <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mt-5 border-2" on:click={() => {
-            playNotes(endIndex == -1 ? bandishSvaras.slice(startIndex) : bandishSvaras.slice(startIndex, endIndex + 1), startIndex)
+    <div class="flex flex-wrap gap-x-4 gap-y-2 justify-center m-5 border-2 px-5 py-8 rounded-xl">
+        <select class="border-2 text-lg rounded-lg px-5 py-2.5" bind:value={currentSection}>
+            <option selected disabled>Section</option>
+            {#each bandishSections.map(section => section.sectionName) as section}
+                <option value={section}>{section}</option>
+            {/each}
+        </select>
+
+        <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            addSection()
+        }}>Add New Section</button>
+
+        <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            deleteSection(currentSection)
+        }}>Delete This Section</button>
+
+        <button class="text-black bg-orange-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            renameSection(currentSection)
+        }}>Rename This Section</button>
+    </div>
+
+    <div class="flex flex-wrap gap-x-4 gap-y-2 justify-center border-2 p-5 mx-5 rounded-xl">
+        <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            playNotes(endIndex == -1 ? currentBandishSectionSvaras.slice(startIndex) : currentBandishSectionSvaras.slice(startIndex, endIndex + 1), startIndex)
         }}>▶️ Play</button>
 
-        <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 me-2 mt-5 border-2" on:click={() => {
+        <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
             stopPlayback()
         }}>⏸ Stop</button>
+    </div>
+
+    <div>
+        <div class="text-white mt-5">Debug area!</div>
+
+        <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            console.log(bandishSections)
+            alert("check console")
+        }}>Current bandish</button>
     </div>
 
     <div class="overflow-x-scroll p-5 max-w-full">
@@ -272,8 +332,8 @@
                 <div class="flex-1"/>
 
                 <button class="text-lg text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    bandishSvaras.push([[".", 0]])
-                    bandishSvaras = bandishSvaras
+                    currentBandishSectionSvaras.push([[".", 0]])                // Adding "octave" here isn't redundant or just for consistency
+                    currentBandishSectionSvaras = currentBandishSectionSvaras   // it could be mapped to "chikari" / filler sounds later
                 }}>Rest</button>
             </div>
             
@@ -295,17 +355,17 @@
                 <div class="flex-1"/>
 
                 <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    lastRemovedSvara = bandishSvaras.pop() ?? [["S", 0]]
-                    bandishSvaras = bandishSvaras
+                    lastRemovedSvara = currentBandishSectionSvaras.pop() ?? [["S", 0]]
+                    currentBandishSectionSvaras = currentBandishSectionSvaras
                 }}>Del</button>
 
                 <button class="text-lg w-12 text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    bandishSvaras.push(lastRemovedSvara)
-                    bandishSvaras = bandishSvaras
+                    currentBandishSectionSvaras.push(lastRemovedSvara)
+                    currentBandishSectionSvaras = currentBandishSectionSvaras
                 }}>↺</button>
 
                 <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    bandishSvaras = []
+                    currentBandishSectionSvaras = []
                     lastRemovedSvara = [["S", 0]]
                     
                     currBaseFreq = 220
@@ -331,7 +391,7 @@
         </div>
 
         <div class="flex flex-wrap gap-1" bind:this={compDiv}>
-            {#each bandishSvaras as svaras, i}
+            {#each currentBandishSectionSvaras as svaras, i}
                 {@const svaraLabel = svaras.map(svara => svara[0])}
                 <button 
                     id={`comp-${i}`} 
@@ -359,14 +419,14 @@
 
     <div class="flex justify-between gap-1">
         <div class="flex flex-col gap-1">
-            {#each bandishSvaras[noteModalNoteIndex] as svaras, i}
+            {#each currentBandishSectionSvaras[noteModalNoteIndex] as svaras, i}
                 <div class="flex">
                     <input bind:value={svaras[0]} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
                     <input bind:value={svaras[1]} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
                     <button class="text-lg text-white w-12 bg-red-700 font-medium rounded-lg py-2.5 ml-1 mr-2" on:click={() => {
-                        if (bandishSvaras[noteModalNoteIndex].length > 1) {
-                            bandishSvaras[noteModalNoteIndex].splice(i, 1)
-                            bandishSvaras = bandishSvaras
+                        if (currentBandishSectionSvaras[noteModalNoteIndex].length > 1) {
+                            currentBandishSectionSvaras[noteModalNoteIndex].splice(i, 1)
+                            currentBandishSectionSvaras = currentBandishSectionSvaras
                         } else alert("Can't delete base note!")
                     }}>🗑️</button>
                 </div>
@@ -375,13 +435,13 @@
         
         <div class="flex flex-col gap-1 pr-5">
             <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
-                bandishSvaras[noteModalNoteIndex].push([...bandishSvaras[noteModalNoteIndex][bandishSvaras[noteModalNoteIndex].length - 1]])
-                bandishSvaras = bandishSvaras
+                currentBandishSectionSvaras[noteModalNoteIndex].push([...currentBandishSectionSvaras[noteModalNoteIndex][currentBandishSectionSvaras[noteModalNoteIndex].length - 1]])
+                currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Split</button>
 
             <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
-                bandishSvaras[noteModalNoteIndex] = [bandishSvaras[noteModalNoteIndex][0]]
-                bandishSvaras = bandishSvaras
+                currentBandishSectionSvaras[noteModalNoteIndex] = [currentBandishSectionSvaras[noteModalNoteIndex][0]]
+                currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Clear</button>
 
             <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
