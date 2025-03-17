@@ -3,7 +3,7 @@
 </script>
 
 <div
-    class={`fixed top-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white sm:w-1/2 lg:w-1/3 h-3/4 overflow-auto [&>p:not(:last-child)]:mb-8 transition-opacity duration-1000 ease-in-out ${
+    class={`h-fit max-h-3/4 fixed top-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white sm:w-1/2 lg:w-1/3 overflow-auto [&>p:not(:last-child)]:mb-8 transition-opacity duration-1000 ease-in-out ${
         modalVisible ? 'opacity-100' : 'opacity-0 pointer-events-none'
     }`}
 >
