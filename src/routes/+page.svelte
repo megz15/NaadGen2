@@ -59,7 +59,9 @@
             note.forEach(split => {
                 const noteTimeout = setTimeout(() => {
                     if (!isPlaybackStopped) {
-                        if (split[0] != ".") genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
+                        if (split[0] != "." && shrutis.includes(split[0])) {
+                            genSine(freqObject[split[0]] * 2**split[1], noteTime / note.length, volume)
+                        }
                         document.getElementById(`comp-${startIndex + i}`)?.classList.add("bg-yellow-400")
                         document.getElementById(`comp-${startIndex + i - 1}`)?.classList.remove("bg-yellow-400")
                     }
@@ -233,161 +235,155 @@
 
     <img src={logo} width="300px" alt="NaadGen" class="drop-shadow-[0_0_5em_#A71B28] mt-5" />
     
-    <div>
+    <div class="flex gap-4">
         <a href="https://megz15.github.io/NaadGen/" target="_blank">
-            <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5">
+            <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5">
                 Visit predecessor site!
             </button>
         </a>
 
-        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5" on:click={() => {
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
             aboutModal = true
         }}>About</button>
     </div>
     
-    <div class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
+    <div class="flex flex-col m-5 gap-2">
+        <div class="flex flex-wrap gap-2">
+            <div class="relative flex gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col justify-between max-sm:w-full" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+                <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🔧 Control Panel:</div>
 
-        <div class="flex gap-1 p-4 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col justify-between max-sm:w-full max-sm:mx-5" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-            <div class="flex flex-col gap-1">
-                
+                <div class="flex flex-col gap-1">
                     <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedRaga} on:change={resetSvaras}>
                         <option selected disabled>Raga</option>
                         {#each genSelectData(ragas) as raga}
                         <option value={raga.value}>{raga.name}</option>
                         {/each}
                     </select>
-
                     <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)}>
                         <option selected disabled>Taal</option>
                         {#each genSelectData(taals) as taal}
                         <option value={taal.value}>{taal.name}</option>
                         {/each}
                     </select>
-
-            </div>
-            
-            <div class="flex gap-2 my-2">
-                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
-                
-                    const blob = new Blob([JSON.stringify({
-                        "raga": selectedRaga,
-                        "taal": selectedTaal,
-                        "freq": currBaseFreq,
-                        "tempo": tempoBPM,
-                        "noteTime": noteTime,
-                        "totalBandish": bandishSections,
-                    })])
-                    const url = window.URL.createObjectURL(blob)
-                    const a = document.createElement("a")
-                    
-                    a.href = url
-                    a.download = `${selectedRaga}_${selectedTaal}_${new Date().toISOString().replaceAll(':','-')}.ng`
-                    a.click()
-                    window.URL.revokeObjectURL(url)
-                
-                }}>Export</button>
-                
-                <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
-                <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={
-                    () => importFileInput.click()
-                }>Import</button>
-            </div>
-
-            <div class="flex gap-2">
-                <div class="text-white">Loop Playback</div>
-                <input type="checkbox" bind:checked={isPlaybackLooped} class="text-white"/>
-            </div>
-        </div>
-
-        <div class="flex gap-1 p-4 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col max-sm:w-full max-sm:mx-5" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-            <div>
-                <div class="flex items-center gap-2">
-                    <div class="text-white">Frequency (Hz)</div>
-                    <input type="number" bind:value={currBaseFreq} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1" readonly={!isPlaybackStopped}/>
                 </div>
-                <input type="range" min=20 max=1000 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                
+                <div class="flex flex-col gap-1 my-2">
+                    <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+                    
+                        const blob = new Blob([JSON.stringify({
+                            "raga": selectedRaga,
+                            "taal": selectedTaal,
+                            "freq": currBaseFreq,
+                            "tempo": tempoBPM,
+                            "noteTime": noteTime,
+                            "totalBandish": bandishSections,
+                        })])
+                        const url = window.URL.createObjectURL(blob)
+                        const a = document.createElement("a")
+                        
+                        a.href = url
+                        a.download = `${selectedRaga}_${selectedTaal}_${new Date().toISOString().replaceAll(':','-')}.ng`
+                        a.click()
+                        window.URL.revokeObjectURL(url)
+                    
+                    }}>Export</button>
+                    
+                    <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
+                    <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={
+                        () => importFileInput.click()
+                    }>Import</button>
+                </div>
+
+                <div class="flex gap-2">
+                    <div class="text-white">Loop Playback</div>
+                    <input type="checkbox" bind:checked={isPlaybackLooped} class="text-white"/>
+                </div>
             </div>
 
-            <div>
-                <div class="text-white">Tempo: {tempoBPM} BPM</div>
-                <input type="range" min=20 max=1000 bind:value={tempoBPM} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-            </div>
+            <div class="relative flex grow gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col max-sm:w-full" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+                <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🎚️ Playback:</div>
+                <div>
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="text-white">Frequency (Hz)</div>
+                        <input type="number" bind:value={currBaseFreq} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
+                    </div>
+                    <input type="range" min=20 max=1000 step=10 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                </div>
 
-            <div>
-                <div class="text-white">Note Duration: {noteTime} Sec</div>
-                <input type="range" min=0.05 max=1 step=0.01 bind:value={noteTime} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
-            </div>
+                <div>
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="text-white">Tempo (BPM)</div>
+                        <input type="number" bind:value={tempoBPM} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
+                    </div>
+                    <input type="range" min=20 max=1000 step=10 bind:value={tempoBPM} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                </div>
 
-            <div>
-                <div class="text-white">Volume: {noteVolume}%</div>
-                <input type="range" min=0 max=200 bind:value={noteVolume} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                <div>
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="text-white">Note Duration</div>
+                        <input type="number" bind:value={noteTime} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
+                    </div>
+                    <input type="range" min=0.05 max=1 step=0.05 bind:value={noteTime} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between gap-2">
+                        <div class="text-white">Volume %</div>
+                        <input type="number" bind:value={noteVolume} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
+                    </div>
+                    <input type="range" min=0 max=200 step=5 bind:value={noteVolume} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                </div>
             </div>
         </div>
 
-    </div>
+        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+            <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📒 Sections:</div>
 
-    <div class="flex flex-col gap-4 m-5">
-        <div class="relative flex flex-wrap gap-x-4 gap-y-2 justify-center border-2 px-5 py-8 rounded-xl" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-            <div class="absolute -top-3 left-4 text-lg font-semibold bg-blue-400">Section Options:</div>
-
-            <select class="border-2 text-lg rounded-lg px-5 py-2.5" bind:value={currentSection}>
+            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={currentSection}>
                 <option selected disabled>Section</option>
                 {#each bandishSections.map(section => section.sectionName) as section}
                     <option value={section}>{section}</option>
                 {/each}
             </select>
 
-            <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
                 addSection()
             }}>Add New</button>
 
-            <button class="text-black bg-orange-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
                 renameSection(currentSection)
-            }}>Rename Current</button>
+            }}>Rename</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
                 deleteSection(currentSection)
-            }}>Delete Current</button>
+            }}>Delete</button>
         </div>
 
-        <!-- <div>
-            <div class="text-white mt-5">Debug area!</div>
+        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+            <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">✂️ Selection:</div>
 
-            <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-                console.log(bandishSections)
-                alert("check console")
-            }}>Current bandish</button>
-
-            <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-                console.log(playbackTimeouts)
-                alert("check console")
-            }}>Current playbackNotes</button>
-        </div> -->
-
-        <div class="relative flex flex-wrap gap-x-4 gap-y-2 justify-center items-center border-2 px-5 py-8 rounded-xl" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-            <div class="absolute -top-3 left-4 text-lg font-semibold bg-blue-400">Selected range:</div>
-
-            <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
                 startIndex = 0
                 endIndex = -1
                 focusOnSelectedNoteRange(startIndex, endIndex)
             }}>Clear</button>
 
-            <button class="text-black bg-orange-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-                currentBandishSectionSvaras.push(...currentBandishSectionSvaras.slice(startIndex, endIndex + 1))
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+                const dupedNotes = structuredClone(currentBandishSectionSvaras.slice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) + 1))
+                currentBandishSectionSvaras.push(...dupedNotes)
                 currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Duplicate</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-                currentBandishSectionSvaras.splice(startIndex, endIndex - startIndex + 1)
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+                currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                 currentBandishSectionSvaras = currentBandishSectionSvaras
                 startIndex = 0
                 endIndex = -1
                 focusOnSelectedNoteRange(startIndex, endIndex)
             }}>Delete</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-                currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, endIndex - startIndex + 1)
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+                currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                 startIndex = 0
                 endIndex = -1
                 focusOnSelectedNoteRange(startIndex, endIndex)
@@ -497,7 +493,7 @@
     class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-whitetransition-opacity duration-500 ease-in-out ${
             noteEditModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
     }`}>
-    <h1 class="text-xl mb-8">🚧 Note Control Panel</h1>
+    <h1 class="text-xl mb-8">🔧 Note Control Panel</h1>
     <button class="absolute top-4 right-4 text-2xl text-white" on:click={() => noteEditModal = false}>❌</button>
 
     <div class="flex justify-between gap-1">
