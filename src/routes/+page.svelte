@@ -43,6 +43,8 @@
     }
 
     function playNotes(notes: [[string, number]][], startIndex: number) {
+        if (notes.length == 0) return
+
         let totalTime = 0
         isPlaybackStopped = false
 
@@ -68,12 +70,14 @@
             })
         })
 
-        setTimeout(() => {
+        const finalTimeout = setTimeout(() => {
             document.getElementById(`comp-${notes.length + startIndex - 1}`)?.classList.remove("bg-yellow-400")
             if (!isPlaybackLooped) {
-                isPlaybackStopped = true
+                stopPlayback()
             }
         }, totalTime)
+
+        playbackTimeouts.push(finalTimeout)
 
         if (isPlaybackLooped) {
             const loopedNoteTimeout = setTimeout(() => {
@@ -164,9 +168,15 @@
     let noteEditModal = false
     let noteModalNoteIndex = 0
 
-    function openNoteModal(i: number): void {
+    function openNoteModal(i: number) {
         noteEditModal = true
         noteModalNoteIndex = i
+    }
+
+    let aboutModal = false
+
+    function closeAboutModal() {
+        aboutModal = false
     }
 
     function handleFileInput(e: Event) {
@@ -196,13 +206,35 @@
 
 <main class="flex flex-col items-center">
 
+    <!-- IntroModal -->
+    <div
+        class={`h-fit max-h-3/4 fixed top-0 left-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white sm:w-1/2 lg:w-1/3 overflow-auto [&>p:not(:last-child)]:mb-8 transition-opacity duration-1000 ease-in-out ${
+            aboutModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+    >
+        <h1 class="text-xl text-center mb-8">🚧 NaadGen v2 🚧</h1>
+        <button class="absolute top-4 right-4 text-2xl text-white" on:click={() => aboutModal = false}>❌</button>
+
+        <p>Welcome to NaadGen! This app is a work in progress nearing completion (finally). As a solo developer in my third year, it takes time and effort to realize a polished version.</p>
+        <p>I "resume" work on this and other past projects in my limited free time after inevitable hiatuses, most of which is spent refactoring and fixing breaking changes in an endless Sisyphean cycle :)</p>
+        <p>I hope you enjoy using this as much as I did making it! If you find bugs or have suggestions for improvement, <a href="https://github.com/megz15/swaranjali-web/issues" class="text-blue-600" target="_blank">reach out via a GitHub issue by clicking here.</a></p>
+        <p>PS Old save files <strike>might</strike> would not be compatible as the project progresses till a stable milestone is reached.</p>
+        <p>~ Meghraj</p>
+    </div>
+
     <img src={logo} width="300px" alt="NaadGen" class="drop-shadow-[0_0_5em_#A71B28] mt-5" />
     
-    <a href="https://megz15.github.io/NaadGen/" target="_blank">
-        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5">
-            Visit predecessor site!
-        </button>
-    </a>
+    <div>
+        <a href="https://megz15.github.io/NaadGen/" target="_blank">
+            <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5">
+                Visit predecessor site!
+            </button>
+        </a>
+
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-5" on:click={() => {
+            aboutModal = true
+        }}>About</button>
+    </div>
     
     <div class="flex flex-wrap gap-x-4 gap-y-1 justify-center">
 
@@ -315,14 +347,19 @@
         }}>{isPlaybackStopped ? "▶️ Play" : "⏸ Stop"}
     </button>
 
-    <!-- <div>
+    <div>
         <div class="text-white mt-5">Debug area!</div>
 
-        <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+        <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
             console.log(bandishSections)
             alert("check console")
         }}>Current bandish</button>
-    </div> -->
+
+        <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            console.log(playbackTimeouts)
+            alert("check console")
+        }}>Current playbackNotes</button>
+    </div>
 
     <div class="overflow-x-scroll p-5 max-w-full pointer-events-{isPlaybackStopped ? "auto" : "none"}">
 
@@ -415,8 +452,9 @@
 </main>
 
 <div
-    class="fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white" class:hidden={!noteEditModal}
->
+    class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-whitetransition-opacity duration-500 ease-in-out ${
+            noteEditModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
+    }`}>
     <h1 class="text-xl mb-8">🚧 Note Control Panel</h1>
     <button class="absolute top-4 right-4 text-2xl text-white" on:click={() => noteEditModal = false}>❌</button>
 
