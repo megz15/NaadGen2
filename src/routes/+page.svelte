@@ -165,18 +165,13 @@
         }
     })
 
+    let aboutModal = false
     let noteEditModal = false
     let noteModalNoteIndex = 0
 
     function openNoteModal(i: number) {
         noteEditModal = true
         noteModalNoteIndex = i
-    }
-
-    let aboutModal = false
-
-    function closeAboutModal() {
-        aboutModal = false
     }
 
     function handleFileInput(e: Event) {
@@ -201,6 +196,20 @@
             }
             reader.readAsText(input.files[0])
         }
+    }
+
+    function focusOnSelectedNoteRange(startIndex: number, endIndex: number) {
+        for (let i = 0; i < currentBandishSectionSvaras.length; i++) {
+            const note = document.getElementById(`comp-${i}`)
+            
+            if (i >= startIndex && i <= (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex)) {
+                note?.classList.remove("opacity-10")
+            } else {
+                note?.classList.add("opacity-10")
+            }
+        }    
+        
+        document.getElementById(`comp-${startIndex}`)?.classList.remove("opacity-10")
     }
 </script>
 
@@ -317,49 +326,82 @@
 
     </div>
 
-    <div class="flex flex-wrap gap-x-4 gap-y-2 justify-center m-5 border-2 px-5 py-8 rounded-xl" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-        <select class="border-2 text-lg rounded-lg px-5 py-2.5" bind:value={currentSection}>
-            <option selected disabled>Section</option>
-            {#each bandishSections.map(section => section.sectionName) as section}
-                <option value={section}>{section}</option>
-            {/each}
-        </select>
+    <div class="flex flex-col gap-4 m-5">
+        <div class="relative flex flex-wrap gap-x-4 gap-y-2 justify-center border-2 px-5 py-8 rounded-xl" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+            <div class="absolute -top-3 left-4 text-lg font-semibold bg-blue-400">Section Options:</div>
 
-        <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-            addSection()
-        }}>Add New Section</button>
+            <select class="border-2 text-lg rounded-lg px-5 py-2.5" bind:value={currentSection}>
+                <option selected disabled>Section</option>
+                {#each bandishSections.map(section => section.sectionName) as section}
+                    <option value={section}>{section}</option>
+                {/each}
+            </select>
 
-        <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-            deleteSection(currentSection)
-        }}>Delete This Section</button>
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                addSection()
+            }}>Add New</button>
 
-        <button class="text-black bg-orange-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-            renameSection(currentSection)
-        }}>Rename This Section</button>
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                renameSection(currentSection)
+            }}>Rename Current</button>
+
+            <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                deleteSection(currentSection)
+            }}>Delete Current</button>
+        </div>
+
+        <!-- <div>
+            <div class="text-white mt-5">Debug area!</div>
+
+            <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                console.log(bandishSections)
+                alert("check console")
+            }}>Current bandish</button>
+
+            <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                console.log(playbackTimeouts)
+                alert("check console")
+            }}>Current playbackNotes</button>
+        </div> -->
+
+        <div class="relative flex flex-wrap gap-x-4 gap-y-2 justify-center items-center border-2 px-5 py-8 rounded-xl" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+            <div class="absolute -top-3 left-4 text-lg font-semibold bg-blue-400">Selected range:</div>
+
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                startIndex = 0
+                endIndex = -1
+                focusOnSelectedNoteRange(startIndex, endIndex)
+            }}>Clear</button>
+
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                currentBandishSectionSvaras.push(...currentBandishSectionSvaras.slice(startIndex, endIndex + 1))
+                currentBandishSectionSvaras = currentBandishSectionSvaras
+            }}>Duplicate</button>
+
+            <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                currentBandishSectionSvaras.splice(startIndex, endIndex - startIndex + 1)
+                currentBandishSectionSvaras = currentBandishSectionSvaras
+                startIndex = 0
+                endIndex = -1
+                focusOnSelectedNoteRange(startIndex, endIndex)
+            }}>Delete</button>
+
+            <button class="text-black bg-red-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, endIndex - startIndex + 1)
+                startIndex = 0
+                endIndex = -1
+                focusOnSelectedNoteRange(startIndex, endIndex)
+            }}>Keep</button>
+        </div>
     </div>
 
     <button class="text-black bg-{isPlaybackStopped ? "lime" : "red"}-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-            if (isPlaybackStopped) {
-                playNotes(endIndex == -1 ? currentBandishSectionSvaras.slice(startIndex) : currentBandishSectionSvaras.slice(startIndex, endIndex + 1), startIndex)
-            } else {
-                stopPlayback()
-            }
-        }}>{isPlaybackStopped ? "▶️ Play" : "⏸ Stop"}
-    </button>
-
-    <div>
-        <div class="text-white mt-5">Debug area!</div>
-
-        <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-            console.log(bandishSections)
-            alert("check console")
-        }}>Current bandish</button>
-
-        <button class="text-black bg-purple-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-            console.log(playbackTimeouts)
-            alert("check console")
-        }}>Current playbackNotes</button>
-    </div>
+        if (isPlaybackStopped) {
+            playNotes(endIndex == -1 ? currentBandishSectionSvaras.slice(startIndex) : currentBandishSectionSvaras.slice(startIndex, endIndex + 1), startIndex)
+        } else {
+            stopPlayback()
+        }
+    }}>{isPlaybackStopped ? "▶️ Play" : "⏸ Stop"}</button>
 
     <div class="overflow-x-scroll p-5 max-w-full pointer-events-{isPlaybackStopped ? "auto" : "none"}">
 
@@ -405,7 +447,7 @@
                 }}>↺</button>
 
                 <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    currentBandishSectionSvaras = []
+                    currentBandishSectionSvaras.length = 0
                     lastRemovedSvara = [["S", 0]]
                     
                     currBaseFreq = 220
@@ -486,15 +528,13 @@
             }}>Clear</button>
 
             <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
-                document.getElementById(`comp-${startIndex}`)?.classList.remove("bg-lime-500")
                 startIndex = noteModalNoteIndex
-                document.getElementById(`comp-${startIndex}`)?.classList.add("bg-lime-500")
+                focusOnSelectedNoteRange(startIndex, endIndex)
             }}>Mark Start</button>
             
             <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
-                document.getElementById(`comp-${endIndex}`)?.classList.remove("bg-lime-800")
                 endIndex = noteModalNoteIndex
-                document.getElementById(`comp-${endIndex}`)?.classList.add("bg-lime-800")
+                focusOnSelectedNoteRange(startIndex, endIndex)
             }}>Mark End</button>
         </div>
     </div>
