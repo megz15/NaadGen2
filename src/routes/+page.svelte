@@ -213,6 +213,12 @@
         
         document.getElementById(`comp-${startIndex}`)?.classList.remove("opacity-10")
     }
+
+    function clearSelection() {
+        startIndex = 0
+        endIndex = -1
+        focusOnSelectedNoteRange(startIndex, endIndex)
+    }
 </script>
 
 <main class="flex flex-col items-center">
@@ -235,12 +241,16 @@
 
     <img src={logo} width="300px" alt="NaadGen" class="drop-shadow-[0_0_5em_#A71B28] mt-5" />
     
-    <div class="flex gap-4">
+    <div class="flex flex-wrap justify-center gap-4 mt-5 mb-2">
         <a href="https://megz15.github.io/NaadGen/" target="_blank">
             <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5">
-                Visit predecessor site!
+                Visit Old site!
             </button>
         </a>
+
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            aboutModal = true
+        }}>How to Use</button>
 
         <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
             aboutModal = true
@@ -249,8 +259,8 @@
     
     <div class="flex flex-col m-5 gap-2">
         <div class="flex flex-wrap gap-2">
-            <div class="relative flex gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col justify-between max-sm:w-full" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-                <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🔧 Control Panel:</div>
+            <div class="relative flex gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col justify-between max-sm:w-full opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+                <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🔧 Control Panel:</div>
 
                 <div class="flex flex-col gap-1">
                     <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedRaga} on:change={resetSvaras}>
@@ -300,8 +310,8 @@
                 </div>
             </div>
 
-            <div class="relative flex grow gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col max-sm:w-full" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-                <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🎚️ Playback:</div>
+            <div class="relative flex grow gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col max-sm:w-full opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+                <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🎚️ Playback:</div>
                 <div>
                     <div class="flex items-center justify-between gap-2">
                         <div class="text-white">Frequency (Hz)</div>
@@ -336,7 +346,7 @@
             </div>
         </div>
 
-        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📒 Sections:</div>
 
             <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={currentSection}>
@@ -359,13 +369,11 @@
             }}>Delete</button>
         </div>
 
-        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
+        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">✂️ Selection:</div>
 
             <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
-                startIndex = 0
-                endIndex = -1
-                focusOnSelectedNoteRange(startIndex, endIndex)
+                clearSelection()
             }}>Clear</button>
 
             <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
@@ -377,106 +385,112 @@
             <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
                 currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                 currentBandishSectionSvaras = currentBandishSectionSvaras
-                startIndex = 0
-                endIndex = -1
-                focusOnSelectedNoteRange(startIndex, endIndex)
+                clearSelection()
             }}>Delete</button>
 
             <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
                 currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
-                startIndex = 0
-                endIndex = -1
-                focusOnSelectedNoteRange(startIndex, endIndex)
+                clearSelection()
             }}>Keep</button>
         </div>
     </div>
 
-    <button class="text-black bg-{isPlaybackStopped ? "lime" : "red"}-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
-        if (isPlaybackStopped) {
-            playNotes(endIndex == -1 ? currentBandishSectionSvaras.slice(startIndex) : currentBandishSectionSvaras.slice(startIndex, endIndex + 1), startIndex)
-        } else {
-            stopPlayback()
-        }
-    }}>{isPlaybackStopped ? "▶️ Play" : "⏸ Stop"}</button>
+    <div class="overflow-x-scroll p-5 max-w-full">
 
-    <div class="overflow-x-scroll p-5 max-w-full pointer-events-{isPlaybackStopped ? "auto" : "none"}">
+        <div class="flex flex-wrap gap-2 items-baseline">
+            <div class="w-fit opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+                <div class="flex gap-1 mb-1 relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+                    <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400 capitalize">🎶 Raga {selectedRaga} Svaras:</div>
 
-        <div class="w-fit" style="opacity: {isPlaybackStopped ? 1 : 0.1}; pointer-events: {isPlaybackStopped ? 'auto' : 'none'};">
-            <div class="flex gap-1 mb-1">
-                {#each current_svaras as svara}
-                    <button class="text-lg w-12 text-black bg-gray-200 font-medium rounded-lg px-5 py-2.5" on:click={() => svaraClick(svara, octave)}>{svara}</button>
-                {/each}
+                    {#each current_svaras as svara}
+                        <button class="text-lg w-12 text-black bg-gray-200 font-medium rounded-lg px-5 py-2.5" on:click={() => svaraClick(svara, octave)}>{svara}</button>
+                    {/each}
 
-                <div class="flex-1"/>
+                    <div class="flex-1"/>
 
-                <button class="text-lg text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    currentBandishSectionSvaras.push([[".", 0]])                // Adding "octave" here isn't redundant or just for consistency
-                    currentBandishSectionSvaras = currentBandishSectionSvaras   // it could be mapped to "chikari" / filler sounds later
-                }}>Rest</button>
+                    <button class="text-lg text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                        currentBandishSectionSvaras.push([[".", 0]])                // Adding "octave" here isn't redundant or just for consistency
+                        currentBandishSectionSvaras = currentBandishSectionSvaras   // it could be mapped to "chikari" / filler sounds later
+                    }}>Rest</button>
+                </div>
+                
+                <div class="flex gap-1 justify-between">
+                    <div class="flex relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+                        <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📈 Note Octave:</div>
+
+                        <button class="text-lg w-12 text-black bg-red-500 font-medium px-5 py-2.5 rounded-l-lg" on:click={() => {
+                            currBaseFreq/=2
+                            octave--
+                            // freqObject = genSaptakFreq(shrutis, currBaseFreq)
+                        }}>-</button>
+
+                        <input bind:value={octave} class="w-12 bg-gray-50 border-x-2 text-black text-sm p-2.5" readonly/>
+
+                        <button class="text-lg w-12 text-black bg-green-500 font-medium px-5 py-2.5 rounded-r-lg" on:click={() => {
+                            currBaseFreq*=2
+                            octave++
+                            // freqObject = genSaptakFreq(shrutis, currBaseFreq)
+                        }}>+</button>
+                    </div>
+
+                    <div class="flex p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+                    <button class="text-lg text-black bg-red-500 font-medium rounded-l-lg px-5 py-2.5" on:click={() => {
+                            lastRemovedSvara = currentBandishSectionSvaras.pop() ?? [["S", 0]]
+                            currentBandishSectionSvaras = currentBandishSectionSvaras
+                        }}>Delete</button>
+
+                        <button class="text-lg text-black bg-green-500 font-medium rounded-r-lg px-5 py-2.5" on:click={() => {
+                            currentBandishSectionSvaras.push(lastRemovedSvara)
+                            currentBandishSectionSvaras = currentBandishSectionSvaras
+                        }}>Undo</button>
+
+                        <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5 ml-1" on:click={() => {
+                            currentBandishSectionSvaras.length = 0
+                            lastRemovedSvara = [["S", 0]]
+                            
+                            currBaseFreq = 220
+                            octave = 0
+
+                            noteTime = 0.25
+                            tempoBPM = 60000 / tempoMS
+
+                            clearSelection()
+                        }}>Clear</button>
+                    </div>
+                </div>
             </div>
-            
-            <div class="flex gap-1 justify-between">
-                <button class="text-lg w-12 text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    currBaseFreq/=2
-                    octave--
-                    // freqObject = genSaptakFreq(shrutis, currBaseFreq)
-                }}>-</button>
 
-                <input bind:value={octave} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5" readonly/>
-
-                <button class="text-lg w-12 text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    currBaseFreq*=2
-                    octave++
-                    // freqObject = genSaptakFreq(shrutis, currBaseFreq)
-                }}>+</button>
-
-                <div class="flex-1"/>
-
-                <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    lastRemovedSvara = currentBandishSectionSvaras.pop() ?? [["S", 0]]
-                    currentBandishSectionSvaras = currentBandishSectionSvaras
-                }}>Del</button>
-
-                <button class="text-lg w-12 text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    currentBandishSectionSvaras.push(lastRemovedSvara)
-                    currentBandishSectionSvaras = currentBandishSectionSvaras
-                }}>↺</button>
-
-                <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
-                    currentBandishSectionSvaras.length = 0
-                    lastRemovedSvara = [["S", 0]]
-                    
-                    currBaseFreq = 220
-                    octave = 0
-
-                    noteTime = 0.25
-                    tempoBPM = 60000 / tempoMS
-                }}>Clear</button>
-            </div>
+            <button class="opacity-{currentBandishSectionSvaras.length!=0 ? 100 : 10} text-black bg-{isPlaybackStopped ? "lime" : "red"}-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+                if (isPlaybackStopped) {
+                    playNotes(endIndex == -1 ? currentBandishSectionSvaras.slice(startIndex) : currentBandishSectionSvaras.slice(startIndex, endIndex + 1), startIndex)
+                } else {
+                    stopPlayback()
+                }
+            }}>{isPlaybackStopped ? "▶️ Play!" : "⏹️ Stop"}</button>
         </div>
 
         <div class="flex gap-1 py-4 w-fit" bind:this={matrasDiv}>
             {#each {length: taals[selectedTaal]["matra"]} as _, i}
-                <button 
-                    class="text-lg w-12 font-medium rounded-lg py-2.5 
-                        {taals[selectedTaal]['tali'].includes(i) ? 'bg-gray-200 text-black' : 
-                        taals[selectedTaal]['khali'].includes(i) ? 'bg-blue-500 text-white' : 
-                        'bg-gray-600 text-white'}">
+                <div 
+                    class="text-lg w-12 font-medium rounded-lg py-2.5 text-center
+                        {taals[selectedTaal]['tali'].includes(i) ? 'bg-gray-600 text-white' : 
+                        taals[selectedTaal]['khali'].includes(i) ? 'bg-orange-500 text-black' : 
+                        'bg-gray-200 text-black'}">
                     {i + 1}
-                </button>
+                </div>
             {/each}
-            <div class="pr-10"></div>
+            <!-- <div class="pr-10"></div> -->
         </div>
 
-        <div class="flex flex-wrap gap-1" bind:this={compDiv}>
+        <div class="flex flex-wrap gap-1 pointer-events-{isPlaybackStopped ? "auto" : "none"}" bind:this={compDiv}>
             {#each currentBandishSectionSvaras as svaras, i}
                 {@const svaraLabel = svaras.map(svara => svara[0])}
                 <button 
                     id={`comp-${i}`} 
                     class="text-lg w-12 font-medium rounded-lg py-2.5 
-                        {taals[selectedTaal]['tali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-gray-400 text-black' : 
-                        taals[selectedTaal]['khali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-blue-500 text-white' : 
-                        'bg-gray-900 text-white'}"
+                        {taals[selectedTaal]['tali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-gray-600 text-white' : 
+                        taals[selectedTaal]['khali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-orange-500 text-black' : 
+                        'bg-gray-200 text-black'}"
                     on:click={() => openNoteModal(i)}
                 >
                     {svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ">" : svaraLabel.join("")}
@@ -490,7 +504,7 @@
 </main>
 
 <div
-    class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-whitetransition-opacity duration-500 ease-in-out ${
+    class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white transition-opacity duration-500 ease-in-out ${
             noteEditModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
     }`}>
     <h1 class="text-xl mb-8">🔧 Note Control Panel</h1>
