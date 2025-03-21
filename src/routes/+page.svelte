@@ -29,7 +29,7 @@
     }
 
     function genSelectData(data: Record<string, Raga | Taal>) {
-        return Object.keys(data).map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
+        return Object.keys(data).sort().map((k) => ({ value: k, name: k.charAt(0).toUpperCase() + k.slice(1) }))
     }
 
     function resetSvaras() {
@@ -271,13 +271,13 @@
                     <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full" bind:value={selectedRaga} on:change={resetSvaras}>
                         <option selected disabled>Raga</option>
                         {#each genSelectData(ragas) as raga}
-                        <option value={raga.value}>{raga.name}</option>
+                            <option value={raga.value}>{raga.name}</option>
                         {/each}
                     </select>
                     <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full" bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)}>
                         <option selected disabled>Taal</option>
                         {#each genSelectData(taals) as taal}
-                        <option value={taal.value}>{taal.name}</option>
+                            <option value={taal.value}>{taal.name}</option>
                         {/each}
                     </select>
                 </div>
@@ -487,7 +487,7 @@
             <!-- <div class="pr-10"></div> -->
         </div>
 
-        <div class="flex flex-wrap gap-1 pointer-events-{isPlaybackStopped ? "auto" : "none"}" bind:this={compDiv}>
+        <div class="flex flex-wrap gap-1" bind:this={compDiv}>
             {#each currentBandishSectionSvaras as svaras, i}
                 {@const svaraLabel = svaras.map(svara => svara[0])}
                 <button 
@@ -528,26 +528,26 @@
         <button class="text-2xl" on:click={() => noteEditModal = false}>❌</button>
     </div>
 
-    <div class="flex flex-col justify-between gap-1">
+    <div class="flex flex-col justify-between gap-1 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
         <div class="flex flex-col gap-1">
             {#each currentBandishSectionSvaras[noteModalNoteIndex] as svaras, i}
                 <div class="flex justify-between">
-                    <input bind:value={svaras[0]} maxlength=1 class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
+                    <input bind:value={svaras[0]} maxlength=1 on:click={this.select} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
                     <!-- <input bind:value={svaras[1]} type="number" class="w-16 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/> -->
 
                     <div class="flex items-center">
-                        <button class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg" on:click={() => {
+                        <button class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg hover:scale-108 active:scale-95 hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             svaras[1]--
                         }}>-</button>
 
                         <input bind:value={svaras[1]} class="h-12 w-12 rounded-lg bg-gray-50 border text-black text-sm p-2.5" readonly/>
 
-                        <button class="text-lg h-10 w-12 text-black bg-lime-500 font-medium rounded-r-lg" on:click={() => {
+                        <button class="text-lg h-10 w-12 text-black bg-lime-500 font-medium rounded-r-lg hover:scale-108 active:scale-95 hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             svaras[1]++
                         }}>+</button>
                     </div>
 
-                    <button class="text-lg text-white w-12 bg-red-500 font-medium rounded-lg py-2.5" on:click={() => {
+                    <button class="text-lg text-white w-12 bg-red-500 font-medium rounded-lg py-2.5 hover:scale-105 active:scale-95 hover:shadow-red-500/50 hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                         if (currentBandishSectionSvaras[noteModalNoteIndex].length > 1) {
                             currentBandishSectionSvaras[noteModalNoteIndex].splice(i, 1)
                             currentBandishSectionSvaras = currentBandishSectionSvaras
@@ -558,22 +558,22 @@
         </div>
         
         <div class="grid grid-cols-2 gap-1">
-            <button class="flex-1  text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 currentBandishSectionSvaras[noteModalNoteIndex].push([...currentBandishSectionSvaras[noteModalNoteIndex][currentBandishSectionSvaras[noteModalNoteIndex].length - 1]])
                 currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Split</button>
 
-            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 currentBandishSectionSvaras[noteModalNoteIndex] = [currentBandishSectionSvaras[noteModalNoteIndex][0]]
                 currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Clear</button>
 
-            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 startIndex = noteModalNoteIndex
                 focusOnSelectedNoteRange(startIndex, endIndex)
             }}>Mark Start</button>
             
-            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 endIndex = noteModalNoteIndex
                 focusOnSelectedNoteRange(startIndex, endIndex)
             }}>Mark End</button>
