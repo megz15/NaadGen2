@@ -204,6 +204,8 @@
             }
             reader.readAsText(input.files[0])
         }
+
+        alert("Imported successfully!")
     }
 
     function focusOnSelectedNoteRange(startIndex: number, endIndex: number) {
@@ -356,7 +358,7 @@
         <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📒 Sections:</div>
 
-            <select class="max-sm:w-60 w-30 bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={currentSection}>
+            <select class="w-30 max-sm:w-auto bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={currentSection}>
                 <option selected disabled>Section</option>
                 {#each bandishSections.map(section => section.sectionName) as section}
                     <option value={section}>{section}</option>
@@ -390,14 +392,19 @@
             }}>Duplicate</button>
 
             <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
-                currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
-                currentBandishSectionSvaras = currentBandishSectionSvaras
-                clearSelection()
+                if (confirm("Are you sure you want to delete the selected range? This action cannot be undone!")) {
+                    currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
+                    currentBandishSectionSvaras = currentBandishSectionSvaras
+                    clearSelection()
+                } else alert("Selected range hath been spared from the sword of deletion!")
             }}>Delete</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
-                currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
-                clearSelection()
+            <button disabled class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
+                if (confirm("Are you sure you want to delete the un-selected notes? This action cannot be undone!")) {
+                    const croppedNotes = structuredClone(currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1))
+                    currentBandishSectionSvaras = croppedNotes
+                    clearSelection()
+                } else alert("The chosen range shall not be cropped this day, nay, good sir!")
             }}>Crop</button>
         </div>
     </div>
@@ -460,6 +467,7 @@
 
                             noteTime = 0.25
                             tempoBPM = 60000 / tempoMS
+                            isPlaybackLooped = false
 
                             clearSelection()
                         }}>Clear</button>
