@@ -238,10 +238,9 @@
             <button class="text-2xl" on:click={() => aboutModal = false}>❌</button>
         </div>
 
-        <p>Welcome to NaadGen! This app is a work in progress nearing completion (finally). As a solo developer in my third year, it takes time and effort to realize a polished version.</p>
-        <p>I "resume" work on this and other past projects in my limited free time after inevitable hiatuses, most of which is spent refactoring and fixing breaking changes in an endless Sisyphean cycle :)</p>
-        <p>I hope you enjoy using this as much as I did making it! If you find bugs or have suggestions for improvement, <a href="https://github.com/megz15/swaranjali-web/issues" class="text-blue-600" target="_blank">reach out via a GitHub issue by clicking here.</a></p>
-        <p>PS Old save files <strike>might</strike> would not be compatible as the project progresses till a stable milestone is reached.</p>
+        <p>Welcome to NaadGen! I'm excited to share this as it is nearing completion (finally). As a solo developer in my 3rd year who also recently got reality-checked by the release of midsemester gradings, it takes time and effort to bring forth a polished experience, so please bear with me 🐻</p>
+        <p>I hope you enjoy using this as much as I did making it! If you find bugs or have suggestions for improvement, reach out via a GitHub issue by <a href="https://github.com/megz15/NaadGen2/issues" class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded" target="_blank"><nobr>clicking here</nobr></a></p>
+        <p>Check out some of my other projects in this domain,<br><a href="https://play.google.com/store/apps/details?id=megh.dailyraga" class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded" target="_blank">DailyRaga</a> and <a href="https://swaranjali.vercel.app/" class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded" target="_blank"><nobr>Swaranjali Web</nobr></a></p>
         <p>~ Meghraj</p>
     </div>
 
@@ -249,16 +248,16 @@
     
     <div class="flex flex-wrap justify-center gap-4 mt-5 mb-2">
         <a href="https://megz15.github.io/NaadGen/" target="_blank">
-            <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5">
+            <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200">
                 Visit Old site!
             </button>
         </a>
 
-        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
             aboutModal = true
         }}>How to Use</button>
 
-        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
             aboutModal = true
         }}>About</button>
     </div>
@@ -269,13 +268,13 @@
                 <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🔧 Control Panel:</div>
 
                 <div class="flex flex-col gap-1">
-                    <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedRaga} on:change={resetSvaras}>
+                    <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full" bind:value={selectedRaga} on:change={resetSvaras}>
                         <option selected disabled>Raga</option>
                         {#each genSelectData(ragas) as raga}
                         <option value={raga.value}>{raga.name}</option>
                         {/each}
                     </select>
-                    <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)}>
+                    <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full" bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)}>
                         <option selected disabled>Taal</option>
                         {#each genSelectData(taals) as taal}
                         <option value={taal.value}>{taal.name}</option>
@@ -284,7 +283,7 @@
                 </div>
                 
                 <div class="flex flex-col gap-1 my-2">
-                    <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+                    <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                     
                         const blob = new Blob([JSON.stringify({
                             "raga": selectedRaga,
@@ -305,7 +304,7 @@
                     }}>Export</button>
                     
                     <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
-                    <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={
+                    <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 hover:text-white active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={
                         () => importFileInput.click()
                     }>Import</button>
                 </div>
@@ -323,7 +322,7 @@
                         <div class="text-white">Frequency (Hz)</div>
                         <input type="number" bind:value={currBaseFreq} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
                     </div>
-                    <input type="range" min=20 max=1000 step=10 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" min=20 max=1000 step=10 bind:value={currBaseFreq} on:change={() => freqObject = genSaptakFreq(shrutis, currBaseFreq)} class="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-700">
                 </div>
 
                 <div>
@@ -331,15 +330,15 @@
                         <div class="text-white">Tempo (BPM)</div>
                         <input type="number" bind:value={tempoBPM} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
                     </div>
-                    <input type="range" min=20 max=1000 step=10 bind:value={tempoBPM} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" min=20 max=1000 step=10 bind:value={tempoBPM} class="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-700">
                 </div>
 
                 <div>
                     <div class="flex items-center justify-between gap-2">
                         <div class="text-white">Note Duration</div>
-                        <input type="number" bind:value={noteTime} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
+                        <input type="number" bind:value={noteTime} step=0.01 class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
                     </div>
-                    <input type="range" min=0.05 max=1 step=0.05 bind:value={noteTime} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" min=0.05 max=1 step=0.05 bind:value={noteTime} class="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-700">
                 </div>
 
                 <div>
@@ -347,7 +346,7 @@
                         <div class="text-white">Volume %</div>
                         <input type="number" bind:value={noteVolume} class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"/>
                     </div>
-                    <input type="range" min=0 max=200 step=5 bind:value={noteVolume} class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700">
+                    <input type="range" min=0 max=200 step=5 bind:value={noteVolume} class="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-700">
                 </div>
             </div>
         </div>
@@ -355,22 +354,22 @@
         <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📒 Sections:</div>
 
-            <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={currentSection}>
+            <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" bind:value={currentSection}>
                 <option selected disabled>Section</option>
                 {#each bandishSections.map(section => section.sectionName) as section}
                     <option value={section}>{section}</option>
                 {/each}
             </select>
 
-            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 addSection()
             }}>Add New</button>
 
-            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 renameSection(currentSection)
             }}>Rename</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 deleteSection(currentSection)
             }}>Delete</button>
         </div>
@@ -378,23 +377,23 @@
         <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">✂️ Selection:</div>
 
-            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-400/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 clearSelection()
             }}>Clear</button>
 
-            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 const dupedNotes = structuredClone(currentBandishSectionSvaras.slice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) + 1))
                 currentBandishSectionSvaras.push(...dupedNotes)
                 currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Duplicate</button>
 
-            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                 currentBandishSectionSvaras = currentBandishSectionSvaras
                 clearSelection()
             }}>Delete</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                 clearSelection()
             }}>Crop</button>
@@ -409,12 +408,12 @@
                     <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400 capitalize">🎶 Raga {selectedRaga} Svaras:</div>
 
                     {#each current_svaras as svara}
-                        <button class="text-lg w-12 text-black bg-gray-200 font-medium rounded-lg px-5 py-2.5" on:click={() => svaraClick(svara, octave)}>{svara}</button>
+                        <button class="text-lg w-12 text-black bg-gray-200 font-medium rounded-lg px-5 py-2.5 hover:scale-112 active:scale-95 hover:shadow-yellow-400/50 hover:bg-yellow-200 hover:shadow-[0_0_10px_5px] transition-all duration-200" on:click={() => svaraClick(svara, octave)}>{svara}</button>
                     {/each}
 
                     <div class="flex-1"/>
 
-                    <button class="text-lg text-black bg-blue-400 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                    <button class="text-lg text-black bg-blue-400 font-medium rounded-lg px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                         currentBandishSectionSvaras.push([[".", 0]])                // Adding "octave" here isn't redundant or just for consistency
                         currentBandishSectionSvaras = currentBandishSectionSvaras   // it could be mapped to "chikari" / filler sounds later
                     }}>Rest</button>
@@ -424,15 +423,15 @@
                     <div class="flex items-center relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
                         <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📈 Note Octave:</div>
 
-                        <button class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg" on:click={() => {
+                        <button class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg hover:scale-108 active:scale-95 hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             currBaseFreq/=2
                             octave--
                             // freqObject = genSaptakFreq(shrutis, currBaseFreq)
                         }}>-</button>
 
-                        <input bind:value={octave} class="h-12 w-12 bg-gray-50 border text-black text-sm p-2.5 rounded-lg" readonly/>
+                        <input bind:value={octave} class="z-10 h-12 w-12 bg-gray-50 border text-black text-sm p-2.5 rounded-lg" readonly/>
 
-                        <button class="text-lg h-10 w-12 text-black bg-lime-500 font-medium rounded-r-lg" on:click={() => {
+                        <button class="text-lg h-10 w-12 text-black bg-lime-500 font-medium rounded-r-lg hover:scale-108 active:scale-95 hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             currBaseFreq*=2
                             octave++
                             // freqObject = genSaptakFreq(shrutis, currBaseFreq)
@@ -440,17 +439,17 @@
                     </div>
 
                     <div class="flex p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
-                    <button class="text-black bg-red-500 font-medium rounded-l-lg px-5 py-2.5" on:click={() => {
+                    <button class="text-black bg-red-500 font-medium rounded-l-lg px-5 py-2.5 hover:scale-105 active:scale-95 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             lastRemovedSvara = currentBandishSectionSvaras.pop() ?? [["S", 0]]
                             currentBandishSectionSvaras = currentBandishSectionSvaras
                         }}>Delete</button>
 
-                        <button class="text-black bg-lime-500 font-medium rounded-r-lg px-5 py-2.5" on:click={() => {
+                        <button class="text-black bg-lime-500 font-medium rounded-r-lg px-5 py-2.5 hover:scale-105 active:scale-95 hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             currentBandishSectionSvaras.push(lastRemovedSvara)
                             currentBandishSectionSvaras = currentBandishSectionSvaras
                         }}>Undo</button>
 
-                        <button class="text-black bg-red-500 font-medium rounded-lg px-5 py-2.5 ml-1" on:click={() => {
+                        <button class="text-black bg-red-500 font-medium rounded-lg px-5 py-2.5 ml-1 hover:scale-105 active:scale-95 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             currentBandishSectionSvaras.length = 0
                             lastRemovedSvara = [["S", 0]]
                             
@@ -466,7 +465,7 @@
                 </div>
             </div>
 
-            <button class="opacity-{currentBandishSectionSvaras.length!=0 ? 100 : 10} text-black bg-{isPlaybackStopped ? "lime" : "red"}-500 font-medium rounded-lg text-lg px-5 py-2.5 border-2" on:click={() => {
+            <button class="opacity-{currentBandishSectionSvaras.length!=0 ? 100 : 10} text-black bg-{isPlaybackStopped ? "lime" : "red"}-500 font-medium rounded-lg text-lg px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white {isPlaybackStopped ? "hover:shadow-lime-500/50" : "hover:shadow-red-500/50"} hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                 if (isPlaybackStopped) {
                     playNotes(endIndex == -1 ? currentBandishSectionSvaras.slice(startIndex) : currentBandishSectionSvaras.slice(startIndex, endIndex + 1), startIndex)
                 } else {
@@ -493,7 +492,7 @@
                 {@const svaraLabel = svaras.map(svara => svara[0])}
                 <button 
                     id={`comp-${i}`} 
-                    class="relative text-lg h-12 w-12 font-medium rounded-lg py-2.5 
+                    class="relative text-lg h-12 w-12 font-medium rounded-lg py-2.5 hover:scale-112 active:scale-95 hover:shadow-blue-400/50 hover:bg-blue-300 hover:shadow-[0_0_20px_5px] transition-all duration-200
                         {taals[selectedTaal]['tali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-gray-600 text-white' : 
                         taals[selectedTaal]['khali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-orange-500 text-black' : 
                         'bg-gray-200 text-black'}"
