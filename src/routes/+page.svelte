@@ -94,6 +94,10 @@
         isPlaybackStopped = true
         playbackTimeouts.forEach(timeout => clearTimeout(timeout))
         playbackTimeouts = []
+
+        if (Array.from(document.querySelectorAll("[id^='comp-']")).every(note => note.classList.contains("bg-yellow-400"))) {
+            alert("and it was all yellow... 🎶")
+        }
     }
 
     function addSection() {
@@ -229,8 +233,10 @@
             aboutModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
         }`}
     >
-        <h1 class="text-xl text-center mb-8">🚧 NaadGen v2 🚧</h1>
-        <button class="absolute top-4 right-4 text-2xl text-white" on:click={() => aboutModal = false}>❌</button>
+        <div class="flex justify-between items-center mb-4">
+            <div class="text-2xl font-bold">🚧 NaadGen v2 🚧</div>
+            <button class="text-2xl" on:click={() => aboutModal = false}>❌</button>
+        </div>
 
         <p>Welcome to NaadGen! This app is a work in progress nearing completion (finally). As a solo developer in my third year, it takes time and effort to realize a polished version.</p>
         <p>I "resume" work on this and other past projects in my limited free time after inevitable hiatuses, most of which is spent refactoring and fixing breaking changes in an endless Sisyphean cycle :)</p>
@@ -257,8 +263,8 @@
         }}>About</button>
     </div>
     
-    <div class="flex flex-col m-5 gap-2">
-        <div class="flex flex-wrap gap-2">
+    <div class="flex flex-col m-5 gap-2 max-sm:gap-3">
+        <div class="flex flex-wrap gap-2 max-sm:gap-3">
             <div class="relative flex gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col justify-between max-sm:w-full opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
                 <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🔧 Control Panel:</div>
 
@@ -346,7 +352,7 @@
             </div>
         </div>
 
-        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+        <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📒 Sections:</div>
 
             <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" bind:value={currentSection}>
@@ -356,42 +362,42 @@
                 {/each}
             </select>
 
-            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 addSection()
             }}>Add New</button>
 
-            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 renameSection(currentSection)
             }}>Rename</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 deleteSection(currentSection)
             }}>Delete</button>
         </div>
 
-        <div class="relative flex flex-wrap justify-center gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+        <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">✂️ Selection:</div>
 
-            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 clearSelection()
             }}>Clear</button>
 
-            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 const dupedNotes = structuredClone(currentBandishSectionSvaras.slice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) + 1))
                 currentBandishSectionSvaras.push(...dupedNotes)
                 currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Duplicate</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                 currentBandishSectionSvaras = currentBandishSectionSvaras
                 clearSelection()
             }}>Delete</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 border-2" on:click={() => {
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                 clearSelection()
-            }}>Keep</button>
+            }}>Crop</button>
         </div>
     </div>
 
@@ -408,25 +414,25 @@
 
                     <div class="flex-1"/>
 
-                    <button class="text-lg text-black bg-green-500 font-medium rounded-lg px-5 py-2.5" on:click={() => {
+                    <button class="text-lg text-black bg-blue-400 font-medium rounded-lg px-5 py-2.5" on:click={() => {
                         currentBandishSectionSvaras.push([[".", 0]])                // Adding "octave" here isn't redundant or just for consistency
                         currentBandishSectionSvaras = currentBandishSectionSvaras   // it could be mapped to "chikari" / filler sounds later
                     }}>Rest</button>
                 </div>
                 
                 <div class="flex gap-1 justify-between">
-                    <div class="flex relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+                    <div class="flex items-center relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
                         <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📈 Note Octave:</div>
 
-                        <button class="text-lg w-12 text-black bg-red-500 font-medium px-5 py-2.5 rounded-l-lg" on:click={() => {
+                        <button class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg" on:click={() => {
                             currBaseFreq/=2
                             octave--
                             // freqObject = genSaptakFreq(shrutis, currBaseFreq)
                         }}>-</button>
 
-                        <input bind:value={octave} class="w-12 bg-gray-50 border-x-2 text-black text-sm p-2.5" readonly/>
+                        <input bind:value={octave} class="h-12 w-12 bg-gray-50 border text-black text-sm p-2.5 rounded-lg" readonly/>
 
-                        <button class="text-lg w-12 text-black bg-green-500 font-medium px-5 py-2.5 rounded-r-lg" on:click={() => {
+                        <button class="text-lg h-10 w-12 text-black bg-lime-500 font-medium rounded-r-lg" on:click={() => {
                             currBaseFreq*=2
                             octave++
                             // freqObject = genSaptakFreq(shrutis, currBaseFreq)
@@ -434,17 +440,17 @@
                     </div>
 
                     <div class="flex p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
-                    <button class="text-lg text-black bg-red-500 font-medium rounded-l-lg px-5 py-2.5" on:click={() => {
+                    <button class="text-black bg-red-500 font-medium rounded-l-lg px-5 py-2.5" on:click={() => {
                             lastRemovedSvara = currentBandishSectionSvaras.pop() ?? [["S", 0]]
                             currentBandishSectionSvaras = currentBandishSectionSvaras
                         }}>Delete</button>
 
-                        <button class="text-lg text-black bg-green-500 font-medium rounded-r-lg px-5 py-2.5" on:click={() => {
+                        <button class="text-black bg-lime-500 font-medium rounded-r-lg px-5 py-2.5" on:click={() => {
                             currentBandishSectionSvaras.push(lastRemovedSvara)
                             currentBandishSectionSvaras = currentBandishSectionSvaras
                         }}>Undo</button>
 
-                        <button class="text-lg text-black bg-red-500 font-medium rounded-lg px-5 py-2.5 ml-1" on:click={() => {
+                        <button class="text-black bg-red-500 font-medium rounded-lg px-5 py-2.5 ml-1" on:click={() => {
                             currentBandishSectionSvaras.length = 0
                             lastRemovedSvara = [["S", 0]]
                             
@@ -487,13 +493,24 @@
                 {@const svaraLabel = svaras.map(svara => svara[0])}
                 <button 
                     id={`comp-${i}`} 
-                    class="text-lg w-12 font-medium rounded-lg py-2.5 
+                    class="relative text-lg h-12 w-12 font-medium rounded-lg py-2.5 
                         {taals[selectedTaal]['tali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-gray-600 text-white' : 
                         taals[selectedTaal]['khali'].includes(i % taals[selectedTaal]['matra']) ? 'bg-orange-500 text-black' : 
                         'bg-gray-200 text-black'}"
                     on:click={() => openNoteModal(i)}
                 >
-                    {svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ">" : svaraLabel.join("")}
+                    <!-- {svaraLabel.join("").length > 4 ? svaraLabel.splice(0,1) + ">" : svaraLabel.join("")} -->
+                    {#if svaraLabel.join("").length > 4}
+                        {svaraLabel[0] + ">"}
+                    {:else if svaraLabel.join("").length == 3 || svaraLabel.join("").length == 4}
+                        <div class="absolute inset-0 grid grid-cols-2 grid-rows-2 items-center justify-center">
+                            {#each svaraLabel as svara}
+                                <div>{svara}</div>
+                            {/each}
+                        </div>
+                    {:else}
+                        {svaraLabel.join("")}
+                    {/if}
                 </button>
 
                 <!-- <Popover>Note: {svaras.map(svara => svara[0])}<br>Octave: {svaras.map(svara => svara[1])}</Popover> -->
@@ -507,27 +524,42 @@
     class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white transition-opacity duration-500 ease-in-out ${
             noteEditModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
     }`}>
-    <h1 class="text-xl mb-8">🔧 Note Control Panel</h1>
-    <button class="absolute top-4 right-4 text-2xl text-white" on:click={() => noteEditModal = false}>❌</button>
+    <div class="flex justify-between items-center mb-2">
+        <div class="text-xl font-bold">🔧 Note Edit</div>
+        <button class="text-2xl" on:click={() => noteEditModal = false}>❌</button>
+    </div>
 
-    <div class="flex justify-between gap-1">
+    <div class="flex flex-col justify-between gap-1">
         <div class="flex flex-col gap-1">
             {#each currentBandishSectionSvaras[noteModalNoteIndex] as svaras, i}
-                <div class="flex">
-                    <input bind:value={svaras[0]} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
-                    <input bind:value={svaras[1]} class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
-                    <button class="text-lg text-white w-12 bg-red-700 font-medium rounded-lg py-2.5 ml-1 mr-2" on:click={() => {
+                <div class="flex justify-between">
+                    <input bind:value={svaras[0]} maxlength=1 class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/>
+                    <!-- <input bind:value={svaras[1]} type="number" class="w-16 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"/> -->
+
+                    <div class="flex items-center">
+                        <button class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg" on:click={() => {
+                            svaras[1]--
+                        }}>-</button>
+
+                        <input bind:value={svaras[1]} class="h-12 w-12 rounded-lg bg-gray-50 border text-black text-sm p-2.5" readonly/>
+
+                        <button class="text-lg h-10 w-12 text-black bg-lime-500 font-medium rounded-r-lg" on:click={() => {
+                            svaras[1]++
+                        }}>+</button>
+                    </div>
+
+                    <button class="text-lg text-white w-12 bg-red-500 font-medium rounded-lg py-2.5" on:click={() => {
                         if (currentBandishSectionSvaras[noteModalNoteIndex].length > 1) {
                             currentBandishSectionSvaras[noteModalNoteIndex].splice(i, 1)
                             currentBandishSectionSvaras = currentBandishSectionSvaras
                         } else alert("Can't delete base note!")
-                    }}>🗑️</button>
+                    }}>🔪</button>
                 </div>
             {/each}
         </div>
         
-        <div class="flex flex-col gap-1 pr-5">
-            <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
+        <div class="grid grid-cols-2 gap-1">
+            <button class="flex-1  text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5" on:click={() => {
                 currentBandishSectionSvaras[noteModalNoteIndex].push([...currentBandishSectionSvaras[noteModalNoteIndex][currentBandishSectionSvaras[noteModalNoteIndex].length - 1]])
                 currentBandishSectionSvaras = currentBandishSectionSvaras
             }}>Split</button>
