@@ -7,6 +7,10 @@ settings:
 importers:
 
   .:
+    dependencies:
+      driver.js:
+        specifier: ^1.3.5
+        version: 1.3.5
     devDependencies:
       '@sveltejs/adapter-auto':
         specifier: ^4.0.0
@@ -460,6 +464,9 @@ packages:
 
   devalue@5.1.1:
     resolution: {integrity: sha512-maua5KUiapvEwiEAe+XnlZ3Rh0GD+qI1J/nb9vrJc3muPXvcF/8gXYTWF76+5DAqHyDUtOIImEuo0YKE9mshVw==}
+
+  driver.js@1.3.5:
+    resolution: {integrity: sha512-exkp49hXuujvTOZ3zYgySWRlEAa8/3nA8glYjtuZjmkTdsQITXivBsW1ytyhKQx3WkeYaovlnvVcLbtTaN86kA==}
 
   enhanced-resolve@5.18.1:
     resolution: {integrity: sha512-ZSW3ma5GkcQBIpwZTSRAI8N71Uuwgs93IezB7mf7R60tC8ZbJideoDNKjHn2O9KIlx6rkGTTEk1xUCK2E1Y2Yg==}
@@ -967,6 +974,8 @@ snapshots:
   detect-libc@2.0.3: {}
 
   devalue@5.1.1: {}
+
+  driver.js@1.3.5: {}
 
   enhanced-resolve@5.18.1:
     dependencies:
