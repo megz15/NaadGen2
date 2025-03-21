@@ -34,6 +34,18 @@
 
     function resetSvaras() {
         current_svaras = ['S', 'R', 'G', 'm', 'P', 'D', 'N']
+
+        current_svaras.forEach(svara => {
+            // Remove varjya svaras
+            current_svaras = current_svaras.filter(svara => !ragas[selectedRaga].varjya.includes(svara.toUpperCase()))
+
+            // Add vikrit shudhh svaras
+            if (ragas[selectedRaga].vikrit_shuddha.includes(svara)) {
+                current_svaras.splice(current_svaras.indexOf(svara), 1, svara.toLowerCase(), svara.toUpperCase())
+            } else if (ragas[selectedRaga].vikrit.includes(svara)) {
+                current_svaras.splice(current_svaras.indexOf(svara), 1, svara.toUpperCase() == svara ? svara.toLowerCase() : svara.toUpperCase())
+            }
+        })
     }
 
     function svaraClick(svara: string, octave: number) {
@@ -159,18 +171,6 @@
 
     resetSvaras()
 
-    $: current_svaras.forEach(svara => {
-        // Remove varjya svaras
-        current_svaras = current_svaras.filter(svara => !ragas[selectedRaga].varjya.includes(svara.toUpperCase()))
-
-        // Add vikrit shudhh svaras
-        if (ragas[selectedRaga].vikrit_shuddha.includes(svara)) {
-            current_svaras.splice(current_svaras.indexOf(svara), 1, svara.toLowerCase(), svara.toUpperCase())
-        } else if (ragas[selectedRaga].vikrit.includes(svara)) {
-            current_svaras.splice(current_svaras.indexOf(svara), 1, svara.toUpperCase() == svara ? svara.toLowerCase() : svara.toUpperCase())
-        }
-    })
-
     let aboutModal = false
     let noteEditModal = false
     let noteModalNoteIndex = 0
@@ -190,6 +190,7 @@
                 
                 selectedRaga = data["raga"]
                 selectedTaal = data["taal"]
+                resetSvaras()
                 matchDivWidth(compDiv, matrasDiv)
                 
                 currBaseFreq = data["freq"]
@@ -288,7 +289,7 @@
                         const blob = new Blob([JSON.stringify({
                             "raga": selectedRaga,
                             "taal": selectedTaal,
-                            "freq": currBaseFreq,
+                            "freq": currBaseFreq / 2**octave,
                             "tempo": tempoBPM,
                             "noteTime": noteTime,
                             "totalBandish": bandishSections,
