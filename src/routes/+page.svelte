@@ -200,6 +200,7 @@
                 noteTime = data["noteTime"]
                 
                 bandishSections = data["totalBandish"]
+                currentSection = bandishSections[0].sectionName
             }
             reader.readAsText(input.files[0])
         }
@@ -355,7 +356,7 @@
         <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📒 Sections:</div>
 
-            <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" bind:value={currentSection}>
+            <select class="max-sm:w-60 w-30 bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" bind:value={currentSection}>
                 <option selected disabled>Section</option>
                 {#each bandishSections.map(section => section.sectionName) as section}
                     <option value={section}>{section}</option>
@@ -440,13 +441,13 @@
                     </div>
 
                     <div class="flex p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
-                    <button class="text-black bg-red-500 font-medium rounded-l-lg px-5 py-2.5 hover:scale-105 active:scale-95 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
+                        <button class="text-black bg-red-500 font-medium rounded-l-lg px-5 py-2.5 hover:scale-105 active:scale-95 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
                             lastRemovedSvara = currentBandishSectionSvaras.pop() ?? [["S", 0]]
                             currentBandishSectionSvaras = currentBandishSectionSvaras
                         }}>Delete</button>
 
                         <button class="text-black bg-lime-500 font-medium rounded-r-lg px-5 py-2.5 hover:scale-105 active:scale-95 hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
-                            currentBandishSectionSvaras.push(lastRemovedSvara)
+                            currentBandishSectionSvaras.push(lastRemovedSvara.map(svara => [...svara]))
                             currentBandishSectionSvaras = currentBandishSectionSvaras
                         }}>Undo</button>
 
