@@ -232,6 +232,8 @@
     }
 
     function startTour() {
+        aboutModal = false
+
         const driverObj = driver({
             showProgress: true,
             allowClose: false,
@@ -345,6 +347,15 @@
                         title: "Save/Load",
                         description: "Finally, you can export your composition to a file or import a previously saved composition using these buttons.",
                         side: "right",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#dailyRagaPromo",
+                    popover: {
+                        title: "Shameless Plug",
+                        description: "If you enjoy NaadGen, you might like <b>DailyRaga</b>, a mobile app I made to check key attributes for many ragas at a quick glance. Click here to download it from the Play Store!",
+                        side: "top",
                         align: "center" 
                     }
                 },
