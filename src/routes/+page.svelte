@@ -11,6 +11,9 @@
     import ragasData from "$lib/data/ragas.json"
     import taalsData from "$lib/data/taals.json"
 
+    import { driver } from "driver.js"
+    import "driver.js/dist/driver.css"
+
     // break down and move components after removing dependency on flowbite-svelte
 
     let matrasDiv: HTMLDivElement
@@ -204,6 +207,8 @@
             }
             reader.readAsText(input.files[0])
         }
+
+        alert("Imported successfully!")
     }
 
     function focusOnSelectedNoteRange(startIndex: number, endIndex: number) {
@@ -224,6 +229,130 @@
         startIndex = 0
         endIndex = -1
         focusOnSelectedNoteRange(startIndex, endIndex)
+    }
+
+    function startTour() {
+        const driverObj = driver({
+            showProgress: true,
+            allowClose: false,
+            smoothScroll: true,
+            popoverClass: "driverjs-theme",
+            showButtons: ["next", "previous", "close"],
+            steps: [
+                { popover: { title: "Welcome to NaadGen!", description: "This guide will show you how to use the app to create compositions. Click 'Next' or your right arrow key to begin." } },
+                {
+                    element: "#ragaSelector",
+                    popover: {
+                        title: "Raga",
+                        description: `First, select the raga you want to make your composition in. You can choose from a list of available ragas, or continue with the default for now, <b>Raga ${selectedRaga.charAt(0).toUpperCase() + selectedRaga.substring(1).toLowerCase()}</b>.`,
+                        side: "right",
+                        align: "start" 
+                    }
+                },
+                {
+                    element: "#taalSelector",
+                    popover: {
+                        title: "Taal",
+                        description: `Next, select the taal you want to set your composition to. You can choose from a list of available taals, or continue with the default for now, <b>${selectedTaal.charAt(0).toUpperCase() + selectedTaal.substring(1).toLowerCase()}</b>.`,
+                        side: "right",
+                        align: "start" 
+                    }
+                },
+                {
+                    element: matrasDiv,
+                    popover: {
+                        title: "Matras",
+                        description: `You can see the matras of the selected taal here. The Talis and Khalis are highlighted. Here, <b>${selectedTaal} has ${taals[selectedTaal].matra} matras</b>.`,
+                        side: "top",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#noteOctave",
+                    popover: {
+                        title: "Octave",
+                        description: "You can change the octave of the svaras you add here. The current octave is also shown here.",
+                        side: "right",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#ragaSvaras",
+                    popover: {
+                        title: "Svaras",
+                        description: "You can see the svaras of the selected Raga here. <b>Click on a few svaras</b> to add them to your composition.",
+                        side: "top",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: compDiv,
+                    popover: {
+                        title: "Composition",
+                        description: "This is your composition. Notes will be shown here once you add them from the Raga Svaras panel. Click on a note to edit it in the <b>Note Edit panel</b>.",
+                        side: "top",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#noteEditModal",
+                    popover: {
+                        title: "Note Edit Panel",
+                        description: "From the panel, you can change the svara and octave of the note, split it up or set it as the start or end of a range.",
+                        side: "right",
+                        align: "start" 
+                    }
+                },
+                {
+                    element: "#playbackControls",
+                    popover: {
+                        title: "Playback Sliders",
+                        description: "Use the sliders to change the <b>frequency</b>, <b>tempo</b>, <b>note duration</b> and <b>volume</b> of the notes during playback.",
+                        side: "left",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#sectionControls",
+                    popover: {
+                        title: "Edit Sections",
+                        description: "You can manage the sections of your composition here. Sections can be used for multiple things: you could, for example, segment your composition into <b>Aalap</b>, <b>Sthayi</b>, <b>Antara</b>, <b>Taan</b> and <b>Jhala</b>. Add, rename, or delete sections as you like.",
+                        side: "top",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#selectionControls",
+                    popover: {
+                        title: "Selection Panel",
+                        description: "After selecting a range of notes in your composition, you can duplicate, delete, or crop the selected range.",
+                        side: "top",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#playBtn",
+                    popover: {
+                        title: "Play",
+                        description: "Click here to play your composition. You can also loop the playback from the Control Panel.",
+                        side: "left",
+                        align: "center" 
+                    }
+                },
+                {
+                    element: "#savefileBtns",
+                    popover: {
+                        title: "Save/Load",
+                        description: "Finally, you can export your composition to a file or import a previously saved composition using these buttons.",
+                        side: "right",
+                        align: "center" 
+                    }
+                },
+                { popover: { title: "Final Step", description: "You now know how to use NaadGen, young padawan. Have fun composing!" } }
+            ]
+        });
+
+        driverObj.drive();
     }
 </script>
 
@@ -249,19 +378,19 @@
     <img src={logo} width="300px" alt="NaadGen" class="drop-shadow-[0_0_5em_#A71B28] mt-5" />
     
     <div class="flex flex-wrap justify-center gap-4 mt-5 mb-2">
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] active:border-2 active:border-white active:shadow-yellow-400/50 active:text-white active:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
+            startTour()
+        }}>How to Use?</button>
+
+        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] active:border-2 active:border-white active:shadow-yellow-400/50 active:text-white active:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
+            aboutModal = true
+        }}>About</button>
+
         <a href="https://megz15.github.io/NaadGen/" target="_blank">
             <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] active:border-2 active:border-white active:shadow-yellow-400/50 active:text-white active:shadow-[0_0_20px_5px] transition-all duration-200">
                 Visit Old site!
             </button>
         </a>
-
-        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] active:border-2 active:border-white active:shadow-yellow-400/50 active:text-white active:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
-            aboutModal = true
-        }}>How to Use</button>
-
-        <button class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] active:border-2 active:border-white active:shadow-yellow-400/50 active:text-white active:shadow-[0_0_20px_5px] transition-all duration-200" on:click={() => {
-            aboutModal = true
-        }}>About</button>
     </div>
     
     <div class="flex flex-col m-5 gap-2 max-sm:gap-3">
@@ -270,13 +399,13 @@
                 <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🔧 Control Panel:</div>
 
                 <div class="flex flex-col gap-1">
-                    <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={selectedRaga} on:change={resetSvaras}>
+                    <select id="ragaSelector" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={selectedRaga} on:change={resetSvaras}>
                         <option selected disabled>Raga</option>
                         {#each genSelectData(ragas) as raga}
                             <option value={raga.value}>{raga.name}</option>
                         {/each}
                     </select>
-                    <select class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)}>
+                    <select id="taalSelector" class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 w-full active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={selectedTaal} on:change={() => matchDivWidth(compDiv, matrasDiv)}>
                         <option selected disabled>Taal</option>
                         {#each genSelectData(taals) as taal}
                             <option value={taal.value}>{taal.name}</option>
@@ -284,7 +413,7 @@
                     </select>
                 </div>
                 
-                <div class="flex flex-col gap-1 my-2">
+                <div id="savefileBtns" class="flex flex-col gap-1 my-2">
                     <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
                     
                         const blob = new Blob([JSON.stringify({
@@ -317,7 +446,7 @@
                 </div>
             </div>
 
-            <div class="relative flex grow gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col max-sm:w-full opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+            <div id="playbackControls" class="relative flex grow gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col max-sm:w-full opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
                 <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">🎚️ Playback:</div>
                 <div>
                     <div class="flex items-center justify-between gap-2">
@@ -353,10 +482,10 @@
             </div>
         </div>
 
-        <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+        <div id="sectionControls" class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📒 Sections:</div>
 
-            <select class="max-sm:w-60 w-30 bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={currentSection}>
+            <select class="w-30 max-sm:w-auto bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={currentSection}>
                 <option selected disabled>Section</option>
                 {#each bandishSections.map(section => section.sectionName) as section}
                     <option value={section}>{section}</option>
@@ -376,7 +505,7 @@
             }}>Delete</button>
         </div>
 
-        <div class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
+        <div id="selectionControls" class="relative grid grid-cols-4 max-sm:grid-cols-2 gap-1.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
             <div class="absolute -top-2 left-4 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">✂️ Selection:</div>
 
             <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-blue-400/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-blue-400/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
@@ -390,14 +519,19 @@
             }}>Duplicate</button>
 
             <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
-                currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
-                currentBandishSectionSvaras = currentBandishSectionSvaras
-                clearSelection()
+                if (confirm("Are you sure you want to delete the selected range? This action cannot be undone!")) {
+                    currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
+                    currentBandishSectionSvaras = currentBandishSectionSvaras
+                    clearSelection()
+                } else alert("Selected range hath been spared from the sword of deletion!")
             }}>Delete</button>
 
-            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
-                currentBandishSectionSvaras = currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
-                clearSelection()
+            <button disabled class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
+                if (confirm("Are you sure you want to delete the un-selected notes? This action cannot be undone!")) {
+                    const croppedNotes = structuredClone(currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1))
+                    currentBandishSectionSvaras = croppedNotes
+                    clearSelection()
+                } else alert("The chosen range shall not be cropped this day, nay, good sir!")
             }}>Crop</button>
         </div>
     </div>
@@ -406,7 +540,7 @@
 
         <div class="flex flex-wrap gap-2 items-baseline">
             <div class="w-fit opacity-{isPlaybackStopped ? 100 : 10} pointer-events-{isPlaybackStopped ? 'auto' : 'none'}">
-                <div class="flex gap-1 mb-1 relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+                <div id="ragaSvaras" class="flex gap-1 mb-1 relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
                     <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400 capitalize">🎶 Raga {selectedRaga} Svaras:</div>
 
                     {#each current_svaras as svara}
@@ -422,7 +556,7 @@
                 </div>
                 
                 <div class="flex gap-1 justify-between">
-                    <div class="flex items-center relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
+                    <div id="noteOctave" class="flex items-center relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400">
                         <div class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400">📈 Note Octave:</div>
 
                         <button class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg hover:scale-108 active:scale-95 hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
@@ -460,6 +594,7 @@
 
                             noteTime = 0.25
                             tempoBPM = 60000 / tempoMS
+                            isPlaybackLooped = false
 
                             clearSelection()
                         }}>Clear</button>
@@ -467,7 +602,7 @@
                 </div>
             </div>
 
-            <button class="opacity-{currentBandishSectionSvaras.length!=0 ? 100 : 10} text-black bg-{isPlaybackStopped ? "lime" : "red"}-500 font-medium rounded-lg text-lg px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white {isPlaybackStopped ? "hover:shadow-lime-500/50" : "hover:shadow-red-500/50"} hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white {isPlaybackStopped ? "active:shadow-lime-500/50" : "active:shadow-red-500/50"} active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
+            <button id="playBtn" class="opacity-{currentBandishSectionSvaras.length!=0 ? 100 : 10} text-black bg-{isPlaybackStopped ? "lime" : "red"}-500 font-medium rounded-lg text-lg px-5 py-2.5 hover:scale-105 active:scale-95 border-2 hover:border-2 hover:border-white {isPlaybackStopped ? "hover:shadow-lime-500/50" : "hover:shadow-red-500/50"} hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:border-2 active:border-white {isPlaybackStopped ? "active:shadow-lime-500/50" : "active:shadow-red-500/50"} active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
                 if (isPlaybackStopped) {
                     playNotes(endIndex == -1 ? currentBandishSectionSvaras.slice(startIndex) : currentBandishSectionSvaras.slice(startIndex, endIndex + 1), startIndex)
                 } else {
@@ -522,6 +657,7 @@
 </main>
 
 <div
+    id="noteEditModal"
     class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white transition-opacity duration-500 ease-in-out ${
             noteEditModal ? 'opacity-100' : 'opacity-0 pointer-events-none'
     }`}>
