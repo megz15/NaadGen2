@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@500;600;800&display=swap');
 @import 'tailwindcss';
 
 :root {
@@ -42,4 +43,30 @@
 .driver-popover.driverjs-theme button:hover {
     background-color: black;
     color: white;
+}
+
+.wave1 {
+    top: 10%;
+    display: block;
+    filter: drop-shadow(0 0 20px #5393f2);
+    left: 0;
+    overflow-x: hidden;
+    position:fixed;
+    z-index: -100;
+}
+
+.glow {
+    font-family: "Raleway", Helvetica, Arial, sans-serif;
+    font-size: 5em;
+    font-weight: 700;
+    color: whitesmoke;
+    text-shadow:
+        0 0 7px rgb(145, 173, 173),
+        0 0 10px rgb(145, 173, 173),
+        0 0 21px rgb(145, 173, 173),
+        0 0 42px rgb(0, 195, 255),
+        0 0 82px rgb(0, 195, 255),
+        0 0 92px rgb(0, 195, 255),
+        0 0 102px rgb(0, 195, 255),
+        0 0 151px rgb(0, 195, 255);
 }
