@@ -149,6 +149,15 @@
 
     const shrutis = ['S', 'r', 'R', 'g', 'G', 'm', 'M', 'P', 'd', 'D', 'n', 'N']
     let current_svaras: string[]
+    const shrutiNames = {
+        's': 'Shadaj',
+        'r': 'Rishabh',
+        'g': 'Gandhar',
+        'm': 'Madhyam',
+        'p': 'Pancham',
+        'd': 'Dhaivat',
+        'n': 'Nishad'
+    }
 
     let noteTime = 0.25
     const tempoMS = 200
@@ -546,6 +555,11 @@
                 } else alert("The chosen range shall not be cropped this day, nay, good sir!")
             }}>Crop</button>
         </div>
+    </div>
+
+    <div class="text-white text-lg">
+        <span><b>Vadi:</b> <span class="bg-blue-100 py-0.5 px-2 rounded text-blue-900">{shrutiNames[ragas[selectedRaga].vadi.toLowerCase()]}</span>,</span>
+        <span><b>Samvadi:</b> <span class="bg-blue-100 py-0.5 px-2 rounded text-blue-900">{shrutiNames[ragas[selectedRaga].samvadi.toLowerCase()]}</span></span>
     </div>
 
     <div class="overflow-x-scroll p-5 max-w-full">
