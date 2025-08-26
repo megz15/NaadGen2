@@ -573,7 +573,7 @@
                         <button class="text-lg w-12 text-black bg-gray-200 font-medium rounded-lg px-5 py-2.5 hover:scale-112 active:scale-90 hover:shadow-yellow-400/50 hover:bg-yellow-200 hover:shadow-[0_0_10px_5px] transition-all duration-200 active:duration-50 active:shadow-yellow-400/50 active:bg-yellow-200 active:shadow-[0_0_10px_5px]" on:click={() => svaraClick(svara, octave)}>{svara}</button>
                     {/each}
 
-                    <div class="flex-1"/>
+                    <div class="flex-1"></div>
 
                     <button class="text-lg text-black bg-blue-400 font-medium rounded-lg px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
                         currentBandishSectionSvaras.push([[".", 0]])                // Adding "octave" here isn't redundant or just for consistency
@@ -612,17 +612,21 @@
                         }}>Undo</button>
 
                         <button class="text-black bg-red-500 font-medium rounded-lg px-5 py-2.5 ml-1 hover:scale-105 active:scale-90 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
-                            currentBandishSectionSvaras.length = 0
-                            lastRemovedSvara = [["S", 0]]
-                            
-                            currBaseFreq = 220
-                            octave = 0
+                            if (currentBandishSectionSvaras.length != 0) {
+                                if (confirm(`Warning: This will delete ALL notes in the current section "${currentSection}". Are you sure you want to continue? This action cannot be undone!`)) {
+                                    currentBandishSectionSvaras.length = 0
+                                    lastRemovedSvara = [["S", 0]]
+                                    
+                                    currBaseFreq = 220
+                                    octave = 0
 
-                            noteTime = 0.25
-                            tempoBPM = 60000 / tempoMS
-                            isPlaybackLooped = false
+                                    noteTime = 0.25
+                                    tempoBPM = 60000 / tempoMS
+                                    isPlaybackLooped = false
 
-                            clearSelection()
+                                    clearSelection()
+                                } else alert(`The section "${currentSection}" hath been spared from the sword of deletion!`)
+                            } else alert("Nothing to clear here. Move along, move along...")
                         }}>Clear</button>
                     </div>
                 </div>
