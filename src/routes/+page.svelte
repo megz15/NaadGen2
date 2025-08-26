@@ -6,6 +6,7 @@
     import { genSine, genSaptakFreq } from "$lib/utils/audioUtils"
     import type { Raga, Taal } from "$lib/types/types"
     import { onMount, tick } from "svelte"
+    import { page } from '$app/state';
 
     import logo from "$lib/data/logo.png"
     import ragasData from "$lib/data/ragas.json"
@@ -20,8 +21,16 @@
     let compDiv: HTMLDivElement
     let importFileInput: HTMLInputElement
 
-    onMount(() => {
+    onMount(async () => {
         matchDivWidth(compDiv, matrasDiv)
+
+        const url = page.url.searchParams.get('load')
+        if (url && url.trim().length > 0) {
+            const decodedURL = decodeURIComponent(url)
+            await loadFromUrl(decodedURL)
+        } else {
+            // alert("No ?load parameter provided")
+        }
     })
 
     async function matchDivWidth(e1: HTMLDivElement, e2: HTMLDivElement) {
@@ -198,26 +207,65 @@
         if (input.files && input.files[0]) {
             const reader = new FileReader()
             reader.onload = function() {
-                const data = JSON.parse(reader.result as string)
-                
-                selectedRaga = data["raga"]
-                selectedTaal = data["taal"]
-                resetSvaras()
-                matchDivWidth(compDiv, matrasDiv)
-                
-                currBaseFreq = data["freq"]
-                freqObject = genSaptakFreq(shrutis, currBaseFreq)
-
-                tempoBPM = data["tempo"]
-                noteTime = data["noteTime"]
-                
-                bandishSections = data["totalBandish"]
-                currentSection = bandishSections[0].sectionName
+                importDataFromText(reader.result as string)
             }
             reader.readAsText(input.files[0])
         }
+    }
 
-        alert("Imported successfully!")
+    function importDataFromText(text: string) {
+        try {
+            const data = JSON.parse(text)
+
+            selectedRaga = data["raga"]
+            selectedTaal = data["taal"]
+            resetSvaras()
+            matchDivWidth(compDiv, matrasDiv)
+            
+            currBaseFreq = data["freq"]
+            freqObject = genSaptakFreq(shrutis, currBaseFreq)
+
+            tempoBPM = data["tempo"]
+            noteTime = data["noteTime"]
+            
+            bandishSections = data["totalBandish"]
+            currentSection = bandishSections[0].sectionName
+
+            alert("Imported successfully!")
+        } catch (e) {
+            alert("Import failed: " + (e?.message ?? e))
+        }
+    }
+
+    async function handleImportClick() {
+        const url = prompt("Enter a direct URL to a .ng/.ngr file, or leave blank to choose a local file")
+        if (url && url.trim().length > 0) {
+            await loadFromUrl(url)
+        } else {
+            importFileInput.click()
+        }
+    }
+
+    async function loadFromUrl(url: string) {
+        try {
+            const trimmedURL = url.trim()
+            if (!/^https?:\/\//.test(trimmedURL)) {
+                throw new Error("Invalid or missing URL: " + trimmedURL)
+            }
+
+            const proxyURL = "https://whateverorigin.org/get?url=" + encodeURIComponent(trimmedURL)
+            
+            const resp = await fetch(proxyURL,{
+                headers: {
+                    "origin": "https://naadgen.vercel.app/"
+                }
+            })
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`)
+            const text = await resp.json().then(data => data.contents)
+            importDataFromText(text)
+        } catch (e) {
+            alert("Could not fetch file from URL: " + (e?.message ?? e))
+        }
     }
 
     function focusOnSelectedNoteRange(startIndex: number, endIndex: number) {
@@ -300,7 +348,7 @@
                     element: compDiv,
                     popover: {
                         title: "Composition",
-                        description: "This is your composition. Notes will be shown here once you add them from the Raga Svaras panel. Click on a note to edit it in the <b>Note Edit panel</b>.",
+                        description: "This is your composition. Notes will be shown here once you add them from the Raga Svaras panel. If you've already added some notes, click on one to edit it in the <b>Svara/Matra Edit panel</b>.",
                         side: "top",
                         align: "center" 
                     }
@@ -308,8 +356,8 @@
                 {
                     element: "#noteEditModal",
                     popover: {
-                        title: "Note Edit Panel",
-                        description: "From the panel, you can change the svara and octave of the note, split it up or set it as the start or end of a range.",
+                        title: "Svara/Matra Edit Panel",
+                        description: "If you'd clicked on a note before, you can change the svara and octave of the note, split it up or set it as the start or end of a range via this panel.",
                         side: "right",
                         align: "start" 
                     }
@@ -354,7 +402,7 @@
                     element: "#savefileBtns",
                     popover: {
                         title: "Save/Load",
-                        description: "Finally, you can export your composition to a file or import a previously saved composition using these buttons.",
+                        description: "Finally, you can export your composition to a file or import a previously saved composition stored as a valid \".ng\" (NaadGen) or \".ngr\" (NaadGen Reloaded) file, either from local storage or from a URL, using these buttons.",
                         side: "right",
                         align: "center" 
                     }
@@ -389,7 +437,7 @@
             <button class="text-2xl" on:click={() => aboutModal = false}>❌</button>
         </div>
 
-        <p>Welcome to NaadGen! This tool is designed to help users create and explore Indian classical music compositions. I'm excited to share this as it is (finally) nearing completion. As a solo dev in my 3rd year who also recently got reality-checked by the release of midsemester gradings, I'm working to deliver a polished experience, so please bear with me 🐻</p>
+        <p>Welcome to NaadGen! This tool is designed to help users create and explore music compositions, better tailored for Indian classical ones. I'm excited to share this as it is (finally) good enough to warrant being labelled completed! As a solo dev in my <del>2nd</del> <del>3rd</del> 4th year <del>who also recently got reality-checked by the release of midsemester gradings</del> (third year wasn't bad after all, strictly speaking academically!), I'm working to deliver a polished experience, so please bear with me 🐻</p>
         <p>I hope you enjoy using NaadGen as much as I did making it! If you find bugs or have suggestions, please open a GitHub issue by <a href="https://github.com/megz15/NaadGen2/issues" class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded" target="_blank"><nobr>clicking here</nobr></a></p>
         <p>You may also be interested in some of my other projects in this domain: <a href="https://play.google.com/store/apps/details?id=megh.dailyraga" class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded" target="_blank">DailyRaga</a> and <a href="https://swaranjali.vercel.app/" class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded" target="_blank"><nobr>Swaranjali Web</nobr></a>. <a href="https://megz15.github.io/classical-music-workshop/" class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded" target="_blank"><nobr>Click here</nobr></a> to access slides from an introductory workshop I had conducted on Indian classical music.</p>
         <p>~ Meghraj</p>
@@ -457,7 +505,8 @@
                     
                     <input type="file" accept='.ng,.ngr' bind:this={importFileInput} on:change={handleFileInput} class="hidden" />
                     <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={
-                        () => importFileInput.click()
+                        // () => importFileInput.click()
+                        handleImportClick
                     }>Import</button>
                 </div>
 
