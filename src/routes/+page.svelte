@@ -124,8 +124,7 @@
         }
     }
 
-    function addSection() {
-        const sectionName = prompt("Enter new section name", "New Section")
+    function addSection(sectionName: string) {
         if (!sectionName) return
         bandishSections.push({sectionName: sectionName, svaras: []})
         bandishSections = bandishSections
@@ -286,6 +285,49 @@
         startIndex = 0
         endIndex = -1
         focusOnSelectedNoteRange(startIndex, endIndex)
+    }
+
+    function moveSelectionToSection() {
+        if (currentBandishSectionSvaras.length === 0) {
+            alert("Add some notes before moving them around!")
+            return
+        }
+
+        const end = endIndex == -1 ? currentBandishSectionSvaras.length : endIndex
+        if (startIndex > end || startIndex < 0 || end < 0) {
+            alert("Invalid selection range. End usually happens after start.")
+            return
+        }
+
+        const selection = structuredClone(currentBandishSectionSvaras.slice(startIndex, end + 1))
+        if (selection.length === 0) {
+            alert("Nothing selected to move.")
+            return
+        }
+
+        const existingSectionNames = bandishSections.map(s => s.sectionName).join(", ")
+        const targetSectionName = prompt(`Enter target section name (existing: ${existingSectionNames}). New name will create a section:`, existingSectionNames.split(", ")[0] ?? "Default").trim()
+        if (!targetSectionName) return
+
+        if (targetSectionName === currentSection) {
+            alert("Selected range did not budge.")
+            return
+        }
+
+        currentBandishSectionSvaras.splice(startIndex, selection.length)
+        currentBandishSectionSvaras = currentBandishSectionSvaras
+
+        let targetSection = bandishSections.find(s => s.sectionName === targetSectionName)
+        if (!targetSection) {
+            addSection(targetSectionName)
+            targetSection = bandishSections.find(s => s.sectionName === targetSectionName)
+        }
+
+        targetSection.svaras.push(...selection)
+        targetSection = targetSection
+        currentSection = targetSectionName
+        clearSelection()
+        alert(`Moved ${selection.length} notes to "${targetSectionName}"!`)
     }
 
     function startTour() {
@@ -557,13 +599,14 @@
 
             <select class="w-30 max-sm:w-auto bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]" bind:value={currentSection}>
                 <option selected disabled>Section</option>
-                {#each bandishSections.map(section => section.sectionName) as section}
+                {#each bandishSections.map(section => section.sectionName).sort((a, b) => a.localeCompare(b, undefined, { sensitivity: "base" })) as section}
                     <option value={section}>{section}</option>
                 {/each}
             </select>
 
             <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-lime-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
-                addSection()
+                const sectionName = prompt("Enter new section name", "New Section")
+                addSection(sectionName.trim())
             }}>Add New</button>
 
             <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
@@ -580,7 +623,7 @@
 
             <button class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-400/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-400/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
                 clearSelection()
-            }}>Clear</button>
+            }}>Reset</button>
 
             <button class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-lime-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
                 const dupedNotes = structuredClone(currentBandishSectionSvaras.slice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) + 1))
@@ -589,6 +632,10 @@
             }}>Duplicate</button>
 
             <button class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
+                moveSelectionToSection()
+            }}>Move</button>
+
+            <button class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
                 if (confirm("Are you sure you want to delete the selected range? This action cannot be undone!")) {
                     currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1)
                     currentBandishSectionSvaras = currentBandishSectionSvaras
@@ -596,13 +643,13 @@
                 } else alert("Selected range hath been spared from the sword of deletion!")
             }}>Delete</button>
 
-            <button disabled class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
+            <!-- <button disabled class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]" on:click={() => {
                 if (confirm("Are you sure you want to delete the un-selected notes? This action cannot be undone!")) {
                     const croppedNotes = structuredClone(currentBandishSectionSvaras.splice(startIndex, (endIndex == -1 ? currentBandishSectionSvaras.length : endIndex) - startIndex + 1))
                     currentBandishSectionSvaras = croppedNotes
                     clearSelection()
                 } else alert("The chosen range shall not be cropped this day, nay, good sir!")
-            }}>Crop</button>
+            }}>Crop</button> -->
         </div>
     </div>
 
