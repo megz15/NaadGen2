@@ -7,24 +7,22 @@
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''"
+		"prepare": "svelte-kit sync || echo ''",
+		"check": "svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
-		"@sveltejs/kit": "^2.36.2",
+		"@sveltejs/kit": "^2.70.2",
 		"@sveltejs/vite-plugin-svelte": "^5.1.1",
-		"@tailwindcss/vite": "^4.1.12",
-		"svelte": "^5.38.3",
-		"tailwindcss": "^4.1.12",
-		"vite": "^6.3.5"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"@tailwindcss/oxide",
-			"esbuild"
-		]
+		"@tailwindcss/vite": "^4.3.3",
+		"svelte": "^5.56.8",
+		"svelte-check": "^4.0.0",
+		"tailwindcss": "^4.3.3",
+		"typescript": "^5.0.0",
+		"vite": "^6.4.3"
 	},
 	"dependencies": {
-		"driver.js": "^1.3.6"
+		"driver.js": "^1.8.0"
 	}
 }

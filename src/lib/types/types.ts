@@ -11,3 +11,10 @@ export type Taal = {
     tali: number[],
     khali: number[],
 }
+
+export type Svara = [string, number]
+export type BandishNote = Svara[]
+export type BandishSection = {
+    sectionName: string
+    svaras: BandishNote[]
+}
