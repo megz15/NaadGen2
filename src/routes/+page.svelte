@@ -50,7 +50,7 @@
     <Header {state} />
 
     <div class="overflow-x-scroll p-5 max-w-full">
-        <div class="flex flex-wrap gap-2 items-baseline">
+        <div class="flex flex-wrap gap-2 justify-center">
             <RagaSvarasPanel {state} />
         </div>
 

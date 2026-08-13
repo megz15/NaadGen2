@@ -220,7 +220,7 @@ export class CompositionState {
         if (
             Array.from(document.querySelectorAll("[id^='comp-']")).every((note) =>
                 note.classList.contains("bg-yellow-400"),
-            )
+            ) && document.querySelectorAll("[id^='comp-']").length > 1
         ) {
             alert("and it was all yellow... 🎶");
         }
@@ -501,7 +501,8 @@ export class CompositionState {
 
         const driverObj = driver({
             showProgress: true,
-            allowClose: false,
+            // allowClose: false,
+            overlayClickBehavior: undefined,
             smoothScroll: true,
             popoverClass: "driverjs-theme",
             showButtons: ["next", "previous", "close"],

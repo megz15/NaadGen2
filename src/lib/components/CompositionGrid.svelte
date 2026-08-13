@@ -12,7 +12,7 @@
         {@const svaraLabel = svaras.map((svara) => svara[0])}
         <button
             id={`comp-${i}`}
-            class={`relative text-lg h-12 w-12 font-medium rounded-lg py-2.5 hover:scale-112 active:scale-90 hover:shadow-blue-400/50 hover:bg-blue-300 hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-blue-400/50 active:bg-blue-300 active:shadow-[0_0_20px_5px] ${
+            class={`relative text-lg h-8 w-12 font-medium rounded-lg hover:scale-112 active:scale-90 hover:shadow-blue-400/50 hover:bg-blue-300 hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-blue-400/50 active:bg-blue-300 active:shadow-[0_0_20px_5px] ${
                 taals[state.selectedTaal]["tali"].includes(
                     i % taals[state.selectedTaal]["matra"],
                 )
