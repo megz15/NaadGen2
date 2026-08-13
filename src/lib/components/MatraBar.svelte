@@ -1,0 +1,24 @@
+<script lang="ts">
+    import {
+        taals,
+        type CompositionState,
+    } from "$lib/state/compositionState.svelte";
+
+    let { state }: { state: CompositionState } = $props();
+</script>
+
+<div class="flex gap-1 py-4 w-fit" bind:this={state.matrasDiv}>
+    {#each { length: taals[state.selectedTaal]["matra"] } as _, i}
+        <div
+            class={`text-lg w-12 font-medium rounded-lg py-2.5 text-center ${
+                taals[state.selectedTaal]["tali"].includes(i)
+                    ? "bg-gray-600 text-white"
+                    : taals[state.selectedTaal]["khali"].includes(i)
+                      ? "bg-orange-500 text-black"
+                      : "bg-gray-200 text-black"
+            }`}
+        >
+            {i + 1}
+        </div>
+    {/each}
+</div>

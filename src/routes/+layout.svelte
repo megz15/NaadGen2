@@ -36,15 +36,13 @@
         <div>
             Made with 💙 by <nobr
                 ><a
-                    href="https://www.instagram.com/megh.sarod/"
+                    href="https://megz15.github.io/"
                     target="_blank"
                     class="text-lg hover:text-blue-900 active:text-blue-900 font-semibold hover:bg-blue-100 active:bg-blue-100 py-0.5 px-2 rounded text-yellow-900 bg-yellow-100 transition duration-200"
                     >Meghraj Goswami</a
                 ></nobr
-            >
-        </div>
-        <div>
-            Try out <a
+            >. Check out
+            <a
                 id="dailyRagaPromo"
                 href="https://play.google.com/store/apps/details?id=megh.dailyraga"
                 target="_blank"
