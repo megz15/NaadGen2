@@ -5,16 +5,16 @@
 </script>
 
 <div
-    class={`w-fit opacity-${state.isPlaybackStopped ? "100" : "10"} pointer-events-${
+    class={`flex flex-col gap-4 w-fit opacity-${state.isPlaybackStopped ? "100" : "10"} pointer-events-${
         state.isPlaybackStopped ? "auto" : "none"
     }`}
 >
     <div
         id="ragaSvaras"
-        class="flex gap-1 mb-1 relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400"
+        class="flex gap-1 relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black"
     >
         <div
-            class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400 capitalize"
+            class="absolute -top-3 text-sm font-semibold bg-[#1d2230b9] text-white px-2 shadow-sm shadow-black rounded-lg capitalize"
         >
             Raga {state.selectedRaga} Svaras:
         </div>
@@ -40,13 +40,13 @@
         </button>
     </div>
 
-    <div class="flex gap-1 justify-between">
+    <div class="flex gap-3 justify-between">
         <div
             id="noteOctave"
-            class="flex gap-0.5 items-center relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400"
+            class="flex gap-0.5 items-center relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black"
         >
             <div
-                class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400"
+                class="absolute -top-3 text-sm font-semibold bg-[#1d2230b9] text-white px-2 rounded-lg shadow-sm shadow-black"
             >
                 Octave:
             </div>
@@ -79,7 +79,7 @@
         </div>
 
         <div
-            class="flex gap-0.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400"
+            class="flex gap-0.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black"
         >
             <button
                 class="text-black bg-red-500 font-medium rounded-l-lg px-5 py-1 hover:scale-105 active:scale-90 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]"

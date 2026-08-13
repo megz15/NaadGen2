@@ -6,14 +6,15 @@
 
 <div
     id="noteEditModal"
-    class={`fixed bottom-0 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white transition-opacity duration-500 ease-in-out ${
+    class={`fixed bottom-4 left-4 z-50 p-5 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white transition-opacity duration-500 ease-in-out ${
         state.noteEditModal ? "opacity-100" : "opacity-0 pointer-events-none"
     }`}
 >
-    <div class="flex justify-between items-center mb-2">
+    <div class="flex justify-between items-center mb-4">
         <div class="text-xl font-bold">🔧 Svara/Matra Edit</div>
-        <button class="text-2xl" onclick={() => (state.noteEditModal = false)}
-            >❌</button
+        <button
+            class="text-2xl cursor-pointer"
+            onclick={() => (state.noteEditModal = false)}>❌</button
         >
     </div>
 
@@ -27,7 +28,7 @@
                 {#each state.currentBandishSectionSvaras[state.noteModalNoteIndex] as svaras, i}
                     <div class="flex justify-between gap-1">
                         <button
-                            class="text-lg text-white w-10 bg-orange-500 font-medium rounded-lg py-2.5 hover:scale-105 active:scale-90 hover:shadow-orange-500/50 hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-orange-500/50 active:shadow-[0_0_20px_5px]"
+                            class="text-black hover:text-white w-10 bg-orange-500 font-medium rounded-lg py-1.5 hover:scale-105 active:scale-90 hover:shadow-orange-500/50 hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-orange-500/50 active:shadow-[0_0_20px_5px]"
                             onclick={() => {
                                 if (!["S", "P"].includes(svaras[0])) {
                                     svaras[0] =
@@ -37,7 +38,7 @@
                                 }
                             }}
                         >
-                            🔁
+                            ⟳
                         </button>
 
                         <input
@@ -45,10 +46,10 @@
                             maxlength="1"
                             onclick={(e) =>
                                 (e.currentTarget as HTMLInputElement).select()}
-                            class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg p-2.5"
+                            class="w-12 bg-gray-50 border-2 text-black text-sm rounded-lg px-2.5"
                         />
 
-                        <div class="flex items-center">
+                        <div class="flex items-center gap-0.5">
                             <button
                                 class="text-lg h-10 w-12 text-black bg-orange-500 font-medium rounded-l-lg hover:scale-108 active:scale-90 hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]"
                                 onclick={() => {
@@ -60,7 +61,7 @@
 
                             <input
                                 bind:value={svaras[1]}
-                                class="h-12 w-12 rounded-lg bg-gray-50 border text-black text-sm p-2.5"
+                                class="h-12 w-12 rounded-lg bg-gray-50 border text-black text-sm px-2.5"
                                 readonly
                             />
 
@@ -75,7 +76,7 @@
                         </div>
 
                         <button
-                            class="text-lg text-white w-10 bg-red-500 font-medium rounded-lg py-2.5 hover:scale-105 active:scale-90 hover:shadow-red-500/50 hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-red-500/50 active:shadow-[0_0_20px_5px]"
+                            class="text-black hover:text-white w-10 bg-red-500 font-medium rounded-lg py-1.5 hover:scale-105 active:scale-90 hover:shadow-red-500/50 hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-red-500/50 active:shadow-[0_0_20px_5px]"
                             onclick={() => {
                                 if (
                                     state.currentBandishSectionSvaras[
@@ -88,7 +89,7 @@
                                 } else alert("Can't delete base note!");
                             }}
                         >
-                            🗑️
+                            🗑
                         </button>
                     </div>
                 {/each}
@@ -96,7 +97,7 @@
 
             <div class="grid grid-cols-2 gap-1">
                 <button
-                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
                     onclick={() => {
                         state.currentBandishSectionSvaras[
                             state.noteModalNoteIndex
@@ -115,7 +116,7 @@
                 </button>
 
                 <button
-                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
                     onclick={() => {
                         state.currentBandishSectionSvaras[
                             state.noteModalNoteIndex
@@ -130,7 +131,7 @@
                 </button>
 
                 <button
-                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
                     onclick={() => {
                         state.startIndex = state.noteModalNoteIndex;
                         state.focusOnSelectedNoteRange(
@@ -143,7 +144,7 @@
                 </button>
 
                 <button
-                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-2.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+                    class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
                     onclick={() => {
                         state.endIndex = state.noteModalNoteIndex;
                         state.focusOnSelectedNoteRange(

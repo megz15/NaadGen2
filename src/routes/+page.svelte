@@ -5,7 +5,7 @@
 
     import Header from "$lib/components/Header.svelte";
     import AboutModal from "$lib/components/AboutModal.svelte";
-    import RagaDetails from "$lib/components/RagaDetails.svelte";
+    // import RagaDetails from "$lib/components/RagaDetails.svelte";
     import ControlPanel from "$lib/components/ControlPanel.svelte";
     import PlaybackControls from "$lib/components/PlaybackControls.svelte";
     import SectionControls from "$lib/components/SectionControls.svelte";
@@ -58,10 +58,10 @@
         <CompositionGrid {state} />
     </div>
 
-    <div class="flex flex-col m-5 gap-2 max-sm:gap-3">
-        <RagaDetails {state} />
+    <div class="flex flex-col m-5 gap-4">
+        <!-- <RagaDetails {state} /> -->
 
-        <div class="flex flex-wrap gap-2 max-sm:gap-3">
+        <div class="flex flex-wrap gap-4">
             <ControlPanel {state} />
             <PlaybackControls {state} />
         </div>

@@ -6,12 +6,12 @@
 
 <div
     id="playbackControls"
-    class={`relative flex grow gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black border-2 border-gray-400 flex-col max-sm:w-full opacity-${
+    class={`relative flex grow gap-1 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black flex-col max-sm:w-full opacity-${
         state.isPlaybackStopped ? "100" : "10"
     } pointer-events-${state.isPlaybackStopped ? "auto" : "none"}`}
 >
     <div
-        class="absolute -top-2 text-sm font-semibold bg-[#1d2230] text-white px-2 rounded-lg border border-gray-400"
+        class="absolute -top-3 left-4 text-sm font-semibold bg-[#1d2230b9] text-white px-2 rounded-lg shadow-sm shadow-black"
     >
         🎚️ Playback:
     </div>
