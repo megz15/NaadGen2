@@ -3,7 +3,7 @@
     let { children } = $props();
 </script>
 
-<div>
+<div class="flex flex-col justify-between h-screen">
     <svg
         class="wave1 max-sm:hidden"
         viewBox="0 0 1440 250"
@@ -30,9 +30,7 @@
 
     {@render children()}
 
-    <div
-        class="bg-[#1d2230b9] text-white py-5 text-center flex flex-col justify-center items-center gap-2"
-    >
+    <div class="bg-[#1d2230b9] text-white py-5 text-center">
         <div>
             Made with 💙 by <nobr
                 ><a

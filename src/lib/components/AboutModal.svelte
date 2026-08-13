@@ -5,15 +5,17 @@
 </script>
 
 <div
-    class={`leading-[1.8] h-fit max-h-3/4 fixed top-1/2 -translate-y-1/2 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white w-1/2 max-md:w-[90%] overflow-auto [&>p:not(:last-child)]:mb-8 transition-opacity duration-1000 ease-in-out ${
-        state.aboutModal ? "opacity-100" : "opacity-0 pointer-events-none"
+    class={`leading-[1.8] h-fit max-h-3/4 fixed bottom-1/2 translate-y-1/2 z-50 p-5 m-2 rounded-lg bg-[#1d2230b9] backdrop-blur shadow shadow-black border-2 border-gray-400 text-white w-1/2 max-md:w-[90%] overflow-auto [&>p:not(:last-child)]:mb-8 transition-opacity duration-1000 ease-in-out ${
+        state.isAboutModalShown
+            ? "opacity-100"
+            : "opacity-0 pointer-events-none"
     }`}
 >
     <div class="flex justify-between items-center mb-4">
         <div class="text-2xl font-bold">✨ <u>NaadGen v2</u> ✨</div>
         <button
             class="text-2xl cursor-pointer"
-            onclick={() => (state.aboutModal = false)}>❌</button
+            onclick={() => (state.isAboutModalShown = false)}>❌</button
         >
     </div>
 

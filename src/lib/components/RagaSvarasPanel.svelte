@@ -104,37 +104,3 @@
         </div>
     </div>
 </div>
-
-<button
-    id="playBtn"
-    class={`opacity-${
-        state.currentBandishSectionSvaras.length != 0 ? "100" : "10"
-    } text-black bg-${
-        state.isPlaybackStopped ? "lime" : "red"
-    }-500 fixed right-10 top-10 font-medium rounded-lg text-lg px-5 py-2 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white ${
-        state.isPlaybackStopped
-            ? "hover:shadow-lime-500/50"
-            : "hover:shadow-red-500/50"
-    } hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white ${
-        state.isPlaybackStopped
-            ? "active:shadow-lime-500/50"
-            : "active:shadow-red-500/50"
-    } active:text-white active:shadow-[0_0_20px_5px]`}
-    onclick={() => {
-        if (state.isPlaybackStopped) {
-            state.playNotes(
-                state.endIndex == -1
-                    ? state.currentBandishSectionSvaras.slice(state.startIndex)
-                    : state.currentBandishSectionSvaras.slice(
-                          state.startIndex,
-                          state.endIndex + 1,
-                      ),
-                state.startIndex,
-            );
-        } else {
-            state.stopPlayback();
-        }
-    }}
->
-    {state.isPlaybackStopped ? "▶ Play!" : "⏹ Stop"}
-</button>

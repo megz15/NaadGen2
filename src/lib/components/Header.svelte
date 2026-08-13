@@ -23,7 +23,7 @@
 
     <button
         class="text-black bg-yellow-400 font-medium rounded-lg text-sm px-5 py-1 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-yellow-400/50 hover:text-white hover:shadow-[0_0_20px_5px] active:border-2 active:border-white active:shadow-yellow-400/50 active:text-white active:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50"
-        onclick={() => (state.aboutModal = true)}
+        onclick={() => (state.isAboutModalShown = true)}
     >
         About
     </button>

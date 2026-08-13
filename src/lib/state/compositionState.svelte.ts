@@ -59,7 +59,8 @@ export class CompositionState {
     startIndex = $state(0);
     endIndex = $state(-1);
 
-    aboutModal = $state(false);
+    isAboutModalShown = $state(false);
+    isControlPanelShown = $state(false);
     noteEditModal = $state(false);
     noteModalNoteIndex = $state(0);
 
@@ -496,7 +497,8 @@ export class CompositionState {
     };
 
     startTour = async () => {
-        this.aboutModal = false;
+        this.isAboutModalShown = false;
+        // this.isControlPanelShown = false;
         await tick();
 
         const driverObj = driver({
