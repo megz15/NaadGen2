@@ -4,21 +4,30 @@
         shrutiNames,
         type CompositionState,
     } from "$lib/state/compositionState.svelte";
-
     let { state }: { state: CompositionState } = $props();
+
+    const detailClasses = "text-yellow-400";
 </script>
 
-<div class="text-white text-lg mb-2">
-    <span>
-        <b>Vadi:</b>
-        <span class="bg-blue-100 py-0.5 px-2 rounded text-blue-900">
+<div
+    class="flex flex-col text-white gap-2 max-lg:flex-row max-lg:justify-between"
+>
+    <div>
+        Vadi:
+        <span class={detailClasses}>
             {shrutiNames[ragas[state.selectedRaga].vadi.toLowerCase()]}
-        </span>,
-    </span>
-    <span>
-        <b>Samvadi:</b>
-        <span class="bg-blue-100 py-0.5 px-2 rounded text-blue-900">
+        </span>
+    </div>
+    <div>
+        Samvadi:
+        <span class={detailClasses}>
             {shrutiNames[ragas[state.selectedRaga].samvadi.toLowerCase()]}
         </span>
-    </span>
+    </div>
+    <div>
+        Vikrit:
+        <span class={detailClasses}>
+            {ragas[state.selectedRaga].vikrit.join(", ")}
+        </span>
+    </div>
 </div>

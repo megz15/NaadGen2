@@ -5,7 +5,6 @@
 
     import Header from "$lib/components/Header.svelte";
     import AboutModal from "$lib/components/AboutModal.svelte";
-    // import RagaDetails from "$lib/components/RagaDetails.svelte";
     import ControlPanel from "$lib/components/ControlPanel.svelte";
     import RagaSvarasPanel from "$lib/components/RagaSvarasPanel.svelte";
     import MatraBar from "$lib/components/MatraBar.svelte";
@@ -54,7 +53,6 @@
         <MatraBar {state} />
         <CompositionGrid {state} />
     </div>
-    <!-- <RagaDetails {state} /> -->
 
     <button
         id="controlPanelBtn"
@@ -106,7 +104,6 @@
         {state.isPlaybackStopped ? "▶ Play!" : "⏹ Stop"}
     </button>
 
-    <!-- <div class="fixed bottom-1/2 translate-y-1/2 flex flex-col m-5 gap-4"> -->
     <ControlPanel {state} />
 </main>
 

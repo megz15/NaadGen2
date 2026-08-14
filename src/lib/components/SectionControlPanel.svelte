@@ -15,7 +15,7 @@
     </div>
 
     <select
-        class="w-32 max-sm:w-auto bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+        class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]"
         bind:value={state.currentSection}
     >
         <option selected disabled>Section</option>

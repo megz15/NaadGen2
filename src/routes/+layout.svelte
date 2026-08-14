@@ -32,7 +32,7 @@
 
     <div
         id="footer"
-        class="bg-[#1d2230b9] text-white py-3 text-center max-sm:text-xs"
+        class="bg-[#1d2230b9] text-white py-3 text-center max-sm:text-xs max-lg:hidden"
     >
         <div>
             Made with 💙 by <nobr
