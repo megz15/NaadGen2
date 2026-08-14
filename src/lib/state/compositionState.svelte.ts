@@ -40,11 +40,11 @@ export class CompositionState {
     selectedTaal = $state("deepchandi");
 
     noteTime = $state(0.25);
-    tempoBPM = $state(300);
+    tempoBPM = $state(280);
     noteVolume = $state(100);
 
     octave = $state(0);
-    baseFreq = $state(220);
+    baseFreq = $state(246.94);
 
     bandishSections = $state<BandishSection[]>([
         { sectionName: "Default", svaras: [] },
@@ -479,11 +479,11 @@ export class CompositionState {
                 this.currentBandishSectionSvaras.length = 0;
                 this.lastRemovedSvara = [["S", 0]];
 
-                this.baseFreq = 220;
+                this.baseFreq = 246.94;
                 this.octave = 0;
 
                 this.noteTime = 0.25;
-                this.tempoBPM = 300;
+                this.tempoBPM = 280;
                 this.isPlaybackLooped = false;
 
                 this.clearSelection();
