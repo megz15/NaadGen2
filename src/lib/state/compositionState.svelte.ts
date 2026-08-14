@@ -44,7 +44,7 @@ export class CompositionState {
     noteVolume = $state(100);
 
     octave = $state(0);
-    currBaseFreq = $state(220);
+    baseFreq = $state(220);
 
     bandishSections = $state<BandishSection[]>([
         { sectionName: "Default", svaras: [] },
@@ -74,6 +74,10 @@ export class CompositionState {
 
     constructor() {
         this.resetSvaras();
+    }
+
+    get currBaseFreq(): number {
+        return this.baseFreq * 2 ** this.octave;
     }
 
     get freqObject(): Record<string, number> {
@@ -146,7 +150,7 @@ export class CompositionState {
     };
 
     svaraClick = (svara: string, oct: number) => {
-        genSine(this.freqObject[svara] * 2 ** oct, this.noteTime, this.noteVolume);
+        genSine(this.freqObject[svara], this.noteTime, this.noteVolume);
         this.currentBandishSectionSvaras.push([[svara, oct]]);
     };
 
@@ -175,7 +179,7 @@ export class CompositionState {
                     if (!this.isPlaybackStopped) {
                         if (split[0] != "." && shrutis.includes(split[0])) {
                             genSine(
-                                this.freqObject[split[0]] * 2 ** split[1],
+                                this.freqObject[split[0]] * 2 ** (split[1] - this.octave),
                                 this.noteTime / note.length,
                                 volume,
                             );
@@ -272,7 +276,7 @@ export class CompositionState {
         exportCompositionToFile(
             this.selectedRaga,
             this.selectedTaal,
-            this.currBaseFreq,
+            this.baseFreq,
             this.octave,
             this.tempoBPM,
             this.noteTime,
@@ -301,7 +305,8 @@ export class CompositionState {
             this.resetSvaras();
             this.matchDivWidth();
 
-            this.currBaseFreq = data["freq"];
+            this.baseFreq = data["freq"];
+            this.octave = data["octave"] ?? 0;
             this.tempoBPM = data["tempo"];
             this.noteTime = data["noteTime"];
 
@@ -474,7 +479,7 @@ export class CompositionState {
                 this.currentBandishSectionSvaras.length = 0;
                 this.lastRemovedSvara = [["S", 0]];
 
-                this.currBaseFreq = 220;
+                this.baseFreq = 220;
                 this.octave = 0;
 
                 this.noteTime = 0.25;

@@ -54,7 +54,6 @@
             <button
                 class="w-8 text-black bg-red-500 font-medium rounded-l-lg hover:scale-108 active:scale-90 hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]"
                 onclick={() => {
-                    state.currBaseFreq /= 2;
                     state.octave--;
                 }}
             >
@@ -70,7 +69,6 @@
             <button
                 class="w-8 text-black bg-lime-500 font-medium rounded-r-lg hover:scale-108 active:scale-90 hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-lime-500/50 active:text-white active:shadow-[0_0_20px_5px]"
                 onclick={() => {
-                    state.currBaseFreq *= 2;
                     state.octave++;
                 }}
             >

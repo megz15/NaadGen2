@@ -18,7 +18,7 @@
             <div class="text-white">Frequency (Hz)</div>
             <input
                 type="number"
-                bind:value={state.currBaseFreq}
+                bind:value={state.baseFreq}
                 class="w-20 bg-gray-50 border-2 text-black text-sm rounded-lg px-2 py-1"
             />
         </div>
@@ -27,7 +27,7 @@
             min="20"
             max="1000"
             step="10"
-            bind:value={state.currBaseFreq}
+            bind:value={state.baseFreq}
             class="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-700"
         />
     </div>
