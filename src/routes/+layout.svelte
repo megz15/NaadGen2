@@ -30,21 +30,24 @@
 
     {@render children()}
 
-    <div class="bg-[#1d2230b9] text-white py-5 text-center">
+    <div
+        id="footer"
+        class="bg-[#1d2230b9] text-white py-3 text-center max-sm:text-xs"
+    >
         <div>
             Made with 💙 by <nobr
                 ><a
                     href="https://megz15.github.io/"
                     target="_blank"
-                    class="text-lg hover:text-blue-900 active:text-blue-900 font-semibold hover:bg-blue-100 active:bg-blue-100 py-0.5 px-2 rounded text-yellow-900 bg-yellow-100 transition duration-200"
+                    class="hover:text-blue-900 active:text-blue-900 font-semibold hover:bg-blue-100 active:bg-blue-100 py-0.5 px-2 rounded text-yellow-900 bg-yellow-100 transition duration-200"
                     >Meghraj Goswami</a
                 ></nobr
-            >. Check out
+            >. <br class="sm:hidden mb-2" />Check out
             <a
                 id="dailyRagaPromo"
                 href="https://play.google.com/store/apps/details?id=megh.dailyraga"
                 target="_blank"
-                class="text-lg hover:text-yellow-900 active:text-yellow-900 font-semibold hover:bg-yellow-100 active:bg-yellow-100 py-0.5 px-2 rounded text-blue-900 bg-blue-100 transition duration-200"
+                class="hover:text-yellow-900 active:text-yellow-900 font-semibold hover:bg-yellow-100 active:bg-yellow-100 py-0.5 px-2 rounded text-blue-900 bg-blue-100 transition duration-200"
                 >DailyRaga</a
             >!
         </div>

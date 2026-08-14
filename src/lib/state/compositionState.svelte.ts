@@ -61,6 +61,7 @@ export class CompositionState {
 
     isAboutModalShown = $state(false);
     isControlPanelShown = $state(false);
+    isFooterVisible = $state(false);    // todo
     noteEditModal = $state(false);
     noteModalNoteIndex = $state(0);
 
