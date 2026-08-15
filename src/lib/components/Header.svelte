@@ -11,10 +11,10 @@
     src={logo}
     width="300px"
     alt="NaadGen"
-    class="drop-shadow-[0_0_5em_oklch(0.424_0.199_265.638)] mt-5 z-1"
+    class="drop-shadow-[0_0_5em_oklch(0.424_0.199_265.638)] mt-5 z-20"
 />
 <div class="glow flex items-baseline">
-    <span class="relative z-1">NaadGen</span>
+    <span class="relative z-20">NaadGen</span>
     <sup class="relative z-0 text-gray-400">2</sup>
 </div>
 

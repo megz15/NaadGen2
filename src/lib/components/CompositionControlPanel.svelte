@@ -6,6 +6,11 @@
     } from "$lib/state/compositionState.svelte";
     import RagaDetails from "$lib/components/RagaDetails.svelte";
     let { state }: { state: CompositionState } = $props();
+
+    const selectClasses =
+        "bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 w-full active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]";
+    const btnBlueClasses =
+        "text-black flex-1 bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]";
 </script>
 
 <div
@@ -20,7 +25,7 @@
     <div class="mb-2 flex flex-col max-lg:flex-row gap-2">
         <select
             id="ragaSelector"
-            class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 w-full active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+            class={selectClasses}
             bind:value={state.selectedRaga}
             onchange={() => state.resetSvaras()}
         >
@@ -31,7 +36,7 @@
         </select>
         <select
             id="taalSelector"
-            class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 w-full active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+            class={selectClasses}
             bind:value={state.selectedTaal}
         >
             <option selected disabled>Taal</option>
@@ -47,10 +52,7 @@
         id="savefileBtns"
         class="my-2 flex flex-col max-lg:flex-row gap-2 max-lg:my-2"
     >
-        <button
-            class="text-black flex-1 bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
-            onclick={() => state.exportData()}
-        >
+        <button class={btnBlueClasses} onclick={() => state.exportData()}>
             Export
         </button>
 
@@ -62,7 +64,7 @@
             class="hidden"
         />
         <button
-            class="text-black flex-1 bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+            class={btnBlueClasses}
             onclick={() => state.handleImportClick()}
         >
             Import

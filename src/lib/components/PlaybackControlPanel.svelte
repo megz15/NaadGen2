@@ -42,11 +42,11 @@
         { label: "ff", val: 150 },
     ];
 
-    const btnBase =
+    const btnBaseClasses =
         "px-2 py-1 rounded-lg text-sm transition-all duration-150 cursor-pointer border";
-    const btnActive =
+    const btnActiveClasses =
         "bg-yellow-400 text-black border-yellow-300 shadow-[0_0_10px_2px] shadow-yellow-500";
-    const btnInactive =
+    const btnInactiveClasses =
         "bg-[#2a3146] text-gray-300 border-transparent hover:border-gray-500 hover:text-white";
 </script>
 
@@ -71,9 +71,11 @@
         <div class="flex flex-wrap gap-1">
             {#each freqNotes as note}
                 <button
-                    class="{btnBase} {Math.abs(state.baseFreq - note.freq) < 0.1
-                        ? btnActive
-                        : btnInactive} min-w-10"
+                    class="{btnBaseClasses} {Math.abs(
+                        state.baseFreq - note.freq,
+                    ) < 0.1
+                        ? btnActiveClasses
+                        : btnInactiveClasses} min-w-10"
                     onclick={() => (state.baseFreq = note.freq)}
                 >
                     <span class="text-sm">{note.label}</span>
@@ -93,9 +95,9 @@
         <div class="flex gap-1.5">
             {#each tempos as t}
                 <button
-                    class="{btnBase} {state.tempoBPM === t.bpm
-                        ? btnActive
-                        : btnInactive} flex-1"
+                    class="{btnBaseClasses} {state.tempoBPM === t.bpm
+                        ? btnActiveClasses
+                        : btnInactiveClasses} flex-1"
                     onclick={() => (state.tempoBPM = t.bpm)}
                 >
                     <span class="text-sm">{t.label}</span>
@@ -115,9 +117,9 @@
         <div class="flex gap-1.5">
             {#each durations as d}
                 <button
-                    class="{btnBase} {state.noteTime === d.val
-                        ? btnActive
-                        : btnInactive} flex-1"
+                    class="{btnBaseClasses} {state.noteTime === d.val
+                        ? btnActiveClasses
+                        : btnInactiveClasses} flex-1"
                     onclick={() => (state.noteTime = d.val)}
                 >
                     <span class="text-xs">{d.label}</span>
@@ -137,9 +139,9 @@
         <div class="flex gap-1.5">
             {#each volumes as v}
                 <button
-                    class="{btnBase} {state.noteVolume === v.val
-                        ? btnActive
-                        : btnInactive} flex-1"
+                    class="{btnBaseClasses} {state.noteVolume === v.val
+                        ? btnActiveClasses
+                        : btnInactiveClasses} flex-1"
                     onclick={() => (state.noteVolume = v.val)}
                 >
                     <span class="text-xs">{v.label}</span>

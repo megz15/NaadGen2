@@ -3,8 +3,10 @@
         taals,
         type CompositionState,
     } from "$lib/state/compositionState.svelte";
-
     let { state }: { state: CompositionState } = $props();
+
+    const cursorClasses =
+        "w-1 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_8px_2px] shadow-yellow-400";
 </script>
 
 {#if state.insertIndex >= 0 && state.insertIndex < state.currentBandishSectionSvaras.length}
@@ -19,7 +21,7 @@
             class="text-xs text-black bg-gray-300 hover:text-red-500 hover:bg-white py-0.5 px-2 rounded transition duration-200"
             onclick={() => state.clearInsertCursor()}
         >
-            ✕ Clear
+            <nobr>✕ Clear</nobr>
         </button>
     </div>
 {/if}
@@ -30,9 +32,7 @@
             <div class="w-1"></div>
         {/if}
         {#if state.insertIndex === i}
-            <div
-                class="w-1 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_8px_2px] shadow-yellow-400"
-            ></div>
+            <div class={cursorClasses}></div>
         {/if}
         {@const svaraLabel = svaras.map((svara) => svara[0])}
         <button
@@ -66,8 +66,6 @@
         </button>
     {/each}
     {#if state.insertIndex == -1 || (state.insertIndex >= 0 && state.insertIndex >= state.currentBandishSectionSvaras.length)}
-        <div
-            class="w-1 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_8px_2px] shadow-yellow-400"
-        ></div>
+        <div class={cursorClasses}></div>
     {/if}
 </div>

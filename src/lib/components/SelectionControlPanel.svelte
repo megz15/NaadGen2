@@ -2,6 +2,9 @@
     import type { CompositionState } from "$lib/state/compositionState.svelte";
 
     let { state }: { state: CompositionState } = $props();
+
+    const btnActionClasses =
+        "text-black font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:text-white active:shadow-[0_0_20px_5px]";
 </script>
 
 <div
@@ -15,28 +18,28 @@
     </div>
 
     <button
-        class="text-black bg-blue-400 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-400/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-400/50 active:text-white active:shadow-[0_0_20px_5px]"
+        class="{btnActionClasses} bg-blue-400 hover:shadow-blue-400/50 active:shadow-blue-400/50"
         onclick={() => state.clearSelection()}
     >
         Reset
     </button>
 
     <button
-        class="text-black bg-lime-500 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-lime-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+        class="{btnActionClasses} bg-lime-500 hover:shadow-lime-500/50 active:shadow-lime-500/50"
         onclick={() => state.duplicateSelection()}
     >
         Duplicate
     </button>
 
     <button
-        class="text-black bg-orange-500 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+        class="{btnActionClasses} bg-orange-500 hover:shadow-orange-500/50 active:shadow-orange-500/50"
         onclick={() => state.moveSelectionToSection()}
     >
         Move
     </button>
 
     <button
-        class="text-black bg-red-500 font-medium rounded-lg text-sm px-5 py-1.5 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+        class="{btnActionClasses} bg-red-500 hover:shadow-red-500/50 active:shadow-red-500/50"
         onclick={() => state.deleteSelection()}
     >
         Delete

@@ -13,6 +13,9 @@
 
     const state = new CompositionState();
 
+    const fixedBtnClasses =
+        "font-medium rounded-lg text-lg px-5 py-2 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:text-white active:shadow-[0_0_20px_5px]";
+
     $effect(() => {
         // Automatically sync composition grid width whenever selectedTaal or currentSection changes
         const _taal = state.selectedTaal;
@@ -56,9 +59,9 @@
 
     <button
         id="controlPanelBtn"
-        class={`z-100 text-black bg-yellow-500 fixed left-4 ${
+        class={`z-10 text-black bg-yellow-500 fixed right-4 ${
             state.isFooterVisible ? "bottom-13 max-sm:bottom-20" : "top-4"
-        } font-medium rounded-lg text-lg px-5 py-2 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-yellow-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-yellow-500/50 active:text-white active:shadow-[0_0_20px_5px] opacity-${
+        } ${fixedBtnClasses} hover:shadow-yellow-500/50 active:shadow-yellow-500/50 opacity-${
             state.isPlaybackStopped ? "100" : "10"
         } pointer-events-${state.isPlaybackStopped ? "auto" : "none"}`}
         onclick={() => {
@@ -70,19 +73,19 @@
         id="playBtn"
         class={`opacity-${
             state.currentBandishSectionSvaras.length != 0 ? "100" : "10"
-        } z-100 text-black bg-${
+        } z-10 text-black bg-${
             state.isPlaybackStopped ? "lime" : "red"
-        }-500 fixed right-4 ${
+        }-500 fixed left-4 ${
             state.isFooterVisible ? "bottom-13 max-sm:bottom-20" : "top-4"
-        } font-medium rounded-lg text-lg px-5 py-2 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white ${
+        } ${fixedBtnClasses} ${
             state.isPlaybackStopped
                 ? "hover:shadow-lime-500/50"
                 : "hover:shadow-red-500/50"
-        } hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white ${
+        } ${
             state.isPlaybackStopped
                 ? "active:shadow-lime-500/50"
                 : "active:shadow-red-500/50"
-        } active:text-white active:shadow-[0_0_20px_5px]`}
+        }`}
         onclick={() => {
             if (state.isPlaybackStopped) {
                 state.playNotes(

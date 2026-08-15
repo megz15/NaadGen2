@@ -2,6 +2,9 @@
     import type { CompositionState } from "$lib/state/compositionState.svelte";
 
     let { state }: { state: CompositionState } = $props();
+
+    const linkPillClasses =
+        "text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded";
 </script>
 
 <div
@@ -31,7 +34,7 @@
         I hope you enjoy using NaadGen as much as I enjoyed making it! If you
         find bugs or have suggestions, please open a GitHub issue by <a
             href="https://github.com/megz15/NaadGen2/issues"
-            class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded"
+            class={linkPillClasses}
             target="_blank"><nobr>clicking here</nobr></a
         >.
     </p>
@@ -39,18 +42,18 @@
         You might also be interested in a few of my other projects in this
         space, like <a
             href="https://play.google.com/store/apps/details?id=megh.dailyraga"
-            class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded"
+            class={linkPillClasses}
             target="_blank">DailyRaga</a
         >
         and
         <a
             href="https://swaranjali.vercel.app/"
-            class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded"
+            class={linkPillClasses}
             target="_blank"><nobr>Swaranjali Web</nobr></a
         >.
         <a
             href="https://megz15.github.io/classical-music-workshop/"
-            class="text-blue-900 font-semibold bg-blue-100 py-0.5 px-2 rounded"
+            class={linkPillClasses}
             target="_blank"><nobr>Click here</nobr></a
         > to access slides from an introductory workshop I conducted on Indian classical
         music.

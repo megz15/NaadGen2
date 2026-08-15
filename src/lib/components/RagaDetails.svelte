@@ -27,7 +27,7 @@
     <div>
         Vikrit:
         <span class={detailClasses}>
-            {ragas[state.selectedRaga].vikrit.join(", ")}
+            {ragas[state.selectedRaga].vikrit.join(", ") || "None"}
         </span>
     </div>
 </div>

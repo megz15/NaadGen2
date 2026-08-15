@@ -2,6 +2,13 @@
     import type { CompositionState } from "$lib/state/compositionState.svelte";
 
     let { state }: { state: CompositionState } = $props();
+
+    const glassPanelClasses =
+        "p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black";
+    const glassPanelLabelClasses =
+        "absolute -top-3 text-sm font-semibold bg-[#1d2230b9] text-white px-2 shadow-sm shadow-black rounded-lg";
+    const btnGlowClasses =
+        "text-black font-medium px-5 py-1 hover:scale-105 active:scale-90 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:text-white active:shadow-[0_0_20px_5px]";
 </script>
 
 <div
@@ -9,13 +16,8 @@
         state.isPlaybackStopped ? "auto" : "none"
     }`}
 >
-    <div
-        id="ragaSvaras"
-        class="flex gap-1 relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black"
-    >
-        <div
-            class="absolute -top-3 text-sm font-semibold bg-[#1d2230b9] text-white px-2 shadow-sm shadow-black rounded-lg capitalize"
-        >
+    <div id="ragaSvaras" class="{glassPanelClasses} flex gap-1 relative">
+        <div class="{glassPanelLabelClasses} capitalize">
             Raga {state.selectedRaga} Svaras:
         </div>
 
@@ -43,13 +45,9 @@
     <div class="flex gap-3 justify-between">
         <div
             id="noteOctave"
-            class="flex gap-0.5 items-center relative p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black"
+            class="{glassPanelClasses} flex gap-0.5 items-center relative"
         >
-            <div
-                class="absolute -top-3 text-sm font-semibold bg-[#1d2230b9] text-white px-2 rounded-lg shadow-sm shadow-black"
-            >
-                Octave:
-            </div>
+            <div class={glassPanelLabelClasses}>Octave:</div>
 
             <button
                 class="w-8 text-black bg-red-500 font-medium rounded-l-lg hover:scale-108 active:scale-90 hover:shadow-orange-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-orange-500/50 active:text-white active:shadow-[0_0_20px_5px]"
@@ -76,25 +74,23 @@
             </button>
         </div>
 
-        <div
-            class="flex gap-0.5 p-4 pt-5 bg-[#1d2230b9] rounded-lg backdrop-blur shadow shadow-black"
-        >
+        <div class="{glassPanelClasses} flex gap-0.5">
             <button
-                class="text-black bg-red-500 font-medium rounded-l-lg px-5 py-1 hover:scale-105 active:scale-90 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+                class="{btnGlowClasses} bg-red-500 rounded-l-lg hover:shadow-red-500/50 active:shadow-red-500/50"
                 onclick={() => state.deleteLastSvara()}
             >
                 Delete
             </button>
 
             <button
-                class="text-black bg-lime-500 font-medium rounded-r-lg px-5 py-1 hover:scale-105 active:scale-90 hover:shadow-lime-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-lime-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+                class="{btnGlowClasses} bg-lime-500 rounded-r-lg hover:shadow-lime-500/50 active:shadow-lime-500/50"
                 onclick={() => state.undoLastSvara()}
             >
                 Undo
             </button>
 
             <button
-                class="text-black bg-red-500 font-medium rounded-lg px-5 py-1 ml-1 hover:scale-105 active:scale-90 hover:shadow-red-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-red-500/50 active:text-white active:shadow-[0_0_20px_5px]"
+                class="{btnGlowClasses} bg-red-500 rounded-lg ml-1 hover:shadow-red-500/50 active:shadow-red-500/50"
                 onclick={() => state.clearCurrentSection()}
             >
                 Clear

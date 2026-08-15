@@ -9,7 +9,7 @@
 </script>
 
 <div
-    class={`m-5 max-h-[calc(100vh-12rem)] overflow-y-scroll flex flex-col gap-6 p-5 fixed bottom-1/2 translate-y-1/2 z-50 shadow shadow-black rounded-lg bg-[#1d2230b9] backdrop-blur transition-opacity duration-500 ease-in-out ${
+    class={`m-5 max-h-[calc(100vh-8rem)] overflow-y-scroll flex flex-col gap-6 p-5 fixed md:bottom-1/2 md:translate-y-1/2 z-30 shadow shadow-black rounded-lg bg-[#1d2230b9] backdrop-blur transition-opacity duration-500 ease-in-out ${
         state.isControlPanelShown
             ? "opacity-100"
             : "opacity-0 pointer-events-none"
