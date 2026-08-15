@@ -33,7 +33,7 @@
         <button
             class="text-lg text-black bg-blue-400 font-medium rounded-lg px-5 py-1 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-blue-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-blue-500/50 active:text-white active:shadow-[0_0_20px_5px]"
             onclick={() => {
-                state.currentBandishSectionSvaras.push([[".", 0]]);
+                state.addRest();
             }}
         >
             Rest

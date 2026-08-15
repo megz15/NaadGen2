@@ -58,6 +58,7 @@ export class CompositionState {
     isPlaybackStopped = $state(true);
     startIndex = $state(0);
     endIndex = $state(-1);
+    insertIndex = $state(-1);   // -1 is append to end; >= 0 is insert before this index
 
     isAboutModalShown = $state(false);
     isControlPanelShown = $state(false);
@@ -151,7 +152,12 @@ export class CompositionState {
 
     svaraClick = (svara: string, oct: number) => {
         genSine(this.freqObject[svara], this.noteTime, this.noteVolume);
-        this.currentBandishSectionSvaras.push([[svara, oct]]);
+        if (this.insertIndex >= 0 && this.insertIndex <= this.currentBandishSectionSvaras.length) {
+            this.currentBandishSectionSvaras.splice(this.insertIndex, 0, [[svara, oct]]);
+            this.insertIndex++;
+        } else {
+            this.currentBandishSectionSvaras.push([[svara, oct]]);
+        }
     };
 
     playNotes = (notes: BandishNote[], startIdx: number) => {
@@ -461,6 +467,39 @@ export class CompositionState {
     deleteLastSvara = () => {
         const popped = this.currentBandishSectionSvaras.pop();
         this.lastRemovedSvara = popped ? $state.snapshot(popped) : [["S", 0]];
+
+        if (this.insertIndex > this.currentBandishSectionSvaras.length) {
+            this.insertIndex = this.currentBandishSectionSvaras.length; // clamp index
+        }
+    };
+
+    deleteNoteAtIndex = (i: number) => {
+        if (i < 0 || i >= this.currentBandishSectionSvaras.length) return;
+        const removed = this.currentBandishSectionSvaras.splice(i, 1);
+        this.lastRemovedSvara = removed.length > 0 ? $state.snapshot(removed[0]) : [["S", 0]];
+
+        if (this.insertIndex > i) {
+            this.insertIndex--;
+        } else if (this.insertIndex === i && this.insertIndex >= this.currentBandishSectionSvaras.length) {
+            this.insertIndex = this.currentBandishSectionSvaras.length;
+        }
+    };
+
+    setInsertCursor = (i: number) => {
+        this.insertIndex = Math.max(0, Math.min(i, this.currentBandishSectionSvaras.length));
+    };
+
+    clearInsertCursor = () => {
+        this.insertIndex = -1;
+    };
+
+    addRest = () => {
+        if (this.insertIndex >= 0 && this.insertIndex <= this.currentBandishSectionSvaras.length) {
+            this.currentBandishSectionSvaras.splice(this.insertIndex, 0, [[".", 0]]);
+            this.insertIndex++;
+        } else {
+            this.currentBandishSectionSvaras.push([[".", 0]]);
+        }
     };
 
     undoLastSvara = () => {
