@@ -137,11 +137,7 @@
             <button
                 class="{btnActionClasses} bg-blue-400 hover:shadow-blue-500/50 active:shadow-blue-500/50"
                 onclick={() => {
-                    state.startIndex = state.noteModalNoteIndex;
-                    state.focusOnSelectedNoteRange(
-                        state.startIndex,
-                        state.endIndex,
-                    );
+                    state.setStartIndex(state.noteModalNoteIndex);
                 }}
             >
                 Mark Start
@@ -150,11 +146,7 @@
             <button
                 class="{btnActionClasses} bg-blue-400 hover:shadow-blue-500/50 active:shadow-blue-500/50"
                 onclick={() => {
-                    state.endIndex = state.noteModalNoteIndex;
-                    state.focusOnSelectedNoteRange(
-                        state.startIndex,
-                        state.endIndex,
-                    );
+                    state.setEndIndex(state.noteModalNoteIndex);
                 }}
             >
                 Mark End

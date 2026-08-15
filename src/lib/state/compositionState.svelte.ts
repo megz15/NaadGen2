@@ -257,7 +257,7 @@ export class CompositionState {
                 this.currentSection = this.bandishSections[0].sectionName;
             } else
                 alert(
-                    `Section "${sectionName}" hath been spared from the sword of deletion!`,
+                    `Section "${sectionName}" lives to see another day!`,
                 );
         } else alert("Can't delete all sections!");
     };
@@ -345,27 +345,54 @@ export class CompositionState {
         }
     };
 
+    isNoteDimmed = (i: number): boolean => {
+        if (this.startIndex === 0 && this.endIndex === -1) {
+            return false;
+        }
+        const end =
+            this.endIndex === -1
+                ? this.currentBandishSectionSvaras.length - 1
+                : this.endIndex;
+        return i < this.startIndex || i > end;
+    };
+
+    setStartIndex = (i: number) => {
+        if (this.endIndex !== -1 && i > this.endIndex) {
+            alert(
+                `Start index (${i + 1}) cannot be after end index (${this.endIndex + 1})!`,
+            );
+            return;
+        }
+        this.startIndex = i;
+        this.focusOnSelectedNoteRange(this.startIndex, this.endIndex);
+    };
+
+    setEndIndex = (i: number) => {
+        if (i < this.startIndex) {
+            alert(
+                `End index (${i + 1}) cannot be before start index (${this.startIndex + 1})!`,
+            );
+            return;
+        }
+        this.endIndex = i;
+        this.focusOnSelectedNoteRange(this.startIndex, this.endIndex);
+    };
+
     focusOnSelectedNoteRange = async (startIdx: number, endIdx: number) => {
         await tick();
+        const isSelectionActive = !(startIdx === 0 && endIdx === -1);
+        const end =
+            endIdx === -1
+                ? this.currentBandishSectionSvaras.length - 1
+                : endIdx;
         for (let i = 0; i < this.currentBandishSectionSvaras.length; i++) {
             const note = document.getElementById(`comp-${i}`);
-
-            if (
-                i >= startIdx &&
-                i <=
-                (endIdx == -1
-                    ? this.currentBandishSectionSvaras.length
-                    : endIdx)
-            ) {
+            if (!isSelectionActive || (i >= startIdx && i <= end)) {
                 note?.classList.remove("opacity-10");
             } else {
                 note?.classList.add("opacity-10");
             }
         }
-
-        document
-            .getElementById(`comp-${startIdx}`)
-            ?.classList.remove("opacity-10");
     };
 
     clearSelection = () => {
@@ -375,14 +402,23 @@ export class CompositionState {
     };
 
     duplicateSelection = () => {
+        if (this.currentBandishSectionSvaras.length === 0) {
+            alert("Add some notes before duplicating!");
+            return;
+        }
         const end =
             this.endIndex == -1
-                ? this.currentBandishSectionSvaras.length
+                ? this.currentBandishSectionSvaras.length - 1
                 : this.endIndex;
+        if (this.startIndex > end || this.startIndex < 0 || end < 0) {
+            alert("Invalid selection range.");
+            return;
+        }
         const dupedNotes = $state.snapshot(
             this.currentBandishSectionSvaras.slice(this.startIndex, end + 1),
         );
         this.currentBandishSectionSvaras.push(...dupedNotes);
+        this.focusOnSelectedNoteRange(this.startIndex, this.endIndex);
     };
 
     moveSelectionToSection = () => {
@@ -393,7 +429,7 @@ export class CompositionState {
 
         const end =
             this.endIndex == -1
-                ? this.currentBandishSectionSvaras.length
+                ? this.currentBandishSectionSvaras.length - 1
                 : this.endIndex;
         if (this.startIndex > end || this.startIndex < 0 || end < 0) {
             alert("Invalid selection range. End usually happens after start.");
@@ -443,6 +479,10 @@ export class CompositionState {
     };
 
     deleteSelection = () => {
+        if (this.currentBandishSectionSvaras.length === 0) {
+            alert("No notes in current section to delete.");
+            return;
+        }
         if (
             confirm(
                 "Are you sure you want to delete the selected range? This action cannot be undone!",
@@ -450,8 +490,12 @@ export class CompositionState {
         ) {
             const end =
                 this.endIndex == -1
-                    ? this.currentBandishSectionSvaras.length
+                    ? this.currentBandishSectionSvaras.length - 1
                     : this.endIndex;
+            if (this.startIndex > end || this.startIndex < 0 || end < 0) {
+                alert("Invalid selection range.");
+                return;
+            }
             this.currentBandishSectionSvaras.splice(
                 this.startIndex,
                 end - this.startIndex + 1,
@@ -459,7 +503,7 @@ export class CompositionState {
             this.clearSelection();
         } else {
             alert(
-                "Selected range hath been spared from the sword of deletion!",
+                "Selected range lives to see another day!",
             );
         }
     };
@@ -528,7 +572,7 @@ export class CompositionState {
                 this.clearSelection();
             } else
                 alert(
-                    `The section "${this.currentSection}" hath been spared from the sword of deletion!`,
+                    `The section "${this.currentSection}" lives to see another day!`,
                 );
         } else
             alert("Nothing to clear here. Move along, move along...");

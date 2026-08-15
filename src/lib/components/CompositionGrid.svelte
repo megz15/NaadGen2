@@ -38,6 +38,8 @@
         <button
             id={`comp-${i}`}
             class={`relative text-lg h-8 w-12 font-medium rounded-lg hover:scale-112 active:scale-90 hover:shadow-blue-400/50 hover:bg-blue-300 hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:shadow-blue-400/50 active:bg-blue-300 active:shadow-[0_0_20px_5px] ${
+                state.isNoteDimmed(i) ? "opacity-10" : ""
+            } ${
                 taals[state.selectedTaal]["tali"].includes(
                     i % taals[state.selectedTaal]["matra"],
                 )
