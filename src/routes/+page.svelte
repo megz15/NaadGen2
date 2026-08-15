@@ -57,7 +57,7 @@
     <button
         id="controlPanelBtn"
         class={`z-100 text-black bg-yellow-500 fixed left-4 ${
-            state.isFooterVisible ? "bottom-13 max-sm:bottom-20" : "bottom-4"
+            state.isFooterVisible ? "bottom-13 max-sm:bottom-20" : "top-4"
         } font-medium rounded-lg text-lg px-5 py-2 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:shadow-yellow-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:shadow-yellow-500/50 active:text-white active:shadow-[0_0_20px_5px] opacity-${
             state.isPlaybackStopped ? "100" : "10"
         } pointer-events-${state.isPlaybackStopped ? "auto" : "none"}`}
@@ -73,7 +73,7 @@
         } z-100 text-black bg-${
             state.isPlaybackStopped ? "lime" : "red"
         }-500 fixed right-4 ${
-            state.isFooterVisible ? "bottom-13 max-sm:bottom-20" : "bottom-4"
+            state.isFooterVisible ? "bottom-13 max-sm:bottom-20" : "top-4"
         } font-medium rounded-lg text-lg px-5 py-2 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white ${
             state.isPlaybackStopped
                 ? "hover:shadow-lime-500/50"

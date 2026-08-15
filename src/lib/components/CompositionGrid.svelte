@@ -7,8 +7,33 @@
     let { state }: { state: CompositionState } = $props();
 </script>
 
+{#if state.insertIndex >= 0 && state.insertIndex < state.currentBandishSectionSvaras.length}
+    <div class="flex items-center gap-5 mb-2">
+        <div class="text-yellow-400 text-sm font-semibold animate-pulse">
+            Cursor at Avartan {Math.floor(
+                state.insertIndex / taals[state.selectedTaal]["matra"],
+            ) + 1}, Svara index {state.insertIndex %
+                taals[state.selectedTaal]["matra"]}
+        </div>
+        <button
+            class="text-xs text-black bg-gray-300 hover:text-red-500 hover:bg-white py-0.5 px-2 rounded transition duration-200"
+            onclick={() => state.clearInsertCursor()}
+        >
+            ✕ Clear
+        </button>
+    </div>
+{/if}
+
 <div class="flex flex-wrap gap-1" bind:this={state.compDiv}>
     {#each state.currentBandishSectionSvaras as svaras, i}
+        {#if state.insertIndex % taals[state.selectedTaal]["matra"] === i % taals[state.selectedTaal]["matra"] && state.insertIndex !== i && state.insertIndex % taals[state.selectedTaal]["matra"] !== 0}
+            <div class="w-1"></div>
+        {/if}
+        {#if state.insertIndex === i}
+            <div
+                class="w-1 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_8px_2px] shadow-yellow-400"
+            ></div>
+        {/if}
         {@const svaraLabel = svaras.map((svara) => svara[0])}
         <button
             id={`comp-${i}`}
@@ -40,4 +65,9 @@
             {/if}
         </button>
     {/each}
+    {#if state.insertIndex == -1 || (state.insertIndex >= 0 && state.insertIndex >= state.currentBandishSectionSvaras.length)}
+        <div
+            class="w-1 rounded-full bg-yellow-400 animate-pulse shadow-[0_0_8px_2px] shadow-yellow-400"
+        ></div>
+    {/if}
 </div>
