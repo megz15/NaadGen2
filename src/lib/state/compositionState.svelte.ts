@@ -436,6 +436,109 @@ export class CompositionState {
             return;
         }
 
+        const count = end - this.startIndex + 1;
+        const totalNotes = this.currentBandishSectionSvaras.length;
+
+        const existingSectionNames = this.bandishSections
+            .map((s) => s.sectionName)
+            .join(", ");
+        const targetSectionInput = prompt(
+            `Enter destination section (existing: ${existingSectionNames}).\nLeave as "${this.currentSection}" to move within the current section:`,
+            this.currentSection,
+        );
+        if (targetSectionInput === null) return;
+        const targetSectionName = targetSectionInput.trim() || this.currentSection;
+
+        // Moving within same section
+        if (targetSectionName === this.currentSection) {
+            if (count === totalNotes) {
+                alert("The entire section is selected; cannot move within the same section.");
+                return;
+            }
+
+            const maxPos = totalNotes - count + 1;
+            const cursorMsg =
+                this.insertIndex >= 0
+                    ? ` or 'cursor' for pos ${Math.min(
+                        this.insertIndex < this.startIndex
+                            ? this.insertIndex + 1
+                            : Math.max(1, this.insertIndex - count + 1),
+                        maxPos,
+                    )}`
+                    : "";
+            const posInput = prompt(
+                `Move ${count} note(s) to position 1-to-${maxPos} in "${this.currentSection}"${cursorMsg}, or 'end':`,
+                this.insertIndex >= 0 ? "cursor" : "end",
+            );
+            if (posInput === null) return;
+
+            let targetPos: number;
+            const trimmedPos = posInput.trim().toLowerCase();
+
+            if (trimmedPos === "end" || trimmedPos === "") {
+                targetPos = maxPos;
+            } else if (trimmedPos === "cursor" && this.insertIndex >= 0) {
+                if (
+                    this.insertIndex >= this.startIndex &&
+                    this.insertIndex <= end + 1
+                ) {
+                    alert("Selected range is already at the cursor position.");
+                    return;
+                }
+                if (this.insertIndex < this.startIndex) {
+                    targetPos = this.insertIndex + 1;
+                } else {
+                    targetPos = this.insertIndex - count + 1;
+                }
+                targetPos = Math.max(1, Math.min(targetPos, maxPos));
+            } else {
+                const parsed = parseInt(trimmedPos, 10);
+                if (isNaN(parsed) || parsed < 1 || parsed > totalNotes + 1) {
+                    alert(
+                        `Invalid position. Please enter a number between 1 and ${maxPos}, or 'end'.`,
+                    );
+                    return;
+                }
+                targetPos = Math.min(parsed, maxPos);
+            }
+
+            if (targetPos === this.startIndex + 1) {
+                alert("Selected range is already at that position.");
+                return;
+            }
+
+            const selection = $state.snapshot(
+                this.currentBandishSectionSvaras.slice(this.startIndex, end + 1),
+            );
+
+            // remove from current position
+            this.currentBandishSectionSvaras.splice(this.startIndex, count);
+
+            // in the remaining array target insertion index is targetPos - 1
+            const newInsertIdx = targetPos - 1;
+
+            // insert at new index
+            this.currentBandishSectionSvaras.splice(
+                newInsertIdx,
+                0,
+                ...selection,
+            );
+
+            // update selection to the moved range
+            this.startIndex = newInsertIdx;
+            this.endIndex = newInsertIdx + count - 1;
+            if (this.insertIndex >= 0) {
+                this.insertIndex = Math.min(
+                    this.insertIndex,
+                    this.currentBandishSectionSvaras.length,
+                );
+            }
+            this.focusOnSelectedNoteRange(this.startIndex, this.endIndex);
+            alert(`Moved ${count} note(s) to position ${newInsertIdx + 1}!`);
+            return;
+        }
+
+        // Moving to different section
         const selection = $state.snapshot(
             this.currentBandishSectionSvaras.slice(this.startIndex, end + 1),
         );
@@ -444,23 +547,7 @@ export class CompositionState {
             return;
         }
 
-        const existingSectionNames = this.bandishSections
-            .map((s) => s.sectionName)
-            .join(", ");
-        const targetSectionInput = prompt(
-            `Enter target section name (existing: ${existingSectionNames}). New name will create a section:`,
-            existingSectionNames.split(", ")[0] ?? "Default",
-        );
-        if (!targetSectionInput) return;
-        const targetSectionName = targetSectionInput.trim();
-        if (!targetSectionName) return;
-
-        if (targetSectionName === this.currentSection) {
-            alert("Selected range did not budge.");
-            return;
-        }
-
-        this.currentBandishSectionSvaras.splice(this.startIndex, selection.length);
+        this.currentBandishSectionSvaras.splice(this.startIndex, count);
 
         let targetSection = this.bandishSections.find(
             (s) => s.sectionName === targetSectionName,
@@ -474,8 +561,10 @@ export class CompositionState {
 
         targetSection?.svaras.push(...selection);
         this.currentSection = targetSectionName;
-        this.clearSelection();
-        alert(`Moved ${selection.length} notes to "${targetSectionName}"!`);
+        this.startIndex = (targetSection?.svaras.length ?? count) - count;
+        this.endIndex = (targetSection?.svaras.length ?? count) - 1;
+        this.focusOnSelectedNoteRange(this.startIndex, this.endIndex);
+        alert(`Moved ${selection.length} note(s) to section "${targetSectionName}"!`);
     };
 
     deleteSelection = () => {
