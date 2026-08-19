@@ -20,6 +20,12 @@
     <select
         class="bg-gray-700 border border-gray-600 text-white text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block px-2.5 py-1.5 placeholder-gray-400 hover:border-white hover:shadow-gray-500/50 hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-white active:shadow-gray-500/50 active:text-white active:shadow-[0_0_20px_5px]"
         bind:value={state.currentSection}
+        onchange={() => {
+            state.currentSubsection = state.hasSubsections
+                ? (state.currentBandishSection.subsections?.[0]
+                      ?.subsectionName ?? null)
+                : null;
+        }}
     >
         <option selected disabled>Section</option>
         {#each state.bandishSections
@@ -52,4 +58,38 @@
     >
         Delete
     </button>
+
+    <button
+        class="{btnActionClasses} bg-lime-500 hover:shadow-lime-500/50 active:shadow-lime-500/50 col-span-4 max-sm:col-span-2"
+        onclick={() => {
+            const name = prompt("Enter new subsection name", "New Subsection");
+            if (name) state.addSubsection(name.trim());
+        }}
+    >
+        + Subsection
+    </button>
+
+    {#if state.hasSubsections && state.currentSubsection}
+        <div class="col-span-4 max-sm:col-span-2 text-gray-400 text-xs mt-1">
+            Subsection: <span class="text-white font-semibold"
+                >{state.currentSubsection}</span
+            >
+        </div>
+
+        <button
+            class="{btnActionClasses} bg-orange-500 hover:shadow-orange-500/50 active:shadow-orange-500/50 col-span-2 max-sm:col-span-1"
+            onclick={() =>
+                state.renameSubsection(state.currentSubsection ?? "")}
+        >
+            Rename Sub
+        </button>
+
+        <button
+            class="{btnActionClasses} bg-red-500 hover:shadow-red-500/50 active:shadow-red-500/50 col-span-2 max-sm:col-span-1"
+            onclick={() =>
+                state.deleteSubsection(state.currentSubsection ?? "")}
+        >
+            Delete Sub
+        </button>
+    {/if}
 </div>

@@ -1,5 +1,5 @@
 import { genSine, genSaptakFreq } from "$lib/utils/audioUtils";
-import type { Raga, Taal, BandishSection, BandishNote } from "$lib/types/types";
+import type { Raga, Taal, BandishSection, BandishSubsection, BandishNote } from "$lib/types/types";
 import ragasData from "$lib/data/ragas.json";
 import taalsData from "$lib/data/taals.json";
 import { exportCompositionToFile, fetchCompositionFromUrl } from "$lib/utils/fileUtils";
@@ -50,6 +50,7 @@ export class CompositionState {
         { sectionName: "Default", svaras: [] },
     ]);
     currentSection = $state("Default");
+    currentSubsection = $state<string | null>(null);
 
     lastRemovedSvara = $state<BandishNote>([["S", 0]]);
 
@@ -94,11 +95,32 @@ export class CompositionState {
         );
     }
 
+    get hasSubsections(): boolean {
+        return (this.currentBandishSection.subsections?.length ?? 0) > 0;
+    }
+
+    get currentBandishSubsection(): BandishSubsection | undefined {
+        if (!this.hasSubsections || this.currentSubsection === null) return undefined;
+        return this.currentBandishSection.subsections?.find(
+            (sub) => sub.subsectionName === this.currentSubsection,
+        );
+    }
+
     get currentBandishSectionSvaras(): BandishNote[] {
+        if (this.hasSubsections && this.currentSubsection !== null) {
+            return this.currentBandishSubsection?.svaras ?? [];
+        }
         return this.currentBandishSection.svaras;
     }
 
     set currentBandishSectionSvaras(val: BandishNote[]) {
+        if (this.hasSubsections && this.currentSubsection !== null) {
+            const sub = this.currentBandishSubsection;
+            if (sub) {
+                sub.svaras = val;
+                return;
+            }
+        }
         let sec = this.bandishSections.find(
             (section) => section.sectionName === this.currentSection,
         );
@@ -160,8 +182,11 @@ export class CompositionState {
         }
     };
 
-    playNotes = (notes: BandishNote[], startIdx: number) => {
-        if (notes.length === 0) return;
+    playNotes = (notes: BandishNote[], startIdx: number, onComplete?: () => void) => {
+        if (notes.length === 0) {
+            onComplete?.();
+            return;
+        }
 
         let totalTime = 0;
         this.isPlaybackStopped = false;
@@ -208,20 +233,103 @@ export class CompositionState {
             document
                 .getElementById(`comp-${notes.length + startIdx - 1}`)
                 ?.classList.remove("bg-yellow-400");
-            if (!this.isPlaybackLooped) {
+            if (onComplete) {
+                onComplete();
+            } else if (!this.isPlaybackLooped) {
                 this.stopPlayback();
             }
         }, totalTime);
 
         this.playbackTimeouts.push(finalTimeout as unknown as number);
 
-        if (this.isPlaybackLooped) {
+        if (!onComplete && this.isPlaybackLooped) {
             const loopedNoteTimeout = setTimeout(() => {
                 if (!this.isPlaybackStopped) this.playNotes(notes, startIdx);
             }, totalTime);
 
             this.playbackTimeouts.push(loopedNoteTimeout as unknown as number);
         }
+    };
+
+    playAllSubsections = () => {
+        const sec = this.currentBandishSection;
+        const subs = sec.subsections;
+        if (!subs || subs.length === 0) return;
+
+        this.isPlaybackStopped = false;
+
+        const playSubIdx = (idx: number) => {
+            if (this.isPlaybackStopped || idx >= subs.length) {
+                if (!this.isPlaybackStopped && this.isPlaybackLooped) {
+                    playSubIdx(0);
+                } else if (!this.isPlaybackStopped) {
+                    this.stopPlayback();
+                }
+                return;
+            }
+            const sub = subs[idx];
+            const notes = sub.svaras;
+            const startId = `sub-${idx}-`;
+            this.playSubsectionNotes(notes, startId, () => playSubIdx(idx + 1));
+        };
+
+        playSubIdx(0);
+    };
+
+    playSubsectionNotes = (notes: BandishNote[], idPrefix: string, onComplete?: () => void) => {
+        if (notes.length === 0) {
+            onComplete?.();
+            return;
+        }
+
+        let totalTime = 0;
+
+        notes.forEach((note, i) => {
+            const volume =
+                this.noteVolume *
+                (taals[this.selectedTaal]["tali"].includes(
+                    i % taals[this.selectedTaal]["matra"],
+                ) ||
+                    taals[this.selectedTaal]["khali"].includes(
+                        i % taals[this.selectedTaal]["matra"],
+                    )
+                    ? 2
+                    : 1);
+
+            const noteDuration = 60000 / this.tempoBPM / note.length;
+
+            note.forEach((split) => {
+                const noteTimeout = setTimeout(() => {
+                    if (!this.isPlaybackStopped) {
+                        if (split[0] != "." && shrutis.includes(split[0])) {
+                            genSine(
+                                this.freqObject[split[0]] * 2 ** (split[1] - this.octave),
+                                this.noteTime / note.length,
+                                volume,
+                            );
+                        }
+                        document
+                            .getElementById(`${idPrefix}${i}`)
+                            ?.classList.add("bg-yellow-400");
+                        document
+                            .getElementById(`${idPrefix}${i - 1}`)
+                            ?.classList.remove("bg-yellow-400");
+                    }
+                }, totalTime);
+
+                this.playbackTimeouts.push(noteTimeout as unknown as number);
+                totalTime += noteDuration;
+            });
+        });
+
+        const finalTimeout = setTimeout(() => {
+            document
+                .getElementById(`${idPrefix}${notes.length - 1}`)
+                ?.classList.remove("bg-yellow-400");
+            onComplete?.();
+        }, totalTime);
+
+        this.playbackTimeouts.push(finalTimeout as unknown as number);
     };
 
     stopPlayback = () => {
@@ -242,6 +350,7 @@ export class CompositionState {
         if (!sectionName) return;
         this.bandishSections.push({ sectionName: sectionName, svaras: [] });
         this.currentSection = sectionName;
+        this.currentSubsection = null;
     };
 
     deleteSection = (sectionName: string) => {
@@ -255,6 +364,9 @@ export class CompositionState {
                     (section) => section.sectionName != sectionName,
                 );
                 this.currentSection = this.bandishSections[0].sectionName;
+                this.currentSubsection = this.hasSubsections
+                    ? (this.currentBandishSection.subsections?.[0]?.subsectionName ?? null)
+                    : null;
             } else
                 alert(
                     `Section "${sectionName}" lives to see another day!`,
@@ -271,6 +383,54 @@ export class CompositionState {
             if (target) target.sectionName = renameToName;
             this.currentSection = renameToName;
         }
+    };
+
+    addSubsection = (subsectionName: string) => {
+        if (!subsectionName) return;
+        const sec = this.currentBandishSection;
+        if (!sec.subsections) sec.subsections = [];
+        sec.subsections.push({ subsectionName, svaras: [] });
+        this.currentSubsection = subsectionName;
+    };
+
+    deleteSubsection = (subsectionName: string) => {
+        const sec = this.currentBandishSection;
+        if (!sec.subsections || sec.subsections.length === 0) return;
+        if (
+            confirm(
+                `Are you sure you want to delete subsection "${subsectionName}"?`,
+            )
+        ) {
+            sec.subsections = sec.subsections.filter(
+                (sub) => sub.subsectionName !== subsectionName,
+            );
+            if (sec.subsections.length === 0) {
+                sec.subsections = undefined;
+                this.currentSubsection = null;
+            } else {
+                this.currentSubsection = sec.subsections[0].subsectionName;
+            }
+        } else
+            alert(
+                `Subsection "${subsectionName}" lives to see another day!`,
+            );
+    };
+
+    renameSubsection = (subsectionName: string) => {
+        const renameToName = prompt("Enter new subsection name", subsectionName);
+        if (renameToName) {
+            const sub = this.currentBandishSection.subsections?.find(
+                (sub) => sub.subsectionName === subsectionName,
+            );
+            if (sub) sub.subsectionName = renameToName;
+            this.currentSubsection = renameToName;
+        }
+    };
+
+    switchToSubsection = (subsectionName: string) => {
+        this.currentSubsection = subsectionName;
+        this.clearSelection();
+        this.clearInsertCursor();
     };
 
     openNoteModal = (i: number) => {
@@ -318,6 +478,9 @@ export class CompositionState {
 
             this.bandishSections = data["totalBandish"];
             this.currentSection = this.bandishSections[0].sectionName;
+            this.currentSubsection = this.hasSubsections
+                ? (this.currentBandishSection.subsections?.[0]?.subsectionName ?? null)
+                : null;
 
             alert("Imported successfully!");
         } catch (e: any) {

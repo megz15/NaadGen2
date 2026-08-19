@@ -14,7 +14,12 @@ export type Taal = {
 
 export type Svara = [string, number]
 export type BandishNote = Svara[]
+export type BandishSubsection = {
+    subsectionName: string
+    svaras: BandishNote[]
+}
 export type BandishSection = {
     sectionName: string
     svaras: BandishNote[]
+    subsections?: BandishSubsection[]
 }

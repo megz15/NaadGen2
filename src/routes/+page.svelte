@@ -17,9 +17,10 @@
         "font-medium rounded-lg text-lg px-5 py-2 hover:scale-105 active:scale-90 border-2 hover:border-2 hover:border-white hover:text-white hover:shadow-[0_0_20px_5px] transition-all duration-200 active:duration-50 active:border-2 active:border-white active:text-white active:shadow-[0_0_20px_5px]";
 
     $effect(() => {
-        // Automatically sync composition grid width whenever selectedTaal or currentSection changes
+        // Automatically sync composition grid width whenever selectedTaal, currentSection or currentSubsection changes
         const _taal = state.selectedTaal;
         const _sec = state.currentSection;
+        const _sub = state.currentSubsection;
         state.matchDivWidth();
     });
 
@@ -72,7 +73,15 @@
     <button
         id="playBtn"
         class={`opacity-${
-            state.currentBandishSectionSvaras.length != 0 ? "100" : "10"
+            state.hasSubsections
+                ? state.currentBandishSection.subsections?.some(
+                      (s) => s.svaras.length > 0,
+                  )
+                    ? "100"
+                    : "10"
+                : state.currentBandishSectionSvaras.length != 0
+                  ? "100"
+                  : "10"
         } z-10 text-black bg-${
             state.isPlaybackStopped ? "lime" : "red"
         }-500 fixed left-4 ${
@@ -88,17 +97,21 @@
         }`}
         onclick={() => {
             if (state.isPlaybackStopped) {
-                state.playNotes(
-                    state.endIndex == -1
-                        ? state.currentBandishSectionSvaras.slice(
-                              state.startIndex,
-                          )
-                        : state.currentBandishSectionSvaras.slice(
-                              state.startIndex,
-                              state.endIndex + 1,
-                          ),
-                    state.startIndex,
-                );
+                if (state.hasSubsections) {
+                    state.playAllSubsections();
+                } else {
+                    state.playNotes(
+                        state.endIndex == -1
+                            ? state.currentBandishSectionSvaras.slice(
+                                  state.startIndex,
+                              )
+                            : state.currentBandishSectionSvaras.slice(
+                                  state.startIndex,
+                                  state.endIndex + 1,
+                              ),
+                        state.startIndex,
+                    );
+                }
             } else {
                 state.stopPlayback();
             }
